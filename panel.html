@@ -27,11 +27,14 @@
                         <li>Motor relay</li>
                     </ul>
                     <p>Functional relay work mode</p>
-                    <ul>
-                        <li>MMSP</li>
-                        <li>Functional relay</li>
-                        <li>Motor relay</li>
-                    </ul>
+                    <form>
+                        <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                        <label for="radio-workmode-alarm">Alarm relay</label><br>
+                        <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                        <label for="radio-workmode-time">Time relay</label><br>
+                        <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                        <label for="radio-workmode-stardelta">Star / delta</label><br>
+                    </form>
                 </th>
                 <th>
                     <div>
