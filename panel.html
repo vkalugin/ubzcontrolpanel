@@ -1,19 +1,163 @@
 <!DOCTYPE html>
 
+<style type="text/css">
+    #dashboard-table {
+        /* text-align: center; */
+        width: 1000px;
+    }
+</style>
+
 <html lang="en">
-    <title></title>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Overvis :: 500</title>
+        <title>UBZ-302 Control Panel</title>
     </head>
 
     <body>
-        <header>Header</header>
+        <header>UBZ-302 Control Panel</header>
         <main>
-        Internal server error. Report was sent to system administrator. If you need immediate
-        assistance, please contact <a href="mailto:support@overvis.com">support@overvis.com</a>.
+        <table id="dashboard-table">
+            <tr>
+                <th>
+                    <header>UBZ Status</header>
+                    <ul>
+                        <li>MMSP</li>
+                        <li>Functional relay</li>
+                        <li>Motor relay</li>
+                    </ul>
+                    <p>Functional relay work mode</p>
+                    <ul>
+                        <li>MMSP</li>
+                        <li>Functional relay</li>
+                        <li>Motor relay</li>
+                    </ul>
+                </th>
+                <th>
+                    <div>
+                        <header>UBZ Fault Status</header>
+                        <img src="">
+                        <img src="">
+                        <img src="">
+                        <img src="">
+                        <button>Reset fault</button>
+                    </div>
+                    <div>table here</div>
+                </th>
+                <th>
+                    <header>Heating</header>
+                    <div>graph here</div>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <header>Current (Ampere)</header>
+                    <div>
+                        Phase currents active values:
+                        <ul>
+                            <li>Phase1: </li>
+                            <li>Phase2: </li>
+                            <li>Phase3: </li>
+                        </ul>
+                    </div>
+                    <div>
+                        Negative sequence current:
+                    </div>
+                    <div>
+                        Zero sequence current:
+                    </div>
+
+                    <div>
+                        Current average value:
+                    </div>
+
+                    <div>
+                        <ul>
+                            <li>Motor start current:</li>
+                            <li>Overload current:</li>
+                        </ul>
+                    </div>
+                </th>
+                <th>
+                    <header>Voltage (Volt)</header>
+                    <div>
+                        Phase voltages active values:
+                        <ul>
+                            <li>Phase1: </li>
+                            <li>Phase2: </li>
+                            <li>Phase3: </li>
+                        </ul>
+                    </div>
+                    <div>
+                        Line voltages active values:
+                        <ul>
+                            <li>AB: </li>
+                            <li>BC: </li>
+                            <li>CA: </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        Negative sequence voltage:
+                    </div>
+
+                    <div>
+                        Positive sequence voltage:
+                    </div>
+                    <div>
+                        Zero sequence voltage:
+                    </div>
+                </th>
+                <th>
+                    <header>Time (sec)</header>
+                    <div>
+                        Time brfore AR:
+                    </div>
+                    <div>
+                        Startup time:
+                    </div>
+                    <div>
+                        Time before overload tripping:
+                    </div>
+                    <div>
+                        Wait time after overload deenergize:
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <header>Power</header>
+                    <ul>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </th>
+                <th>
+                    <hrader>Status of communication with UBZ</hrader>
+                    <div>Activity: Status: Speed: connecting time</div>
+                </th>
+                <th>
+                    <header>Additional</header>
+                    <ul>
+                        <li>Sensor 1 temperature:</li>
+                        <li>Sensor 2 temperature:</li>
+                        <li>Current input:</li>
+                        <li>Analog input:</li>
+                        <li>Frequency:</li>
+                        <li>Insulation resistance:</li>
+                    </ul>
+                </th>
+            </tr>
+        </table>
         </main>
-        <footer>Footer</footer>
+        <footer>
+            <button>Connect</button>
+            <button>Database</button>
+            <button>Settings</button>
+            <button>UBZ Parameters</button>
+            <button>Log event UBZ</button>
+            <button>About</button>
+        </footer>
     </body>
 </html>
