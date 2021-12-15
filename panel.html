@@ -2,8 +2,25 @@
 
 <style type="text/css">
     #dashboard-table {
-        /* text-align: center; */
         width: 1000px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #dashboard-table td, th {
+        font-weight: normal;
+        border: 1px solid blueviolet;
+        vertical-align: top;
+        padding: 20px;
+    }
+
+    #dashboard-table li, form, p {
+        text-align: left;
+    }
+
+    #dashboard-table select {
+        padding: 5px;
+        margin: 10px;
     }
 </style>
 
@@ -56,22 +73,24 @@
                 <th>
                     <header>Current (Ampere)</header>
                     <div>
-                        Phase currents active values:
+                        <p>Phase currents active values:</p>
                         <ul>
-                            <li>Phase1: </li>
-                            <li>Phase2: </li>
-                            <li>Phase3: </li>
+                            <li>Phase1: <progress value="0" max="3"></progress></li>
+                            <li>Phase2: <progress value="0" max="3"></progress></li>
+                            <li>Phase3: <progress value="0" max="3"></progress></li>
                         </ul>
                     </div>
                     <div>
-                        Negative sequence current:
+                        <p>Negative sequence current:</p>
+                        <progress value="0" max="3"></progress>
                     </div>
                     <div>
-                        Zero sequence current:
+                        <p>Zero sequence current:</p>
+                        <progress value="0" max="3"></progress>
                     </div>
 
                     <div>
-                        Current average value:
+                        <p>Current average value:</p>
                     </div>
 
                     <div>
@@ -84,56 +103,108 @@
                 <th>
                     <header>Voltage (Volt)</header>
                     <div>
-                        Phase voltages active values:
+                        <p>Phase voltages active values:</p>
                         <ul>
-                            <li>Phase1: </li>
-                            <li>Phase2: </li>
-                            <li>Phase3: </li>
+                            <li>Phase1: <progress value="0" max="400"></progress></li>
+                            <li>Phase2: <progress value="0" max="400"></progress></li>
+                            <li>Phase3: <progress value="0" max="400"></progress></li>
                         </ul>
                     </div>
                     <div>
-                        Line voltages active values:
+                        <p>Line voltages active values:</p>
                         <ul>
-                            <li>AB: </li>
-                            <li>BC: </li>
-                            <li>CA: </li>
+                            <li>AB: <progress value="0" max="400"></progress></li>
+                            <li>BC: <progress value="0" max="400"></progress></li>
+                            <li>CA: <progress value="0" max="400"></progress></li>
                         </ul>
                     </div>
 
                     <div>
-                        Negative sequence voltage:
+                        <p>Negative sequence voltage:</p>
+                        <progress value="0" max="400"></progress>
                     </div>
 
                     <div>
-                        Positive sequence voltage:
+                        <p>Positive sequence voltage:</p>
                     </div>
                     <div>
-                        Zero sequence voltage:
+                        <p>Zero sequence voltage:</p>
                     </div>
                 </th>
                 <th>
                     <header>Time (sec)</header>
                     <div>
-                        Time brfore AR:
+                        <p>Time brfore AR:</p>
+                        <progress value="0" max="100"></progress> <span id="time-before-ar-value">time value here</span>
                     </div>
-                    <div>
-                        Startup time:
-                    </div>
-                    <div>
-                        Time before overload tripping:
-                    </div>
-                    <div>
-                        Wait time after overload deenergize:
-                    </div>
+                    <ul>
+                        <li>Startup time:</li>
+                        <li>Time before overload tripping:</li>
+                        <li>Wait time after overload deenergize:</li>
+                    </ul>
                 </th>
             </tr>
             <tr>
                 <th>
                     <header>Power</header>
                     <ul>
-                        <li></li>
-                        <li></li>
-                        <li></li>
+                        <li>
+                            <select id="power-characteristic-value-1" name="power-characteristic-value-1">
+                                <option value="full-power">Full power</option>
+                                <option value="active-power">Active power</option>
+                                <option value="reactive-power">Reactive power</option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select id="power-characteristic-value-2" name="power-characteristic-value-2">
+                                <option value="full-power">Full power</option>
+                                <option value="active-power">Active power</option>
+                                <option value="reactive-power">Reactive power</option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                        </li>
+                        <li>
+                            <select id="power-characteristic-value-3" name="power-characteristic-value-3">
+                                <option value="full-power">Full power</option>
+                                <option value="active-power">Active power</option>
+                                <option value="reactive-power">Reactive power</option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                        </li>
                     </ul>
                 </th>
                 <th>
