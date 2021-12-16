@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 
 <style type="text/css">
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: [col1] 300px [col2] 300px [col3] 300px [col4] 300px;
+        grid-template-rows: [row1] 500px [row2] 500px;
+    }
+
+    .dashboard-item-a {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 1;
+    }
+
     #dashboard-table {
         width: 1200px;
         margin-top: 20px;
@@ -33,6 +46,11 @@
     <body>
         <header>UBZ-302 Control Panel</header>
         <main>
+        <div class="dashboard-container">
+            <div class="dashboard-item-a">
+                sadf
+            </div>
+        </div>
         <table id="dashboard-table">
             <tr>
                 <td>
@@ -152,7 +170,7 @@
                     <header>Time (sec)</header>
                     <div>
                         <p>Time brfore AR:</p>
-                        <progress value="0" max="100"></progress> <span id="time-before-ar-value">time value here</span>
+                        <progress value="0" max="100"></progress> <span id="time-before-ar-value">0</span>
                     </div>
                     <ul>
                         <li>Startup time:</li>
