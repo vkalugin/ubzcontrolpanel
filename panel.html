@@ -9,30 +9,9 @@
     }
 
     .dashboard-item {
-        background-color: cornflowerblue;
+        background-color:lightblue;
         margin: 10px;
         padding: 15px;;
-    }
-
-    #dashboard-table {
-        width: 1200px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    #dashboard-table td, th {
-        border: 1px solid blueviolet;
-        vertical-align: top;
-        padding: 20px;
-    }
-
-    #dashboard-table header {
-        text-align: center;
-    }
-
-    #dashboard-table select {
-        padding: 5px;
-        margin: 10px;
     }
 </style>
 
@@ -48,78 +27,49 @@
         <main>
         <div class="dashboard-container">
             <div class="dashboard-item">
-                sadf 1
+                <header>UBZ Status</header>
+                <ul>
+                    <li>MMSP</li>
+                    <li>Functional relay</li>
+                    <li>Motor relay</li>
+                </ul>
+                <p>Functional relay work mode</p>
+                <form>
+                    <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                    <label for="radio-workmode-alarm">Alarm relay</label><br>
+                    <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                    <label for="radio-workmode-time">Time relay</label><br>
+                    <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                    <label for="radio-workmode-stardelta">Star / delta</label><br>
+                </form>
             </div>
             <div class="dashboard-item">
-                sadf 2
+                <div>
+                    <header>UBZ Fault Status</header>
+                    <img src="">
+                    <img src="">
+                    <img src="">
+                    <img src="">
+                    <button>Reset fault</button>
+                </div>
+                <div>table here</div>
             </div>
             <div class="dashboard-item">
-                sadf 3
+                <header>Heating</header>
+                <div>graph here</div>
             </div>
             <div class="dashboard-item">
-                sadf 4
+                <header>Status of communication with UBZ</header>
+                <ul>
+                    <li>Activity:</li>
+                    <li>Status:</li>
+                    <li>Speed:</li>
+                    <li>Connecting time:</li>
+                    <li>Address UBZ: <input type="text" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+                </ul>
             </div>
             <div class="dashboard-item">
-                sadf 5
-            </div>
-            <div class="dashboard-item">
-                sadf 6
-            </div>
-            <div class="dashboard-item">
-                sadf 7
-            </div>
-            <div class="dashboard-item">
-                sadf 8
-            </div>
-        </div>
-        <table id="dashboard-table">
-            <tr>
-                <td>
-                    <header>UBZ Status</header>
-                    <ul>
-                        <li>MMSP</li>
-                        <li>Functional relay</li>
-                        <li>Motor relay</li>
-                    </ul>
-                    <p>Functional relay work mode</p>
-                    <form>
-                        <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-                        <label for="radio-workmode-alarm">Alarm relay</label><br>
-                        <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-                        <label for="radio-workmode-time">Time relay</label><br>
-                        <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-                        <label for="radio-workmode-stardelta">Star / delta</label><br>
-                    </form>
-                </td>
-                <td>
-                    <div>
-                        <header>UBZ Fault Status</header>
-                        <img src="">
-                        <img src="">
-                        <img src="">
-                        <img src="">
-                        <button>Reset fault</button>
-                    </div>
-                    <div>table here</div>
-                </td>
-                <td>
-                    <header>Heating</header>
-                    <div>graph here</div>
-                </td>
-                <td>
-                    <header>Status of communication with UBZ</header>
-                    <ul>
-                        <li>Activity:</li>
-                        <li>Status:</li>
-                        <li>Speed:</li>
-                        <li>Connecting time:</li>
-                        <li>Address UBZ: <input type="text" id="modbus-address-ubz" name="modbus-address-ubz"></li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <header>Current (Ampere)</header>
+                <header>Current (Ampere)</header>
                     <div>
                         <p>Phase currents active values:</p>
                         <ul>
@@ -155,9 +105,9 @@
                             <li>Overload current:</li>
                         </ul>
                     </div>
-                </td>
-                <td>
-                    <header>Voltage (Volt)</header>
+            </div>
+            <div class="dashboard-item">
+                <header>Voltage (Volt)</header>
                     <div>
                         <p>Phase voltages active values:</p>
                         <ul>
@@ -186,9 +136,9 @@
                     <div>
                         <p>Zero sequence voltage:</p>
                     </div>
-                </td>
-                <td>
-                    <header>Time (sec)</header>
+            </div>
+            <div class="dashboard-item">
+                <header>Time (sec)</header>
                     <div>
                         <p>Time brfore AR:</p>
                         <progress value="0" max="100"></progress> <span id="time-before-ar-value">0</span>
@@ -259,9 +209,9 @@
                             </select>
                         </li>
                     </ul>
-                </td>
-                <td>
-                    <header>Additional</header>
+            </div>
+            <div class="dashboard-item">
+                <header>Additional</header>
                     <ul>
                         <li>Sensor 1 temperature:</li>
                         <li>Sensor 2 temperature:</li>
@@ -270,9 +220,8 @@
                         <li>Frequency:</li>
                         <li>Insulation resistance:</li>
                     </ul>
-                </td>
-            </tr>
-        </table>
+            </div>
+        </div>
         </main>
         <footer>
             <button>Connect</button>
