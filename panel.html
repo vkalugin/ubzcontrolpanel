@@ -3,15 +3,15 @@
 <style type="text/css">
     .dashboard-container {
         display: grid;
-        grid-template-columns: [col1] 300px [col2] 300px [col3] 300px [col4] 300px;
-        grid-template-rows: [row1] 500px [row2] 500px;
+        grid-template-columns: [col1] auto [col2] auto [col3] auto [col4] auto;
+        grid-template-rows: [row1] auto [row2] auto;
+        padding: 10px;
     }
 
-    .dashboard-item-a {
-        grid-column-start: 1;
-        grid-column-end: 2;
-        grid-row-start: 1;
-        grid-row-end: 1;
+    .dashboard-item {
+        background-color: cornflowerblue;
+        margin: 10px;
+        padding: 15px;;
     }
 
     #dashboard-table {
@@ -47,8 +47,29 @@
         <header>UBZ-302 Control Panel</header>
         <main>
         <div class="dashboard-container">
-            <div class="dashboard-item-a">
-                sadf
+            <div class="dashboard-item">
+                sadf 1
+            </div>
+            <div class="dashboard-item">
+                sadf 2
+            </div>
+            <div class="dashboard-item">
+                sadf 3
+            </div>
+            <div class="dashboard-item">
+                sadf 4
+            </div>
+            <div class="dashboard-item">
+                sadf 5
+            </div>
+            <div class="dashboard-item">
+                sadf 6
+            </div>
+            <div class="dashboard-item">
+                sadf 7
+            </div>
+            <div class="dashboard-item">
+                sadf 8
             </div>
         </div>
         <table id="dashboard-table">
