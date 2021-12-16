@@ -2,7 +2,7 @@
 
 <style type="text/css">
     #dashboard-table {
-        width: 1000px;
+        width: 1200px;
         margin-top: 20px;
         margin-bottom: 20px;
     }
@@ -66,6 +66,16 @@
                 <td>
                     <header>Heating</header>
                     <div>graph here</div>
+                </td>
+                <td>
+                    <header>Status of communication with UBZ</header>
+                    <ul>
+                        <li>Activity:</li>
+                        <li>Status:</li>
+                        <li>Speed:</li>
+                        <li>Connecting time:</li>
+                        <li>Address UBZ: <input type="text" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+                    </ul>
                 </td>
             </tr>
             <tr>
@@ -149,10 +159,7 @@
                         <li>Time before overload tripping:</li>
                         <li>Wait time after overload deenergize:</li>
                     </ul>
-                </td>
-            </tr>
-            <tr>
-                <td>
+
                     <header>Power</header>
                     <ul>
                         <li>
@@ -212,16 +219,6 @@
                                 <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                             </select>
                         </li>
-                    </ul>
-                </td>
-                <td>
-                    <hrader>Status of communication with UBZ</hrader>
-                    <ul>
-                        <li>Activity:</li>
-                        <li>Status:</li>
-                        <li>Speed:</li>
-                        <li>Connecting time:</li>
-                        <li>Address UBZ: <input type="text" id="modbus-address-ubz" name="modbus-address-ubz"></li>
                     </ul>
                 </td>
                 <td>
