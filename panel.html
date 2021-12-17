@@ -23,6 +23,10 @@
         background-color: white;
     }
 
+    #faults-table {
+        border: 1px solid lightslategrey;
+    }
+
     @media only screen and (max-device-width: 1100px) {
         .dashboard-container {
             display: grid;
@@ -84,7 +88,30 @@
                     <img src="">
                     <button>Reset fault</button>
                 </div>
-                <div>table here</div>
+                <div>
+                    <table id="faults-table">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                ###
+                            </th>
+                            <th>
+                                Value
+                            </th>
+                            <th>
+                                Time
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <div class="dashboard-item">
                 <header>Heating</header>
