@@ -14,6 +14,15 @@
         padding: 15px;
     }
 
+    .power-characteristic {
+        margin: 5px;
+    }
+
+    #heating-graph {
+        border: 1px solid lightslategrey;
+        background-color: white;
+    }
+
     @media only screen and (max-device-width: 1100px) {
         .dashboard-container {
             display: grid;
@@ -26,6 +35,10 @@
             background-color:lightblue;
             margin: 5px;
             padding: 15px;
+        }
+
+        .power-characteristic {
+            padding: 10px;
         }
     }
 
@@ -75,7 +88,9 @@
             </div>
             <div class="dashboard-item">
                 <header>Heating</header>
-                <div>graph here</div>
+                <div>
+                    <canvas id="heating-graph" width="auto" height="auto"></canvas>
+                </div>
             </div>
             <div class="dashboard-item">
                 <header>Status of communication with UBZ</header>
@@ -84,7 +99,7 @@
                     <li>Status:</li>
                     <li>Speed:</li>
                     <li>Connecting time:</li>
-                    <li>Address UBZ: <input type="number" min="1" max="247" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+                    <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
                 </ul>
             </div>
             <div class="dashboard-item">
@@ -92,18 +107,18 @@
                     <div>
                         <p>Phase currents active values:</p>
                         <ul>
-                            <li>Phase1: <progress value="0" max="3"></progress></li>
-                            <li>Phase2: <progress value="0" max="3"></progress></li>
-                            <li>Phase3: <progress value="0" max="3"></progress></li>
+                            <li>Phase1: <progress value="0" max="3"></progress> 0.0 A</li>
+                            <li>Phase2: <progress value="0" max="3"></progress> 0.0 A</li>
+                            <li>Phase3: <progress value="0" max="3"></progress> 0.0 A</li>
                         </ul>
                     </div>
                     <div>
                         <p>Negative sequence current:</p>
-                        <progress value="0" max="3"></progress>
+                        <progress value="0" max="3"></progress> 0.0 A
                     </div>
                     <div>
                         <p>Zero sequence current:</p>
-                        <progress value="0" max="3"></progress>
+                        <progress value="0" max="3"></progress> 0.0 A
                     </div>
 
                     <div>
@@ -130,37 +145,37 @@
                     <div>
                         <p>Phase voltages active values:</p>
                         <ul>
-                            <li>Phase1: <progress value="0" max="400"></progress></li>
-                            <li>Phase2: <progress value="0" max="400"></progress></li>
-                            <li>Phase3: <progress value="0" max="400"></progress></li>
+                            <li>Phase1: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>Phase2: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>Phase3: <progress value="0" max="400"></progress> 0.0 V</li>
                         </ul>
                     </div>
                     <div>
                         <p>Line voltages active values:</p>
                         <ul>
-                            <li>AB: <progress value="0" max="400"></progress></li>
-                            <li>BC: <progress value="0" max="400"></progress></li>
-                            <li>CA: <progress value="0" max="400"></progress></li>
+                            <li>AB: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>BC: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>CA: <progress value="0" max="400"></progress> 0.0 V</li>
                         </ul>
                     </div>
 
                     <div>
                         <p>Negative sequence voltage:</p>
-                        <progress value="0" max="400"></progress>
+                        <progress value="0" max="400"></progress> 0.0 V
                     </div>
 
                     <div>
-                        <p>Positive sequence voltage:</p>
+                        <p>Positive sequence voltage:</p> 0 V
                     </div>
                     <div>
-                        <p>Zero sequence voltage:</p>
+                        <p>Zero sequence voltage:</p> 0 V
                     </div>
             </div>
             <div class="dashboard-item">
                 <header>Time (sec)</header>
                     <div>
                         <p>Time brfore AR:</p>
-                        <progress value="0" max="100"></progress> <span id="time-before-ar-value">0</span>
+                        <progress value="0" max="100"></progress> <span id="time-before-ar-value"> Off</span>
                     </div>
                     <ul>
                         <li>Startup time:</li>
@@ -171,7 +186,7 @@
                     <header>Power</header>
                     <ul>
                         <li>
-                            <select id="power-characteristic-value-1" name="power-characteristic-value-1">
+                            <select id="power-characteristic-value-1" class="power-characteristic" name="power-characteristic-value-1">
                                 <option value="full-power">Full power</option>
                                 <option value="active-power">Active power</option>
                                 <option value="reactive-power">Reactive power</option>
@@ -190,7 +205,7 @@
                             </select>
                         </li>
                         <li>
-                            <select id="power-characteristic-value-2" name="power-characteristic-value-2">
+                            <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
                                 <option value="full-power">Full power</option>
                                 <option value="active-power">Active power</option>
                                 <option value="reactive-power">Reactive power</option>
@@ -209,7 +224,7 @@
                             </select>
                         </li>
                         <li>
-                            <select id="power-characteristic-value-3" name="power-characteristic-value-3">
+                            <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
                                 <option value="full-power">Full power</option>
                                 <option value="active-power">Active power</option>
                                 <option value="reactive-power">Reactive power</option>
