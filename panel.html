@@ -110,6 +110,48 @@
                             <td>3</td>
                             <td>4</td>
                         </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -123,9 +165,9 @@
                 <header>Status of communication with UBZ</header>
                 <ul>
                     <li>Activity:</li>
-                    <li>Status:</li>
-                    <li>Speed:</li>
-                    <li>Connecting time:</li>
+                    <li>Status: <span id="status-string">Disconnected</span></li>
+                    <li>Speed: <span id="speed-value">0</span> bps</li>
+                    <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
                     <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
                 </ul>
             </div>
@@ -134,36 +176,48 @@
                     <div>
                         <p>Phase currents active values:</p>
                         <ul>
-                            <li>Phase1: <progress value="0" max="3"></progress> 0.0 A</li>
-                            <li>Phase2: <progress value="0" max="3"></progress> 0.0 A</li>
-                            <li>Phase3: <progress value="0" max="3"></progress> 0.0 A</li>
+                            <li>Phase1: <progress value="0" max="6300"></progress> 0.0 A</li>
+                            <li>Phase2: <progress value="0" max="6300"></progress> 0.0 A</li>
+                            <li>Phase3: <progress value="0" max="6300"></progress> 0.0 A</li>
                         </ul>
                     </div>
                     <div>
                         <p>Negative sequence current:</p>
-                        <progress value="0" max="3"></progress> 0.0 A
+                        <progress value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
                     </div>
                     <div>
                         <p>Zero sequence current:</p>
-                        <progress value="0" max="3"></progress> 0.0 A
+                        <progress value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
                     </div>
 
                     <div>
-                        <p>Current average value:</p>
-                        <!-- <table>
-
-                        </table> -->
-                        <ul>
-                            <li>Phase 1:</li>
-                            <li>Phase 2:</li>
-                            <li>Phase 3:</li>
-                        </ul>
+                        <table>
+                            <tr>
+                                <th>Current average value:</th>
+                                <th>For time</th>
+                                <th>Max:</th>
+                            </tr>
+                            <tr>
+                                <td>Phase 1:</td>
+                                <td rowspan="3">
+                                    <span id="current-average-for-time-value">60.0</span> sec
+                                </td>
+                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                            </tr>
+                            <tr>
+                                <td>Phase 2:</td>
+                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                            </tr>
+                            <tr>
+                                <td>Phase 3:</td>
+                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                            </tr>
+                        </table>
                     </div>
-
                     <div>
                         <ul>
-                            <li>Motor start current:</li>
-                            <li>Overload current:</li>
+                            <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
+                            <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
                         </ul>
                     </div>
             </div>
@@ -172,42 +226,44 @@
                     <div>
                         <p>Phase voltages active values:</p>
                         <ul>
-                            <li>Phase1: <progress value="0" max="400"></progress> 0.0 V</li>
-                            <li>Phase2: <progress value="0" max="400"></progress> 0.0 V</li>
-                            <li>Phase3: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>Phase1: <progress value="0" max="400"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
+                            <li>Phase2: <progress value="0" max="400"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
+                            <li>Phase3: <progress value="0" max="400"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
                         </ul>
                     </div>
                     <div>
                         <p>Line voltages active values:</p>
                         <ul>
-                            <li>AB: <progress value="0" max="400"></progress> 0.0 V</li>
-                            <li>BC: <progress value="0" max="400"></progress> 0.0 V</li>
-                            <li>CA: <progress value="0" max="400"></progress> 0.0 V</li>
+                            <li>AB: <progress value="0" max="400"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
+                            <li>BC: <progress value="0" max="400"></progress> <span id="line21-voltage-value">0.0</span> V</li>
+                            <li>CA: <progress value="0" max="400"></progress> <span id="line31-voltage-value">0.0</span> V</li>
                         </ul>
                     </div>
 
-                    <div>
-                        <p>Negative sequence voltage:</p>
-                        <progress value="0" max="400"></progress> 0.0 V
-                    </div>
+                    <p>
+                        Negative sequence voltage:
+                        <div>
+                            <progress value="0" max="400"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
+                        </div>
+                    </p>
 
-                    <div>
-                        <p>Positive sequence voltage:</p> 0 V
-                    </div>
-                    <div>
-                        <p>Zero sequence voltage:</p> 0 V
-                    </div>
+                    <p>
+                        Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                    </p>
+                    <p>
+                        Zero sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                    </p>
             </div>
             <div class="dashboard-item">
                 <header>Time (sec)</header>
                     <div>
                         <p>Time brfore AR:</p>
-                        <progress value="0" max="100"></progress> <span id="time-before-ar-value"> Off</span>
+                        <progress value="0" max="100"></progress> <span id="time-before-ar-string"> Off</span>
                     </div>
                     <ul>
-                        <li>Startup time:</li>
-                        <li>Time before overload tripping:</li>
-                        <li>Wait time after overload deenergize:</li>
+                        <li>Startup time: <span id="startup-time-value">0</span> sec</li>
+                        <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span></li>
+                        <li>Wait time after overload deenergize: <span id="wait-time-after-overload-deenergize-string">No</span></li>
                     </ul>
 
                     <header>Power</header>
@@ -274,12 +330,12 @@
             <div class="dashboard-item">
                 <header>Additional</header>
                     <ul>
-                        <li>Sensor 1 temperature:</li>
-                        <li>Sensor 2 temperature:</li>
-                        <li>Current input:</li>
-                        <li>Analog input:</li>
-                        <li>Frequency:</li>
-                        <li>Insulation resistance:</li>
+                        <li>Sensor 1 temperature: <span>Off</span></li>
+                        <li>Sensor 2 temperature: <span>Off</span></li>
+                        <li>Current input: <span>0.0 mA</span></li>
+                        <li>Analog input: <span>0.0 V</span></li>
+                        <li>Frequency: <span>50.0 Hz</span></li>
+                        <li>Insulation resistance: <span>20.0 MOhm</span></li>
                     </ul>
             </div>
         </div>
