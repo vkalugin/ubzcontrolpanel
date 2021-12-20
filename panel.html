@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-
 <style type="text/css">
     .dashboard-container {
         display: grid;
         grid-template-columns: [col1] auto [col2] auto [col3] auto [col4] auto;
         grid-template-rows: [row1] auto [row2] auto;
         padding: 10px;
+        text-align: left;
     }
 
     .dashboard-item {
@@ -51,305 +50,298 @@
     }
 </style>
 
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>UBZ-302 Control Panel</title>
-    </head>
+<div id="ubz-vis-container">
+    <alias device="#16" name="ubz"></alias>
+    <header>UBZ-302 Control Panel</header>
 
-    <body>
-        <header>UBZ-302 Control Panel</header>
-        <main>
-        <div class="dashboard-container">
-            <div class="dashboard-item">
-                <header>UBZ Status</header>
-                <ul>
-                    <li>MMSP</li>
-                    <li>Functional relay</li>
-                    <li>Motor relay</li>
-                </ul>
-                <p>Functional relay work mode</p>
-                <form>
-                    <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-                    <label for="radio-workmode-alarm">Alarm relay</label><br>
-                    <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-                    <label for="radio-workmode-time">Time relay</label><br>
-                    <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-                    <label for="radio-workmode-stardelta">Star / delta</label><br>
-                </form>
+    <div class="dashboard-container">
+        <div class="dashboard-item">
+            <header>UBZ Status</header>
+            <ul>
+                <li>MMSP</li>
+                <li>Functional relay</li>
+                <li>Motor relay</li>
+            </ul>
+            <p>Functional relay work mode</p>
+            <form>
+                <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                <label for="radio-workmode-alarm">Alarm relay</label><br>
+                <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                <label for="radio-workmode-time">Time relay</label><br>
+                <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                <label for="radio-workmode-stardelta">Star / delta</label><br>
+            </form>
+        </div>
+        <div class="dashboard-item">
+            <div>
+                <header>UBZ Fault Status</header>
+                <img src="">
+                <img src="">
+                <img src="">
+                <img src="">
+                <button>Reset fault</button>
             </div>
-            <div class="dashboard-item">
+            <div>
+                <table id="faults-table">
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            ###
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                        <th>
+                            Time
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <header>Heating</header>
+            <div>
+                <canvas id="heating-graph" width="auto" height="auto"></canvas>
+            </div>
+        </div>
+        <div class="dashboard-item">
+            <header>Status of communication with UBZ</header>
+            <ul>
+                <li>Activity:</li>
+                <li>Status: <span id="status-string">Disconnected</span></li>
+                <li>Speed: <span id="speed-value">0</span> bps</li>
+                <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
+                <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+            </ul>
+        </div>
+        <div class="dashboard-item">
+            <header>Current (Ampere)</header>
                 <div>
-                    <header>UBZ Fault Status</header>
-                    <img src="">
-                    <img src="">
-                    <img src="">
-                    <img src="">
-                    <button>Reset fault</button>
+                    <p>Phase currents active values:</p>
+                    <ul>
+                        <li>Phase1: <progress value="0" max="6300"></progress> 0.0 A</li>
+                        <li>Phase2: <progress value="0" max="6300"></progress> 0.0 A</li>
+                        <li>Phase3: <progress value="0" max="6300"></progress> 0.0 A</li>
+                    </ul>
                 </div>
                 <div>
-                    <table id="faults-table">
+                    <p>Negative sequence current:</p>
+                    <progress value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
+                </div>
+                <div>
+                    <p>Zero sequence current:</p>
+                    <progress value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
+                </div>
+
+                <div>
+                    <table>
                         <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                ###
-                            </th>
-                            <th>
-                                Value
-                            </th>
-                            <th>
-                                Time
-                            </th>
+                            <th>Current average value:</th>
+                            <th>For time</th>
+                            <th>Max:</th>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
+                            <td>Phase 1:</td>
+                            <td rowspan="3">
+                                <span id="current-average-for-time-value">60.0</span> sec
+                            </td>
+                            <td><span id="avg-current-value-phase-1">0.0</span> A</td>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
+                            <td>Phase 2:</td>
+                            <td><span id="avg-current-value-phase-1">0.0</span> A</td>
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
+                            <td>Phase 3:</td>
+                            <td><span id="avg-current-value-phase-1">0.0</span> A</td>
                         </tr>
                     </table>
                 </div>
-            </div>
-            <div class="dashboard-item">
-                <header>Heating</header>
                 <div>
-                    <canvas id="heating-graph" width="auto" height="auto"></canvas>
+                    <ul>
+                        <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
+                        <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
+                    </ul>
                 </div>
-            </div>
-            <div class="dashboard-item">
-                <header>Status of communication with UBZ</header>
-                <ul>
-                    <li>Activity:</li>
-                    <li>Status: <span id="status-string">Disconnected</span></li>
-                    <li>Speed: <span id="speed-value">0</span> bps</li>
-                    <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
-                    <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
-                </ul>
-            </div>
-            <div class="dashboard-item">
-                <header>Current (Ampere)</header>
-                    <div>
-                        <p>Phase currents active values:</p>
-                        <ul>
-                            <li>Phase1: <progress value="0" max="6300"></progress> 0.0 A</li>
-                            <li>Phase2: <progress value="0" max="6300"></progress> 0.0 A</li>
-                            <li>Phase3: <progress value="0" max="6300"></progress> 0.0 A</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p>Negative sequence current:</p>
-                        <progress value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
-                    </div>
-                    <div>
-                        <p>Zero sequence current:</p>
-                        <progress value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
-                    </div>
-
-                    <div>
-                        <table>
-                            <tr>
-                                <th>Current average value:</th>
-                                <th>For time</th>
-                                <th>Max:</th>
-                            </tr>
-                            <tr>
-                                <td>Phase 1:</td>
-                                <td rowspan="3">
-                                    <span id="current-average-for-time-value">60.0</span> sec
-                                </td>
-                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 2:</td>
-                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 3:</td>
-                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <ul>
-                            <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
-                            <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
-                        </ul>
-                    </div>
-            </div>
-            <div class="dashboard-item">
-                <header>Voltage (Volt)</header>
-                    <div>
-                        <p>Phase voltages active values:</p>
-                        <ul>
-                            <li>Phase1: <progress value="0" max="400"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
-                            <li>Phase2: <progress value="0" max="400"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
-                            <li>Phase3: <progress value="0" max="400"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p>Line voltages active values:</p>
-                        <ul>
-                            <li>AB: <progress value="0" max="400"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
-                            <li>BC: <progress value="0" max="400"></progress> <span id="line21-voltage-value">0.0</span> V</li>
-                            <li>CA: <progress value="0" max="400"></progress> <span id="line31-voltage-value">0.0</span> V</li>
-                        </ul>
-                    </div>
-
-                    <p>
-                        Negative sequence voltage:
-                        <div>
-                            <progress value="0" max="400"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
-                        </div>
-                    </p>
-
-                    <p>
-                        Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
-                    </p>
-                    <p>
-                        Zero sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
-                    </p>
-            </div>
-            <div class="dashboard-item">
-                <header>Time (sec)</header>
-                    <div>
-                        <p>Time brfore AR:</p>
-                        <progress value="0" max="100"></progress> <span id="time-before-ar-string"> Off</span>
-                    </div>
-                    <ul>
-                        <li>Startup time: <span id="startup-time-value">0</span> sec</li>
-                        <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span></li>
-                        <li>Wait time after overload deenergize: <span id="wait-time-after-overload-deenergize-string">No</span></li>
-                    </ul>
-
-                    <header>Power</header>
-                    <ul>
-                        <li>
-                            <select id="power-characteristic-value-1" class="power-characteristic" name="power-characteristic-value-1">
-                                <option value="full-power">Full power</option>
-                                <option value="active-power">Active power</option>
-                                <option value="reactive-power">Reactive power</option>
-                                <option value="phase-1-full-power">Phase 1 full power</option>
-                                <option value="phase-2-full-power">Phase 2 full power</option>
-                                <option value="phase-3-full-power">Phase 3 full power</option>
-                                <option value="phase-1-active-power">Phase 1 active power</option>
-                                <option value="phase-2-active-power">Phase 2 active power</option>
-                                <option value="phase-3-active-power">Phase 3 active power</option>
-                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                            </select>
-                        </li>
-                        <li>
-                            <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
-                                <option value="full-power">Full power</option>
-                                <option value="active-power">Active power</option>
-                                <option value="reactive-power">Reactive power</option>
-                                <option value="phase-1-full-power">Phase 1 full power</option>
-                                <option value="phase-2-full-power">Phase 2 full power</option>
-                                <option value="phase-3-full-power">Phase 3 full power</option>
-                                <option value="phase-1-active-power">Phase 1 active power</option>
-                                <option value="phase-2-active-power">Phase 2 active power</option>
-                                <option value="phase-3-active-power">Phase 3 active power</option>
-                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                            </select>
-                        </li>
-                        <li>
-                            <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
-                                <option value="full-power">Full power</option>
-                                <option value="active-power">Active power</option>
-                                <option value="reactive-power">Reactive power</option>
-                                <option value="phase-1-full-power">Phase 1 full power</option>
-                                <option value="phase-2-full-power">Phase 2 full power</option>
-                                <option value="phase-3-full-power">Phase 3 full power</option>
-                                <option value="phase-1-active-power">Phase 1 active power</option>
-                                <option value="phase-2-active-power">Phase 2 active power</option>
-                                <option value="phase-3-active-power">Phase 3 active power</option>
-                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                            </select>
-                        </li>
-                    </ul>
-            </div>
-            <div class="dashboard-item">
-                <header>Additional</header>
-                    <ul>
-                        <li>Sensor 1 temperature: <span>Off</span></li>
-                        <li>Sensor 2 temperature: <span>Off</span></li>
-                        <li>Current input: <span>0.0 mA</span></li>
-                        <li>Analog input: <span>0.0 V</span></li>
-                        <li>Frequency: <span>50.0 Hz</span></li>
-                        <li>Insulation resistance: <span>20.0 MOhm</span></li>
-                    </ul>
-            </div>
         </div>
-        </main>
-        <footer>
+        <div class="dashboard-item">
+            <header>Voltage (Volt)</header>
+                <div>
+                    <p>Phase voltages active values:</p>
+                    <ul>
+                        <li>Phase1: <progress value="0" max="400"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
+                        <li>Phase2: <progress value="0" max="400"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
+                        <li>Phase3: <progress value="0" max="400"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
+                    </ul>
+                </div>
+                <div>
+                    <p>Line voltages active values:</p>
+                    <ul>
+                        <li>AB: <progress value="0" max="400"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
+                        <li>BC: <progress value="0" max="400"></progress> <span id="line21-voltage-value">0.0</span> V</li>
+                        <li>CA: <progress value="0" max="400"></progress> <span id="line31-voltage-value">0.0</span> V</li>
+                    </ul>
+                </div>
+
+                <p>
+                    Negative sequence voltage:
+                    <div>
+                        <progress value="0" max="400"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
+                    </div>
+                </p>
+
+                <p>
+                    Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                </p>
+                <p>
+                    Zero sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                </p>
+        </div>
+        <div class="dashboard-item">
+            <header>Time (sec)</header>
+                <div>
+                    <p>Time brfore AR:</p>
+                    <progress value="0" max="100"></progress> <span id="time-before-ar-string"> Off</span>
+                </div>
+                <ul>
+                    <li>Startup time: <span id="startup-time-value">0</span> sec</li>
+                    <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span></li>
+                    <li>Wait time after overload deenergize: <span id="wait-time-after-overload-deenergize-string">No</span></li>
+                </ul>
+
+                <header>Power</header>
+                <ul>
+                    <li>
+                        <select id="power-characteristic-value-1" class="power-characteristic" name="power-characteristic-value-1">
+                            <option value="full-power">Full power</option>
+                            <option value="active-power">Active power</option>
+                            <option value="reactive-power">Reactive power</option>
+                            <option value="phase-1-full-power">Phase 1 full power</option>
+                            <option value="phase-2-full-power">Phase 2 full power</option>
+                            <option value="phase-3-full-power">Phase 3 full power</option>
+                            <option value="phase-1-active-power">Phase 1 active power</option>
+                            <option value="phase-2-active-power">Phase 2 active power</option>
+                            <option value="phase-3-active-power">Phase 3 active power</option>
+                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                        </select>
+                    </li>
+                    <li>
+                        <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
+                            <option value="full-power">Full power</option>
+                            <option value="active-power">Active power</option>
+                            <option value="reactive-power">Reactive power</option>
+                            <option value="phase-1-full-power">Phase 1 full power</option>
+                            <option value="phase-2-full-power">Phase 2 full power</option>
+                            <option value="phase-3-full-power">Phase 3 full power</option>
+                            <option value="phase-1-active-power">Phase 1 active power</option>
+                            <option value="phase-2-active-power">Phase 2 active power</option>
+                            <option value="phase-3-active-power">Phase 3 active power</option>
+                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                        </select>
+                    </li>
+                    <li>
+                        <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
+                            <option value="full-power">Full power</option>
+                            <option value="active-power">Active power</option>
+                            <option value="reactive-power">Reactive power</option>
+                            <option value="phase-1-full-power">Phase 1 full power</option>
+                            <option value="phase-2-full-power">Phase 2 full power</option>
+                            <option value="phase-3-full-power">Phase 3 full power</option>
+                            <option value="phase-1-active-power">Phase 1 active power</option>
+                            <option value="phase-2-active-power">Phase 2 active power</option>
+                            <option value="phase-3-active-power">Phase 3 active power</option>
+                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                        </select>
+                    </li>
+                </ul>
+        </div>
+        <div class="dashboard-item">
+            <header>Additional</header>
+                <ul>
+                    <li>Sensor 1 temperature: <span>Off</span></li>
+                    <li>Sensor 2 temperature: <span>Off</span></li>
+                    <li>Current input: <span>0.0 mA</span></li>
+                    <li>Analog input: <span>0.0 V</span></li>
+                    <li>Frequency: <span>50.0 Hz</span></li>
+                    <li>Insulation resistance: <span>20.0 MOhm</span></li>
+                </ul>
+        </div>
+    </div>
+</div>
+<!--        <footer>
             <button>Connect</button>
             <button>Database</button>
             <button>Settings</button>
             <button>UBZ Parameters</button>
             <button>Log event UBZ</button>
             <button>About</button>
-        </footer>
-    </body>
-</html>
+        </footer>-->
+
 
 <script type="text/javascript">
     var canvas = document.getElementById("heating-graph");
@@ -357,4 +349,61 @@
     ctx.font = "16px Droid Sans";
     ctx.strokeStyle = "green";
     ctx.strokeText("Graph here", 20, 20);
+    
+    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
+    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
+    const CONTAINER = document.querySelector("#ubz-vis-container");
+    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+    
+    
+    async function update() {
+        const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
+        console.log(deviceInfo);
+    }
+    update();
+    
+    
+//     async function postResponse(body, url) {
+//         const res = await new Promise((resolve, reject) => {
+//             const request = new XMLHttpRequest();
+//             request.onload = function() {
+//                 const data = JSON.parse(request.response);
+//                 resolve(data);
+//             }
+// 
+//             request.onerror = function(err) {
+//                 console.error(err);
+//                 reject(err)
+//             }
+// 
+//             request.open("POST", url);
+//             request.setRequestHeader("authorization", `token ${API_TOKEN}`);
+//             request.setRequestHeader("Content-Type", "application/json");
+//             request.send(JSON.stringify(body));
+//         });
+// 
+//         return res;
+//     }
+
+    async function getResponse(url) {
+        const res = await new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.onload = function() {
+                const data = JSON.parse(request.response);
+                resolve(data);
+            }
+
+            request.onerror = function(err) {
+                console.error(err);
+                reject(err)
+            }
+
+            request.open("GET", url);
+            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send();
+        });
+
+        return res;
+    }
 </script>
