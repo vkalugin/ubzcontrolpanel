@@ -199,11 +199,11 @@
                         </tr>
                         <tr>
                             <td>Phase 2:</td>
-                            <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                            <td><span id="avg-current-value-phase-2">0.0</span> A</td>
                         </tr>
                         <tr>
                             <td>Phase 3:</td>
-                            <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                            <td><span id="avg-current-value-phase-3">0.0</span> A</td>
                         </tr>
                     </table>
                 </div>
@@ -355,33 +355,52 @@
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
     
-    async function update() {
+    async function regValues(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
-        console.log(deviceInfo);
-        const netId = deviceInfo.netId;
-        console.log(netId);
-
-        // const netValue = await getResponse(`${API_BASE_URL}/v1/net/${netId}/`);
-        // console.log(netValue);
-        // const mac = netValue.mac;
-        // console.log(mac);
 
         const body = {
             deviceModbusId: deviceInfo.modbusUnitId,
-            address: 100,
+            address: address,
             kind: "holding",
-            registersNum: 3,
+            registersNum: registersNum,
             connection: {
                 kind: "net-id",
-                networkId: netId,
+                networkId: deviceInfo.netId,
             }
         }
-        const someValue = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
-        console.log(someValue);
 
-
+        const res = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
+        return res;
     }
-    update();
+
+    async function updateVis() {
+        const phaseRmsValues = await regValues(100, 3);
+        document.querySelector("#phase1-rms-value").innerHTML = (phaseRmsValues.ok[0] * 0.1);
+        document.querySelector("#phase2-rms-value").innerHTML = (phaseRmsValues.ok[1] * 0.1);
+        document.querySelector("#phase3-rms-value").innerHTML = (phaseRmsValues.ok[2] * 0.1);
+
+        const zeroSequenceCurrentValue = await regValues(103, 1);
+        document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1);
+
+        const currentAversgeValues = await regValues(104, 3);
+        document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAversgeValues.ok[0] * 0.1);
+        document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAversgeValues.ok[1] * 0.1);
+        document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAversgeValues.ok[2] * 0.1);
+
+        const motorStartCurrentValue = await regValues(110, 1);
+        document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentValue.ok[0] * 0.1);
+
+        const overloadCurrentValue = await gerValues(112, 1);
+        document.querySelector("#overload-current-value").innerHTML = (overloadCurrentValue.ok[0] * 0.1);
+
+        const negativeSequenceCurrentValue = await gerValues(113, 1);
+        document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentValue.ok[0] * 0.1);
+
+        const currentAverageForTimeValue = await getValues(153, 1);
+        document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeValue.ok[0];
+    }
+
+    updateVis();
     
     async function postResponse(body, url) {
         const res = await new Promise((resolve, reject) => {
