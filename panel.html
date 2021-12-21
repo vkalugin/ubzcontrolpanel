@@ -169,9 +169,9 @@
                 <div>
                     <p>Phase currents active values:</p>
                     <ul>
-                        <li>Phase1: <progress value="0" max="6300"></progress> <span id="phase1-rms-value">0.0</span> A</li>
-                        <li>Phase2: <progress value="0" max="6300"></progress> <span id="phase2-rms-value">0.0</span> A</li>
-                        <li>Phase3: <progress value="0" max="6300"></progress> <span id="phase3-rms-value">0.0</span> A</li>
+                        <li>Phase1: <progress value="0" max="6300"></progress> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                        <li>Phase2: <progress value="0" max="6300"></progress> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                        <li>Phase3: <progress value="0" max="6300"></progress> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
                 <div>
@@ -228,8 +228,8 @@
                     <p>Line voltages active values:</p>
                     <ul>
                         <li>AB: <progress value="0" max="400"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
-                        <li>BC: <progress value="0" max="400"></progress> <span id="line21-voltage-value">0.0</span> V</li>
-                        <li>CA: <progress value="0" max="400"></progress> <span id="line31-voltage-value">0.0</span> V</li>
+                        <li>BC: <progress value="0" max="400"></progress> <span id="line-2-voltage-value">0.0</span> V</li>
+                        <li>CA: <progress value="0" max="400"></progress> <span id="line-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
 
@@ -244,7 +244,7 @@
                     Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
                 </p>
                 <p>
-                    Zero sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                    Zero sequence voltage: <span id="zero-sequence-voltage-value">0</span> V
                 </p>
         </div>
         <div class="dashboard-item">
@@ -374,10 +374,10 @@
     }
 
     async function updateVis() {
-        const phaseRmsValues = await regValues(100, 3);
-        document.querySelector("#phase1-rms-value").innerHTML = (phaseRmsValues.ok[0] * 0.1);
-        document.querySelector("#phase2-rms-value").innerHTML = (phaseRmsValues.ok[1] * 0.1);
-        document.querySelector("#phase3-rms-value").innerHTML = (phaseRmsValues.ok[2] * 0.1);
+        const phaseRmsCurrentValues = await regValues(100, 3);
+        document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[0] * 0.1);
+        document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[1] * 0.1);
+        document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[2] * 0.1);
 
         const zeroSequenceCurrentValue = await regValues(103, 1);
         document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1);
@@ -398,6 +398,25 @@
 
         const currentAverageForTimeValue = await regValues(153, 1);
         document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeValue.ok[0];
+
+        const phaseRmsVoltageValues = await regValues(114, 3);
+        document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageValues.ok[0];
+        document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageValues.ok[1];
+        document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageValues.ok[2];
+
+        const lineVoltageValues = await regValues(117, 3);
+        document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageValues.ok[0];
+        document.querySelector("#line-2-voltage-value").innerHTML = lineVoltageValues.ok[1];
+        document.querySelector("#line-3-voltage-value").innerHTML = lineVoltageValues.ok[2];
+
+        const positiveSequenceVoltageValue = await regValues(120, 1);
+        document.querySelector("#positive-sequence-voltage-value").innerHTML = positiveSequenceVoltageValue.ok[0];
+
+        const negativeSequenceVoltageValue = await regValues(121, 1);
+        document.querySelector("#negative-sequence-voltage-value").innerHTML = negativeSequenceVoltageValue.ok[0];
+
+        const zeroSequenceVoltageValue = await regValues(122, 1);
+        document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageValue.ok[0];
     }
 
     updateVis();
