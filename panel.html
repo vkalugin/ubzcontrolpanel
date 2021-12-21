@@ -390,13 +390,13 @@
         const motorStartCurrentValue = await regValues(110, 1);
         document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentValue.ok[0] * 0.1);
 
-        const overloadCurrentValue = await gerValues(112, 1);
+        const overloadCurrentValue = await regValues(112, 1);
         document.querySelector("#overload-current-value").innerHTML = (overloadCurrentValue.ok[0] * 0.1);
 
-        const negativeSequenceCurrentValue = await gerValues(113, 1);
+        const negativeSequenceCurrentValue = await regValues(113, 1);
         document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentValue.ok[0] * 0.1);
 
-        const currentAverageForTimeValue = await getValues(153, 1);
+        const currentAverageForTimeValue = await regValues(153, 1);
         document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeValue.ok[0];
     }
 
