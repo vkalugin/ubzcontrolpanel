@@ -355,35 +355,53 @@
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
     
-    
     async function update() {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
         console.log(deviceInfo);
+        const netId = deviceInfo.netId;
+        console.log(netId);
+
+        // const netValue = await getResponse(`${API_BASE_URL}/v1/net/${netId}/`);
+        // console.log(netValue);
+        // const mac = netValue.mac;
+        // console.log(mac);
+
+        const body = {
+            deviceModbusId: deviceInfo.modbusUnitId,
+            address: 100,
+            kind: "holding",
+            registersNum: 3,
+            connection: {
+                kind: "net-id",
+                networkId: netId,
+            }
+        }
+        const someValue = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
+        console.log(someValue);
     }
     update();
     
-    
-//     async function postResponse(body, url) {
-//         const res = await new Promise((resolve, reject) => {
-//             const request = new XMLHttpRequest();
-//             request.onload = function() {
-//                 const data = JSON.parse(request.response);
-//                 resolve(data);
-//             }
-// 
-//             request.onerror = function(err) {
-//                 console.error(err);
-//                 reject(err)
-//             }
-// 
-//             request.open("POST", url);
-//             request.setRequestHeader("authorization", `token ${API_TOKEN}`);
-//             request.setRequestHeader("Content-Type", "application/json");
-//             request.send(JSON.stringify(body));
-//         });
-// 
-//         return res;
-//     }
+    async function postResponse(body, url) {
+        const res = await new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.onload = function() {
+                const data = JSON.parse(request.response);
+                resolve(data);
+            }
+
+            request.onerror = function(err) {
+                console.error(err);
+                reject(err)
+            }
+
+            request.open("POST", url);
+            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send(JSON.stringify(body));
+        });
+
+        return res;
+    }
 
     async function getResponse(url) {
         const res = await new Promise((resolve, reject) => {
