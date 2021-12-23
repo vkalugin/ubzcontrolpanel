@@ -325,10 +325,10 @@
                 <ul>
                     <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
                     <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
-                    <li>Current input: <span>0.0 mA</span></li>
-                    <li>Analog input: <span>0.0 V</span></li>
-                    <li>Frequency: <span>50.0 Hz</span></li>
-                    <li>Insulation resistance: <span>20.0 MOhm</span></li>
+                    <li>Current input: <span id="current-input-value">0.0</span> mA</li>
+                    <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
+                    <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
+                    <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
         </div>
     </div>
@@ -421,6 +421,18 @@
         const sensorTemperatureValues = await regValues(123, 2);
         document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureValues.ok[0]);
         document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureValues.ok[1]);
+
+        const frequencyValue = await regValues(128, 1);
+        document.querySelector("#frequency-value").innerHTML = (frequencyValue.ok[0] * 0.1);
+
+        const insulationResistanceValue = await regValues(132, 1);
+        document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceValue.ok[0] * 0.1);
+
+        const currentInputValue = await regValues(125, 1);
+        document.querySelector("#current-input-value").innerHTML = (currentInputValue.ok[0] * 0.01);
+
+        const analogInputValue = await regValues(126, 1);
+        document.querySelector("#analog-input-value").innerHTML = (analogInputValue.ok[0] * 0.1);
     }
 
     updateVis();
