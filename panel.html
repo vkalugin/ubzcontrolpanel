@@ -375,26 +375,26 @@
 
     async function updateVis() {
         const phaseRmsCurrentValues = await regValues(100, 3);
-        document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[0] * 0.1);
-        document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[1] * 0.1);
-        document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[2] * 0.1);
+        document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[0] * 0.1).toFixed(1);
+        document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[1] * 0.1).toFixed(1);
+        document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[2] * 0.1).toFixed(1);
 
         const zeroSequenceCurrentValue = await regValues(103, 1);
-        document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1);
+        document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1).toFixed(1);
 
         const currentAversgeValues = await regValues(104, 3);
-        document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAversgeValues.ok[0] * 0.1);
-        document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAversgeValues.ok[1] * 0.1);
-        document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAversgeValues.ok[2] * 0.1);
+        document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAversgeValues.ok[0] * 0.1).toFixed(1);
+        document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAversgeValues.ok[1] * 0.1).toFixed(1);
+        document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAversgeValues.ok[2] * 0.1).toFixed(1);
 
         const motorStartCurrentValue = await regValues(110, 1);
-        document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentValue.ok[0] * 0.1);
+        document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentValue.ok[0] * 0.1).toFixed(1);
 
         const overloadCurrentValue = await regValues(112, 1);
-        document.querySelector("#overload-current-value").innerHTML = (overloadCurrentValue.ok[0] * 0.1);
+        document.querySelector("#overload-current-value").innerHTML = (overloadCurrentValue.ok[0] * 0.1).toFixed(1);
 
         const negativeSequenceCurrentValue = await regValues(113, 1);
-        document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentValue.ok[0] * 0.1);
+        document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentValue.ok[0] * 0.1).toFixed(1);
 
         const currentAverageForTimeValue = await regValues(153, 1);
         document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeValue.ok[0];
@@ -423,16 +423,16 @@
         document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureValues.ok[1]);
 
         const frequencyValue = await regValues(128, 1);
-        document.querySelector("#frequency-value").innerHTML = (frequencyValue.ok[0] * 0.1);
+        document.querySelector("#frequency-value").innerHTML = (frequencyValue.ok[0] * 0.1).toFixed(1);
 
         const insulationResistanceValue = await regValues(132, 1);
-        document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceValue.ok[0] * 0.1);
+        document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceValue.ok[0] * 0.1).toFixed(1);
 
         const currentInputValue = await regValues(125, 1);
-        document.querySelector("#current-input-value").innerHTML = (currentInputValue.ok[0] * 0.01);
+        document.querySelector("#current-input-value").innerHTML = (currentInputValue.ok[0] * 0.01).toFixed(2);
 
         const analogInputValue = await regValues(126, 1);
-        document.querySelector("#analog-input-value").innerHTML = (analogInputValue.ok[0] * 0.1);
+        document.querySelector("#analog-input-value").innerHTML = (analogInputValue.ok[0] * 0.1).toFixed(1);
     }
 
     updateVis();
