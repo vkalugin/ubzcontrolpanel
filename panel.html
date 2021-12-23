@@ -219,9 +219,9 @@
                 <div>
                     <p>Phase voltages active values:</p>
                     <ul>
-                        <li>Phase1: <progress value="0" max="400"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
-                        <li>Phase2: <progress value="0" max="400"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
-                        <li>Phase3: <progress value="0" max="400"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
+                        <li>Phase1: <progress id="phase-1-voltage-bar" value="0" max="300"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
+                        <li>Phase2: <progress id="phase-2-voltage-bar" value="0" max="300"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
+                        <li>Phase3: <progress id="phase-3-voltage-bar" value="0" max="300"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
                 <div>
@@ -382,10 +382,10 @@
         const zeroSequenceCurrentValue = await regValues(103, 1);
         document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1).toFixed(1);
 
-        const currentAversgeValues = await regValues(104, 3);
-        document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAversgeValues.ok[0] * 0.1).toFixed(1);
-        document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAversgeValues.ok[1] * 0.1).toFixed(1);
-        document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAversgeValues.ok[2] * 0.1).toFixed(1);
+        const currentAverageValues = await regValues(104, 3);
+        document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageValues.ok[0] * 0.1).toFixed(1);
+        document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAverageValues.ok[1] * 0.1).toFixed(1);
+        document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAverageValues.ok[2] * 0.1).toFixed(1); 
 
         const motorStartCurrentValue = await regValues(110, 1);
         document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentValue.ok[0] * 0.1).toFixed(1);
@@ -403,6 +403,9 @@
         document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageValues.ok[0];
         document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageValues.ok[1];
         document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageValues.ok[2];
+        document.querySelector("#phase-1-voltage-bar").setAttribute("value", phaseRmsVoltageValues[0]);
+        document.querySelector("#phase-2-voltage-bar").setAttribute("value", phaseRmsVoltageValues[1]);
+        document.querySelector("#phase-3-voltage-bar").setAttribute("value", phaseRmsVoltageValues[2]);
 
         const lineVoltageValues = await regValues(117, 3);
         document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageValues.ok[0];
