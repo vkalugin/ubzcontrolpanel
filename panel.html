@@ -323,8 +323,8 @@
         <div class="dashboard-item">
             <header>Additional</header>
                 <ul>
-                    <li>Sensor 1 temperature: <span>Off</span></li>
-                    <li>Sensor 2 temperature: <span>Off</span></li>
+                    <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
+                    <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
                     <li>Current input: <span>0.0 mA</span></li>
                     <li>Analog input: <span>0.0 V</span></li>
                     <li>Frequency: <span>50.0 Hz</span></li>
@@ -417,9 +417,27 @@
 
         const zeroSequenceVoltageValue = await regValues(122, 1);
         document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageValue.ok[0];
+
+        const sensorTemperatureValues = await regValues(123, 2);
+        document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureValues.ok[0]);
+        document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureValues.ok[1]);
     }
 
     updateVis();
+
+    function temperatureSensorReadable(value) {
+        if (value == 5000) {
+            return "Off";
+        } else if (value <= 2010 && value >= 1990) {
+            return "Fault";
+        } else if (value <= 1010 && value >= 990) {
+            return "S/C"
+        } else if (value <= 220 && value >= -40) {
+            return String(value);
+        } else {
+            return "Und.";
+        }
+    }
     
     async function postResponse(body, url) {
         const res = await new Promise((resolve, reject) => {
