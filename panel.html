@@ -250,8 +250,8 @@
         <div class="dashboard-item">
             <header>Time (sec)</header>
                 <div>
-                    <p>Time brfore AR:</p>
-                    <progress value="0" max="100"></progress> <span id="time-before-ar-string"> Off</span>
+                    <p>Time before AR:</p>
+                    <progress id="time-before-ar-bar" value="0" max="900"></progress> <span id="time-before-ar-string"> Off</span>
                 </div>
                 <ul>
                     <li>Startup time: <span id="startup-time-value">0</span> sec</li>
@@ -445,6 +445,10 @@
 
         const analogInputValue = await regValues(126, 1);
         document.querySelector("#analog-input-value").innerHTML = (analogInputValue.ok[0] * 0.1).toFixed(1);
+
+        const timeBeforeArValue = await regValues(130, 1);
+        document.querySelector("#time-before-ar-string").innerHTML = timeBeforeArValue.ok[0] > 0 ? timeBeforeArValue.ok[0].toString() : "Off";
+        document.querySelector("#time-before-ar-bar").value = timeBeforeArValue.ok[0];
     }
 
     updateVis();
