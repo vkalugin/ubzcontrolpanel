@@ -403,9 +403,9 @@
         document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageValues.ok[0];
         document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageValues.ok[1];
         document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageValues.ok[2];
-        document.querySelector("#phase-1-voltage-bar").setAttribute("value", phaseRmsVoltageValues[0]);
-        document.querySelector("#phase-2-voltage-bar").setAttribute("value", phaseRmsVoltageValues[1]);
-        document.querySelector("#phase-3-voltage-bar").setAttribute("value", phaseRmsVoltageValues[2]);
+        document.querySelector("#phase-1-voltage-bar").value = phaseRmsVoltageValues.ok[0];//.setAttribute("value", phaseRmsVoltageValues[0]);
+        document.querySelector("#phase-2-voltage-bar").value = phaseRmsVoltageValues.ok[1];
+        document.querySelector("#phase-3-voltage-bar").value = phaseRmsVoltageValues.ok[2];
 
         const lineVoltageValues = await regValues(117, 3);
         document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageValues.ok[0];
