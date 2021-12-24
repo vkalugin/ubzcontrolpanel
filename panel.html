@@ -169,18 +169,18 @@
                 <div>
                     <p>Phase currents active values:</p>
                     <ul>
-                        <li>Phase1: <progress value="0" max="6300"></progress> <span id="phase-1-current-rms-value">0.0</span> A</li>
-                        <li>Phase2: <progress value="0" max="6300"></progress> <span id="phase-2-current-rms-value">0.0</span> A</li>
-                        <li>Phase3: <progress value="0" max="6300"></progress> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                        <li>Phase1: <progress id="phase-1-current-rms-bar" value="0" max="6300"></progress> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                        <li>Phase2: <progress id="phase-2-current-rms-bar" value="0" max="6300"></progress> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                        <li>Phase3: <progress id="phase-3-current-rms-bar" value="0" max="6300"></progress> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
                 <div>
                     <p>Negative sequence current:</p>
-                    <progress value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
+                    <progress id="negative-sequence-current-bar" value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
                 </div>
                 <div>
                     <p>Zero sequence current:</p>
-                    <progress value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
+                    <progress id="zero-sequence-current-bar" value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
                 </div>
 
                 <div>
@@ -236,7 +236,7 @@
                 <p>
                     Negative sequence voltage:
                     <div>
-                        <progress value="0" max="400"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
+                        <progress id="negative-sequence-voltage-bar" value="0" max="300"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
                     </div>
                 </p>
 
@@ -378,9 +378,13 @@
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[0] * 0.1).toFixed(1);
         document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[1] * 0.1).toFixed(1);
         document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[2] * 0.1).toFixed(1);
+        document.querySelector("#phase-1-current-rms-bar").value = phaseRmsCurrentValues.ok[0];
+        document.querySelector("#phase-2-current-rms-bar").value = phaseRmsCurrentValues.ok[1];
+        document.querySelector("#phase-3-current-rms-bar").value = phaseRmsCurrentValues.ok[2];
 
         const zeroSequenceCurrentValue = await regValues(103, 1);
         document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentValue.ok[0] * 0.1).toFixed(1);
+        document.querySelector("#zero-sequence-current-bar").value = zeroSequenceCurrentValue.ok[0];
 
         const currentAverageValues = await regValues(104, 3);
         document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageValues.ok[0] * 0.1).toFixed(1);
@@ -395,6 +399,7 @@
 
         const negativeSequenceCurrentValue = await regValues(113, 1);
         document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentValue.ok[0] * 0.1).toFixed(1);
+        document.querySelector("#negative-sequence-current-bar").value = negativeSequenceCurrentValue.ok[0];
 
         const currentAverageForTimeValue = await regValues(153, 1);
         document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeValue.ok[0];
@@ -420,6 +425,7 @@
 
         const negativeSequenceVoltageValue = await regValues(121, 1);
         document.querySelector("#negative-sequence-voltage-value").innerHTML = negativeSequenceVoltageValue.ok[0];
+        document.querySelector("#negative-sequence-voltage-bar").value = negativeSequenceVoltageValue.ok[0];
 
         const zeroSequenceVoltageValue = await regValues(122, 1);
         document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageValue.ok[0];
