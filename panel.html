@@ -63,7 +63,7 @@
                 <li>Motor relay</li>
             </ul>
             <p>Functional relay work mode</p>
-            <form>
+            <form id="functional-relay-work-mode-radio">
                 <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
                 <label for="radio-workmode-alarm">Alarm relay</label><br>
                 <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
@@ -373,6 +373,24 @@
         return res;
     }
 
+    async function writeRegValues(address, values) {
+        const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
+
+        const body = {
+            deviceModbusId: deviceInfo.modbusUnitId,
+            address: address,
+            kind: "holding",
+            value: values,
+            connection: {
+                kind: "net-id",
+                networkId: deviceInfo.netId,
+            }
+        }
+
+        const res = await postResponse(body, `${API_BASE_URL}/v1/raw/write-register-group/`);
+        return res;
+    }
+
     async function updateVis() {
         const phaseRmsCurrentValues = await regValues(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentValues.ok[0] * 0.1).toFixed(1);
@@ -449,6 +467,15 @@
         const timeBeforeArValue = await regValues(130, 1);
         document.querySelector("#time-before-ar-string").innerHTML = timeBeforeArValue.ok[0] > 0 ? timeBeforeArValue.ok[0].toString() : "Off";
         document.querySelector("#time-before-ar-bar").value = timeBeforeArValue.ok[0];
+
+        const relayWorkModeValue = await regValues(205, 1);
+        if (relayWorkModeValue.ok[0] == 0) {
+            document.querySelector("#radio-workmode-alarm").checked = true;
+        } else if (relayWorkModeValue.ok[0] == 1) {
+            document.querySelector("#radio-workmode-time").checked = true;
+        } else if (relayWorkModeValue.ok[0] == 2) {
+            document.querySelector("#radio-workmode-stardelta").checked = true;
+        }
     }
 
     updateVis();
