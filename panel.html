@@ -279,6 +279,9 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
+                        <span id="power-show-value-1">
+                            -
+                        </span>
                     </li>
                     <li>
                         <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
@@ -298,6 +301,9 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
+                        <span id="power-show-value-2">
+                            -
+                        </span>
                     </li>
                     <li>
                         <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
@@ -317,6 +323,9 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
+                        <span id="power-show-value-3">
+                            -
+                        </span>
                     </li>
                 </ul>
         </div>
@@ -491,6 +500,18 @@
 
     document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
         console.log(await writeRegValues(205, [2]));
+    })
+
+    document.querySelector("#power-characteristic-value-1").addEventListener("change", function () {
+        console.log("changed field 1");
+    })
+
+    document.querySelector("#power-characteristic-value-2").addEventListener("change", function () {
+        console.log("changed field 2");
+    })
+
+    document.querySelector("#power-characteristic-value-3").addEventListener("change", function () {
+        console.log("changed field 3");
     })
 
     function temperatureSensorReadable(value) {
