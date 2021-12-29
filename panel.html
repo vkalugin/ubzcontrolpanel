@@ -474,8 +474,19 @@
         document.querySelector("#analog-input-value").innerHTML = (analogInputValue.ok[0] * 0.1).toFixed(1);
 
         const timeBeforeArValue = await regValues(130, 1);
-        document.querySelector("#time-before-ar-string").innerHTML = timeBeforeArValue.ok[0] > 0 ? timeBeforeArValue.ok[0].toString() : "Off";
-        document.querySelector("#time-before-ar-bar").value = timeBeforeArValue.ok[0];
+        if (timeBeforeArValue.ok[0] == 0) {
+            document.querySelector("#time-before-ar-string").innerHTML = "Off";
+            document.querySelector("#time-before-ar-bar").value = 0;
+        } else if (timeBeforeArValue.ok[0] > 0 && timeBeforeArValue.ok[0] <= 900) {
+            document.querySelector("#time-before-ar-string").innerHTML = timeBeforeArValue.ok[0].toString();
+            document.querySelector("#time-before-ar-bar").value = timeBeforeArValue.ok[0];
+        } else if (timeBeforeArValue.ok[0] == 950) {
+            document.querySelector("#time-before-ar-string").innerHTML = "No AR";
+            document.querySelector("#time-before-ar-bar").value = 0;
+        } else {
+            document.querySelector("#time-before-ar-string").innerHTML = "???";
+            document.querySelector("#time-before-ar-bar").value = 0;
+        }
 
         const relayWorkModeValue = await regValues(205, 1);
         if (relayWorkModeValue.ok[0] == 0) {
