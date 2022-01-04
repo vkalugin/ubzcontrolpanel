@@ -513,6 +513,10 @@
         console.log(await writeRegValues(205, [2]));
     })
 
+    function sinFromCos(cosValue) {
+        return Math.sqrt(1 - Math.pow(cosValue, 2));
+    }
+
     async function showPowerCharacteristicByKey(keystring) {
         var outstring = "Unknown";
         switch (keystring) {
@@ -533,55 +537,131 @@
                 outstring = reactivePower.toString();
                 break;
             case "phase-1-full-power":
-                const RMSVoltagePhase1Value = await regValues(114, 1);
-                const RMSVoltagePhase1 = RMSVoltagePhase1Value.ok[0];
-                const RMSCurrentPhase1Value = await regValues(100, 1);
-                const RMSCurrentPhase1 = RMSCurrentPhase1Value.ok[0] * 0.1;
-                const phase1FullPower = RMSVoltagePhase1Value * RMSCurrentPhase1;
-                outstring = phase1FullPower.toString();
+                {
+                    const RMSVoltagePhase1Value = await regValues(114, 1);
+                    const RMSVoltagePhase1 = RMSVoltagePhase1Value.ok[0];
+                    const RMSCurrentPhase1Value = await regValues(100, 1);
+                    const RMSCurrentPhase1 = RMSCurrentPhase1Value.ok[0] * 0.1;
+                    const phase1FullPower = RMSVoltagePhase1Value * RMSCurrentPhase1;
+                    outstring = phase1FullPower.toString();
+                }
                 break;
             case "phase-2-full-power":
-                const RMSVoltagePhase2Value = await regValues(115, 1);
-                const RMSVoltagePhase2 = RMSVoltagePhase2Value.ok[0];
-                const RMSCurrentPhase2Value = await regValues(101, 1);
-                const RMSCurrentPhase2 = RMSCurrentPhase2Value.ok[0] * 0.1;
-                const phase1FullPower = RMSVoltagePhase2Value * RMSCurrentPhase2;
-                outstring = phase1FullPower.toString();
+                {
+                    const RMSVoltagePhase2Value = await regValues(115, 1);
+                    const RMSVoltagePhase2 = RMSVoltagePhase2Value.ok[0];
+                    const RMSCurrentPhase2Value = await regValues(101, 1);
+                    const RMSCurrentPhase2 = RMSCurrentPhase2Value.ok[0] * 0.1;
+                    const phase2FullPower = RMSVoltagePhase2Value * RMSCurrentPhase2;
+                    outstring = phase2FullPower.toString();
+                }
                 break;
             case "phase-3-full-power":
-                const RMSVoltagePhase3Value = await regValues(116, 1);
-                const RMSVoltagePhase3 = RMSVoltagePhase3Value.ok[0];
-                const RMSCurrentPhase3Value = await regValues(102, 1);
-                const RMSCurrentPhase3 = RMSCurrentPhase3Value.ok[0] * 0.1;
-                const phase1FullPower = RMSVoltagePhase3Value * RMSCurrentPhase3;
-                outstring = phase1FullPower.toString();
+                {
+                    const RMSVoltagePhase3Value = await regValues(116, 1);
+                    const RMSVoltagePhase3 = RMSVoltagePhase3Value.ok[0];
+                    const RMSCurrentPhase3Value = await regValues(102, 1);
+                    const RMSCurrentPhase3 = RMSCurrentPhase3Value.ok[0] * 0.1;
+                    const phase3FullPower = RMSVoltagePhase3Value * RMSCurrentPhase3;
+                    outstring = phase3FullPower.toString();
+                }
                 break;
             case "phase-1-active-power":
+                {
+                    const RMSVoltagePhase1Value = await regValues(114, 1);
+                    const RMSVoltagePhase1 = RMSVoltagePhase1Value.ok[0];
+                    const RMSCurrentPhase1Value = await regValues(100, 1);
+                    const RMSCurrentPhase1 = RMSCurrentPhase1Value.ok[0] * 0.1;
+                    const cosPhiPhase1Value = await regValues(141, 1);
+                    const cosPhiPhase1 = cosPhiPhase1Value.ok[0] * 0.001;
+                    const phase1activePower = RMSVoltagePhase1Value * RMSCurrentPhase1 * cosPhiPhase1;
+                    outstring = phase1activePower.toString();
+                }
                 break;
             case "phase-2-active-power":
+                {
+                    const RMSVoltagePhase2Value = await regValues(115, 1);
+                    const RMSVoltagePhase2 = RMSVoltagePhase2Value.ok[0];
+                    const RMSCurrentPhase2Value = await regValues(101, 1);
+                    const RMSCurrentPhase2 = RMSCurrentPhase2Value.ok[0] * 0.1;
+                    const cosPhiPhase2Value = await regValues(143, 1);
+                    const cosPhiPhase2 = cosPhiPhase2Value.ok[0] * 0.001;
+                    const phase2activePower = RMSVoltagePhase2Value * RMSCurrentPhase2 * cosPhiPhase2;
+                    outstring = phase2activePower.toString();
+                }
                 break;
             case "phase-3-active-power":
+               {
+                    const RMSVoltagePhase3Value = await regValues(116, 1);
+                    const RMSVoltagePhase3 = RMSVoltagePhase3Value.ok[0];
+                    const RMSCurrentPhase3Value = await regValues(102, 1);
+                    const RMSCurrentPhase3 = RMSCurrentPhase3Value.ok[0] * 0.1;
+                    const cosPhiPhase3Value = await regValues(145, 1);
+                    const cosPhiPhase3 = cosPhiPhase3Value.ok[0] * 0.001;
+                    const phase3activePower = RMSVoltagePhase3Value * RMSCurrentPhase3 * cosPhiPhase3;
+                    outstring = phase3activePower.toString();
+                }
                 break;
             case "phase-1-reactive-power":
+                {
+                    const RMSVoltagePhase1Value = await regValues(114, 1);
+                    const RMSVoltagePhase1 = RMSVoltagePhase1Value.ok[0];
+                    const RMSCurrentPhase1Value = await regValues(100, 1);
+                    const RMSCurrentPhase1 = RMSCurrentPhase1Value.ok[0] * 0.1;
+                    const cosPhiPhase1Value = await regValues(141, 1);
+                    const cosPhiPhase1 = cosPhiPhase1Value.ok[0] * 0.001;
+                    const sinPhiPhase1 = sinFromCos(cosPhiPhase1);
+                    const phase1reactivePower = RMSVoltagePhase1Value * RMSCurrentPhase1 * sinPhiPhase1;
+                    outstring = phase1reactivePower.toString();
+                }
+                
                 break;
             case "phase-2-reactive-power":
+                {
+                    const RMSVoltagePhase2Value = await regValues(115, 1);
+                    const RMSVoltagePhase2 = RMSVoltagePhase2Value.ok[0];
+                    const RMSCurrentPhase2Value = await regValues(101, 1);
+                    const RMSCurrentPhase2 = RMSCurrentPhase2Value.ok[0] * 0.1;
+                    const cosPhiPhase2Value = await regValues(143, 1);
+                    const cosPhiPhase2 = cosPhiPhase2Value.ok[0] * 0.001;
+                    const sinPhiPhase2 = sinFromCos(cosPhiPhase2);
+                    const phase2reactivePower = RMSVoltagePhase2Value * RMSCurrentPhase2 * sinPhiPhase2;
+                    outstring = phase2reactivePower.toString();
+                }
                 break;
             case "phase-3-reactive-power":
+                {
+                    const RMSVoltagePhase3Value = await regValues(116, 1);
+                    const RMSVoltagePhase3 = RMSVoltagePhase3Value.ok[0];
+                    const RMSCurrentPhase3Value = await regV3lues(102, 1);
+                    const RMSCurrentPhase3 = RMSCurrentPhase3Value.ok[0] * 0.1;
+                    const cosPhiPhase3Value = await regValue3(145, 1);
+                    const cosPhiPhase3 = cosPhiPhase3Value.ok[0] * 0.001;
+                    const sinPhiPhase3 = sinFromCos(cosPhiPhase3);
+                    const phase3reactivePower = RMSVoltagePhase3Value * RMSCurrentPhase3 * sinPhiPhase3;
+                    outstring = phase3reactivePower.toString();
+                }
                 break;
             case "phase-1-cos-phi":
-                const cosPhiPhase1Value = await regValues(141, 1);
-                const cosPhiPhase1 = cosPhiPhase1Value.ok[0] * 0.001;
-                outstring = cosPhiPhase1.toString();
+                {
+                    const cosPhiPhase1Value = await regValues(141, 1);
+                    const cosPhiPhase1 = cosPhiPhase1Value.ok[0] * 0.001;
+                    outstring = cosPhiPhase1.toFixed(3);
+                }
                 break;
             case "phase-2-cos-phi":
-                const cosPhiPhase2Value = await regValues(143, 1);
-                const cosPhiPhase2 = cosPhiPhase2Value.ok[0] * 0.001;
-                outstring = cosPhiPhase2.toString();
+                {
+                    const cosPhiPhase2Value = await regValues(143, 1);
+                    const cosPhiPhase2 = cosPhiPhase2Value.ok[0] * 0.001;
+                    outstring = cosPhiPhase2.toFixed(3);
+                }
                 break;
             case "phase-3-cos-phi":
-                const cosPhiPhase3Value = await regValues(145, 1);
-                const cosPhiPhase3 = cosPhiPhase3Value.ok[0] * 0.001;
-                outstring = cosPhiPhase3.toString();
+                {
+                    const cosPhiPhase3Value = await regValues(145, 1);
+                    const cosPhiPhase3 = cosPhiPhase3Value.ok[0] * 0.001;
+                    outstring = cosPhiPhase3.toFixed(3);
+                }
                 break;
         }
         return outstring;
