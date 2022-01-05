@@ -496,6 +496,25 @@
         } else if (relayWorkModeValue.ok[0] == 2) {
             document.querySelector("#radio-workmode-stardelta").checked = true;
         }
+
+        const startupTimeValue = await regValues(111, 1); // 111??
+        document.querySelector("#startup-time-value").innerHTML = startupTimeValue.ok[0];
+
+        const transferRateValue = await regValues(213, 1);
+        switch (transferRateValue.ok[0]) {
+            case 0: {
+                document.querySelector("#speed-value").innerHTML = "9600";
+            }
+            break;
+            case 1: {
+                document.querySelector("#speed-value").innerHTML = "19200";
+            }
+            break;
+            default: {
+                document.querySelector("#speed-value").innerHTML = "Incorrect register value";
+            }
+            break;
+        }
     }
 
     updateVis();
@@ -521,20 +540,26 @@
         var outstring = "Unknown";
         switch (keystring) {
             case "full-power":
-                const fullPowerValue = await regValues(135, 1);
-                console.log(fullPowerValue);
-                const fullPower = fullPowerValue.ok[0] * 0.01;
-                outstring = fullPower.toString();
+                {
+                    const fullPowerValue = await regValues(135, 1);
+                    console.log(fullPowerValue);
+                    const fullPower = fullPowerValue.ok[0] * 0.01;
+                    outstring = fullPower.toString();
+                }
                 break;
             case "active-power":
-                const activePowerValue = await regValues(137, 1);
-                const activePower = activePowerValue.ok[0] * 0.01;
-                outstring = activePower.toString();
+                {
+                    const activePowerValue = await regValues(137, 1);
+                    const activePower = activePowerValue.ok[0] * 0.01;
+                    outstring = activePower.toString();
+                }
                 break;
             case "reactive-power":
-                const reactivePowerValue = await regValues(139, 1);
-                const reactivePower = reactivePowerValue.ok[0] * 0.01;
-                outstring = reactivePower.toString();
+                {
+                    const reactivePowerValue = await regValues(139, 1);
+                    const reactivePower = reactivePowerValue.ok[0] * 0.01;
+                    outstring = reactivePower.toString();
+                }
                 break;
             case "phase-1-full-power":
                 {
