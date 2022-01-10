@@ -517,7 +517,7 @@
         }
     }
 
-    updateVis();
+    setInterval(updateVis, 1000);
 
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
