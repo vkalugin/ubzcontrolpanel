@@ -662,7 +662,7 @@
                     const cosPhiPhase3Raw = await regValue3(145, 1);
                     const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
                     const sinPhiPhase3 = sinFromCos(cosPhiPhase3);
-                    const phase3reactivePower = RMSVoltagePhase3Value * RMSCurrentPhase3 * sinPhiPhase3;
+                    const phase3reactivePower = RMSVoltagePhase3 * RMSCurrentPhase3 * sinPhiPhase3;
                     outstring = phase3reactivePower.toString();
                 }
                 break;
