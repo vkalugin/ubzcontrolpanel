@@ -521,15 +521,15 @@
 
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
-        console.log(await writeRegValues(205, [0]));
+        await writeRegValues(205, [0]);
     })
 
     document.querySelector("#radio-workmode-time").addEventListener("click", async function () {
-        console.log(await writeRegValues(205, [1]));
+        await writeRegValues(205, [1]);
     })
 
     document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
-        console.log(await writeRegValues(205, [2]));
+        await writeRegValues(205, [2]);
     })
 
     function sinFromCos(cosValue) {
@@ -542,7 +542,6 @@
             case "full-power":
                 {
                     const fullPowerValue = await regValues(135, 1);
-                    console.log(fullPowerValue);
                     const fullPower = fullPowerValue.ok[0] * 0.01;
                     outstring = fullPower.toString();
                 }
@@ -693,19 +692,16 @@
     }
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
-        console.log("changed field 1");
         const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
         document.querySelector("#power-show-value-1").innerHTML = outstring;
     })
 
     document.querySelector("#power-characteristic-value-2").addEventListener("change", async function () {
-        console.log("changed field 2");
         const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
         document.querySelector("#power-show-value-2").innerHTML = outstring;
     })
 
     document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
-        console.log("changed field 3");
         const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
         document.querySelector("#power-show-value-3").innerHTML = outstring;
     })
