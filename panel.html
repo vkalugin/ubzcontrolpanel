@@ -339,6 +339,7 @@
                     <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
+                <button id="save-file-button">Save file</button>
         </div>
     </div>
 </div>
@@ -660,7 +661,6 @@
                     const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * sinPhiPhase1;
                     outstring = phase1reactivePower.toString();
                 }
-                
                 break;
             case "phase-2-reactive-power":
                 {
@@ -726,6 +726,16 @@
     document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
         const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
         document.querySelector("#power-show-value-3").innerHTML = outstring;
+    })
+
+    document.querySelector("#save-file-button").addEventListener("click", function () {
+        console.log("aaa");
+        const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
+        const hiddenEl = document.createElement("a");
+        hiddenEl.href = url;
+        hiddenEl.target = "_blank";
+        hiddenEl.download = "Overvis";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
+        hiddenEl.click();
     })
 
     function temperatureSensorReadable(value) {
