@@ -26,6 +26,30 @@
         border: 1px solid lightslategrey;
     }
 
+    #fault-indicator {
+        background-color: crimson;
+        border-style: none;
+    }
+
+    #ext-in-indicator {
+        background-color: darkgoldenrod;
+        border-style: none;
+    }
+
+    #ar-indicator {
+        background-color: green;
+        border-style: none;
+    }
+
+    #rc-indicator {
+        background-color: dodgerblue;
+        border-style: none;
+    }
+
+    #reset-fault-button {
+        background-color: navajowhite;
+    }
+
     @media only screen and (max-device-width: 1100px) {
         .dashboard-container {
             display: grid;
@@ -75,11 +99,11 @@
         <div class="dashboard-item">
             <div>
                 <header>UBZ Fault Status</header>
-                <img src="svgs/fault.svg">
-                <img src="svgs/ext_in.svg">
-                <img src="svgs/ar.svg">
-                <img src="svgs/rc.svg">
-                <button><img src="svgs/reset_fault.svg"></button>
+                <button id="fault-indicator" disabled>Fault</button>
+                <button id="ext-in-indicator" disabled>Ext. in.</button>
+                <button id="ar-indicator" disabled>AR</button>
+                <button id="rc-indicator" disabled>RC</button>
+                <button id="reset-fault-button">Reset Fault</button>
             </div>
             <div>
                 <table id="faults-table">
