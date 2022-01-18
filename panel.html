@@ -425,6 +425,17 @@
         return res;
     }
 
+    async function readRawBit(address, bitPosition) {
+        if (bitPosition < 0 || bitPosition > 15) {
+            console.log("can't process the bit position");
+            return NaN;
+        }
+        const rawReg = await regValues(address, 1);
+        const regContents = rawReg.ok[0];
+        const bitValue = (regContents >> bitPosition) & 1;
+        return bitValue;
+    }
+
     async function updateVis() {
         const phaseRmsCurrentRaw = await regValues(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
@@ -557,10 +568,28 @@
         }
     }
 
+    async function processFaultIndicator() {
+        if (await readRawBit(240, 0) != 1) {
+            return;
+        }
+
+        let lighten = false;
+
+        setInterval(async function() {
+            if (lighten) {
+                document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
+            } else {
+                document.querySelector("#fault-indicator").style.backgroundColor = "crimson";
+            }
+            lighten = !lighten;
+        }, 1000);
+    }
+
     var firstRun = false;
     if (!firstRun) {
         initElements();
         updateVis();
+        processFaultIndicator();
         firstRun = false;
     } else {
         setInterval(updateVis, 10000);
