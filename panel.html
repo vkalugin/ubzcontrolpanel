@@ -389,7 +389,7 @@
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
     
-    async function regValues(address, registersNum) {
+    async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
         const body = {
@@ -430,14 +430,14 @@
             console.log("can't process the bit position");
             return NaN;
         }
-        const rawReg = await regValues(address, 1);
+        const rawReg = await rawReadRegs(address, 1);
         const regContents = rawReg.ok[0];
         const bitValue = (regContents >> bitPosition) & 1;
         return bitValue;
     }
 
     async function updateVis() {
-        const phaseRmsCurrentRaw = await regValues(100, 3);
+        const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
         document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[1] * 0.1).toFixed(1);
         document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[2] * 0.1).toFixed(1);
@@ -445,29 +445,29 @@
         document.querySelector("#phase-2-current-rms-bar").value = phaseRmsCurrentRaw.ok[1];
         document.querySelector("#phase-3-current-rms-bar").value = phaseRmsCurrentRaw.ok[2];
 
-        const zeroSequenceCurrentRaw = await regValues(103, 1);
+        const zeroSequenceCurrentRaw = await rawReadRegs(103, 1);
         document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
         document.querySelector("#zero-sequence-current-bar").value = zeroSequenceCurrentRaw.ok[0];
 
-        const currentAverageRaw = await regValues(104, 3);
+        const currentAverageRaw = await rawReadRegs(104, 3);
         document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageRaw.ok[0] * 0.1).toFixed(1);
         document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAverageRaw.ok[1] * 0.1).toFixed(1);
         document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAverageRaw.ok[2] * 0.1).toFixed(1); 
 
-        const motorStartCurrentRaw = await regValues(110, 1);
+        const motorStartCurrentRaw = await rawReadRegs(110, 1);
         document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentRaw.ok[0] * 0.1).toFixed(1);
 
-        const overloadCurrentRaw = await regValues(112, 1);
+        const overloadCurrentRaw = await rawReadRegs(112, 1);
         document.querySelector("#overload-current-value").innerHTML = (overloadCurrentRaw.ok[0] * 0.1).toFixed(1);
 
-        const negativeSequenceCurrentRaw = await regValues(113, 1);
+        const negativeSequenceCurrentRaw = await rawReadRegs(113, 1);
         document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
         document.querySelector("#negative-sequence-current-bar").value = negativeSequenceCurrentRaw.ok[0];
 
-        const currentAverageForTimeRaw = await regValues(153, 1);
+        const currentAverageForTimeRaw = await rawReadRegs(153, 1);
         document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeRaw.ok[0];
 
-        const phaseRmsVoltageRaw = await regValues(114, 3);
+        const phaseRmsVoltageRaw = await rawReadRegs(114, 3);
         document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[0];
         document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[1];
         document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[2];
@@ -475,7 +475,7 @@
         document.querySelector("#phase-2-voltage-bar").value = phaseRmsVoltageRaw.ok[1];
         document.querySelector("#phase-3-voltage-bar").value = phaseRmsVoltageRaw.ok[2];
 
-        const lineVoltageRaw = await regValues(117, 3);
+        const lineVoltageRaw = await rawReadRegs(117, 3);
         document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageRaw.ok[0];
         document.querySelector("#line-2-voltage-value").innerHTML = lineVoltageRaw.ok[1];
         document.querySelector("#line-3-voltage-value").innerHTML = lineVoltageRaw.ok[2];
@@ -483,33 +483,33 @@
         document.querySelector("#line-2-voltage-bar").value = lineVoltageRaw.ok[1];
         document.querySelector("#line-3-voltage-bar").value = lineVoltageRaw.ok[2];
 
-        const positiveSequenceVoltageRaw = await regValues(120, 1);
+        const positiveSequenceVoltageRaw = await rawReadRegs(120, 1);
         document.querySelector("#positive-sequence-voltage-value").innerHTML = positiveSequenceVoltageRaw.ok[0];
 
-        const negativeSequenceVoltageRaw = await regValues(121, 1);
+        const negativeSequenceVoltageRaw = await rawReadRegs(121, 1);
         document.querySelector("#negative-sequence-voltage-value").innerHTML = negativeSequenceVoltageRaw.ok[0];
         document.querySelector("#negative-sequence-voltage-bar").value = negativeSequenceVoltageRaw.ok[0];
 
-        const zeroSequenceVoltageRaw = await regValues(122, 1);
+        const zeroSequenceVoltageRaw = await rawReadRegs(122, 1);
         document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageRaw.ok[0];
 
-        const sensorTemperatureRaw = await regValues(123, 2);
+        const sensorTemperatureRaw = await rawReadRegs(123, 2);
         document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[0]);
         document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[1]);
 
-        const frequencyRaw = await regValues(128, 1);
+        const frequencyRaw = await rawReadRegs(128, 1);
         document.querySelector("#frequency-value").innerHTML = (frequencyRaw.ok[0] * 0.1).toFixed(1);
 
-        const insulationResistanceRaw = await regValues(132, 1);
+        const insulationResistanceRaw = await rawReadRegs(132, 1);
         document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceRaw.ok[0] * 0.1).toFixed(1);
 
-        const currentInputRaw = await regValues(125, 1);
+        const currentInputRaw = await rawReadRegs(125, 1);
         document.querySelector("#current-input-value").innerHTML = (currentInputRaw.ok[0] * 0.01).toFixed(2);
 
-        const analogInputRaw = await regValues(126, 1);
+        const analogInputRaw = await rawReadRegs(126, 1);
         document.querySelector("#analog-input-value").innerHTML = (analogInputRaw.ok[0] * 0.1).toFixed(1);
 
-        const timeBeforeArRaw = await regValues(130, 1);
+        const timeBeforeArRaw = await rawReadRegs(130, 1);
         if (timeBeforeArRaw.ok[0] == 0) {
             document.querySelector("#time-before-ar-string").innerHTML = "Off";
             document.querySelector("#time-before-ar-bar").value = 0;
@@ -524,7 +524,7 @@
             document.querySelector("#time-before-ar-bar").value = 0;
         }
 
-        const relayWorkModeRaw = await regValues(205, 1);
+        const relayWorkModeRaw = await rawReadRegs(205, 1);
         if (relayWorkModeRaw.ok[0] == 0) {
             document.querySelector("#radio-workmode-alarm").checked = true;
         } else if (relayWorkModeRaw.ok[0] == 1) {
@@ -533,10 +533,10 @@
             document.querySelector("#radio-workmode-stardelta").checked = true;
         }
 
-        const startupTimeRaw = await regValues(111, 1); // 111??
+        const startupTimeRaw = await rawReadRegs(111, 1); // 111??
         document.querySelector("#startup-time-value").innerHTML = startupTimeRaw.ok[0];
 
-        const transferRateRaw = await regValues(213, 1);
+        const transferRateRaw = await rawReadRegs(213, 1);
         switch (transferRateRaw.ok[0]) {
             case 0: {
                 document.querySelector("#speed-value").innerHTML = "9600";
@@ -617,30 +617,30 @@
         switch (keystring) {
             case "full-power":
                 {
-                    const fullPowerRaw = await regValues(135, 1);
+                    const fullPowerRaw = await rawReadRegs(135, 1);
                     const fullPower = fullPowerRaw.ok[0] * 0.01;
                     outstring = fullPower.toString();
                 }
                 break;
             case "active-power":
                 {
-                    const activePowerRaw = await regValues(137, 1);
+                    const activePowerRaw = await rawReadRegs(137, 1);
                     const activePower = activePowerRaw.ok[0] * 0.01;
                     outstring = activePower.toString();
                 }
                 break;
             case "reactive-power":
                 {
-                    const reactivePowerRaw = await regValues(139, 1);
+                    const reactivePowerRaw = await rawReadRegs(139, 1);
                     const reactivePower = reactivePowerRaw.ok[0] * 0.01;
                     outstring = reactivePower.toString();
                 }
                 break;
             case "phase-1-full-power":
                 {
-                    const RMSVoltagePhase1Raw = await regValues(114, 1);
+                    const RMSVoltagePhase1Raw = await rawReadRegs(114, 1);
                     const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok[0];
-                    const RMSCurrentPhase1Raw = await regValues(100, 1);
+                    const RMSCurrentPhase1Raw = await rawReadRegs(100, 1);
                     const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok[0] * 0.1;
                     const phase1FullPower = RMSVoltagePhase1 * RMSCurrentPhase1;
                     outstring = phase1FullPower.toString();
@@ -648,9 +648,9 @@
                 break;
             case "phase-2-full-power":
                 {
-                    const RMSVoltagePhase2Raw = await regValues(115, 1);
+                    const RMSVoltagePhase2Raw = await rawReadRegs(115, 1);
                     const RMSVoltagePhase2 = RMSVoltagePhase2Raw.ok[0];
-                    const RMSCurrentPhase2Raw = await regValues(101, 1);
+                    const RMSCurrentPhase2Raw = await rawReadRegs(101, 1);
                     const RMSCurrentPhase2 = RMSCurrentPhase2Raw.ok[0] * 0.1;
                     const phase2FullPower = RMSVoltagePhase2 * RMSCurrentPhase2;
                     outstring = phase2FullPower.toString();
@@ -658,9 +658,9 @@
                 break;
             case "phase-3-full-power":
                 {
-                    const RMSVoltagePhase3Raw = await regValues(116, 1);
+                    const RMSVoltagePhase3Raw = await rawReadRegs(116, 1);
                     const RMSVoltagePhase3 = RMSVoltagePhase3Raw.ok[0];
-                    const RMSCurrentPhase3Raw = await regValues(102, 1);
+                    const RMSCurrentPhase3Raw = await rawReadRegs(102, 1);
                     const RMSCurrentPhase3 = RMSCurrentPhase3Raw.ok[0] * 0.1;
                     const phase3FullPower = RMSVoltagePhase3 * RMSCurrentPhase3;
                     outstring = phase3FullPower.toString();
@@ -668,11 +668,11 @@
                 break;
             case "phase-1-active-power":
                 {
-                    const RMSVoltagePhase1Raw = await regValues(114, 1);
+                    const RMSVoltagePhase1Raw = await rawReadRegs(114, 1);
                     const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok[0];
-                    const RMSCurrentPhase1Raw = await regValues(100, 1);
+                    const RMSCurrentPhase1Raw = await rawReadRegs(100, 1);
                     const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok[0] * 0.1;
-                    const cosPhiPhase1Raw = await regValues(141, 1);
+                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
                     const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
                     const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * cosPhiPhase1;
                     outstring = phase1activePower.toString();
@@ -680,11 +680,11 @@
                 break;
             case "phase-2-active-power":
                 {
-                    const RMSVoltagePhase2Raw = await regValues(115, 1);
+                    const RMSVoltagePhase2Raw = await rawReadRegs(115, 1);
                     const RMSVoltagePhase2 = RMSVoltagePhase2Raw.ok[0];
-                    const RMSCurrentPhase2Raw = await regValues(101, 1);
+                    const RMSCurrentPhase2Raw = await rawReadRegs(101, 1);
                     const RMSCurrentPhase2 = RMSCurrentPhase2Raw.ok[0] * 0.1;
-                    const cosPhiPhase2Raw = await regValues(143, 1);
+                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
                     const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
                     const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * cosPhiPhase2;
                     outstring = phase2activePower.toString();
@@ -692,11 +692,11 @@
                 break;
             case "phase-3-active-power":
                {
-                    const RMSVoltagePhase3Raw = await regValues(116, 1);
+                    const RMSVoltagePhase3Raw = await rawReadRegs(116, 1);
                     const RMSVoltagePhase3 = RMSVoltagePhase3Raw.ok[0];
-                    const RMSCurrentPhase3Raw = await regValues(102, 1);
+                    const RMSCurrentPhase3Raw = await rawReadRegs(102, 1);
                     const RMSCurrentPhase3 = RMSCurrentPhase3Raw.ok[0] * 0.1;
-                    const cosPhiPhase3Raw = await regValues(145, 1);
+                    const cosPhiPhase3Raw = await rawReadRegs(145, 1);
                     const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
                     const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * cosPhiPhase3;
                     outstring = phase3activePower.toString();
@@ -704,11 +704,11 @@
                 break;
             case "phase-1-reactive-power":
                 {
-                    const RMSVoltagePhase1Raw = await regValues(114, 1);
+                    const RMSVoltagePhase1Raw = await rawReadRegs(114, 1);
                     const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok[0];
-                    const RMSCurrentPhase1Raw = await regValues(100, 1);
+                    const RMSCurrentPhase1Raw = await rawReadRegs(100, 1);
                     const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok[0] * 0.1;
-                    const cosPhiPhase1Raw = await regValues(141, 1);
+                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
                     const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
                     const sinPhiPhase1 = sinFromCos(cosPhiPhase1);
                     const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * sinPhiPhase1;
@@ -717,11 +717,11 @@
                 break;
             case "phase-2-reactive-power":
                 {
-                    const RMSVoltagePhase2Raw = await regValues(115, 1);
+                    const RMSVoltagePhase2Raw = await rawReadRegs(115, 1);
                     const RMSVoltagePhase2 = RMSVoltagePhase2Raw.ok[0];
-                    const RMSCurrentPhase2Raw = await regValues(101, 1);
+                    const RMSCurrentPhase2Raw = await rawReadRegs(101, 1);
                     const RMSCurrentPhase2 = RMSCurrentPhase2Raw.ok[0] * 0.1;
-                    const cosPhiPhase2Raw = await regValues(143, 1);
+                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
                     const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
                     const sinPhiPhase2 = sinFromCos(cosPhiPhase2);
                     const phase2reactivePower = RMSVoltagePhase2 * RMSCurrentPhase2 * sinPhiPhase2;
@@ -730,7 +730,7 @@
                 break;
             case "phase-3-reactive-power":
                 {
-                    const RMSVoltagePhase3Raw = await regValues(116, 1);
+                    const RMSVoltagePhase3Raw = await rawReadRegs(116, 1);
                     const RMSVoltagePhase3 = RMSVoltagePhase3Raw.ok[0];
                     const RMSCurrentPhase3Raw = await regV3lues(102, 1);
                     const RMSCurrentPhase3 = RMSCurrentPhase3Raw.ok[0] * 0.1;
@@ -743,21 +743,21 @@
                 break;
             case "phase-1-cos-phi":
                 {
-                    const cosPhiPhase1Raw = await regValues(141, 1);
+                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
                     const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
                     outstring = cosPhiPhase1.toFixed(3);
                 }
                 break;
             case "phase-2-cos-phi":
                 {
-                    const cosPhiPhase2Raw = await regValues(143, 1);
+                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
                     const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
                     outstring = cosPhiPhase2.toFixed(3);
                 }
                 break;
             case "phase-3-cos-phi":
                 {
-                    const cosPhiPhase3Raw = await regValues(145, 1);
+                    const cosPhiPhase3Raw = await rawReadRegs(145, 1);
                     const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
                     outstring = cosPhiPhase3.toFixed(3);
                 }
