@@ -378,11 +378,9 @@
 
 
 <script type="text/javascript">
-    var canvas = document.getElementById("heating-graph");
+    var canvas = document.querySelector("#heating-graph");
     var ctx = canvas.getContext("2d");
     ctx.font = "16px Droid Sans";
-    ctx.strokeStyle = "green";
-    ctx.strokeText("Graph here", 20, 20);
     
     const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
@@ -585,10 +583,32 @@
         }, 1000);
     }
 
+    const Y100 = canvas.height * 0.1;
+    const Y66 = canvas.height * 0.3;
+
+    function drawGraph() {
+        ctx.beginPath();
+
+        ctx.strokeStyle = "crimson";
+        ctx.lineWidth = 1;
+        ctx.moveTo(0, Y100);
+        ctx.lineTo(canvas.width, Y100);
+        ctx.stroke();
+        ctx.strokeText("100%", Y100, Y100);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "dodgerblue";
+        ctx.moveTo(0, Y66);
+        ctx.lineTo(canvas.width, Y66);
+        ctx.stroke();
+        ctx.strokeText("66%", Y100, Y66);
+    }
+
     var firstRun = false;
     if (!firstRun) {
         initElements();
         updateVis();
+        drawGraph();
         processFaultIndicator();
         firstRun = false;
     } else {
