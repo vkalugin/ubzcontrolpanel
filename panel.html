@@ -17,6 +17,16 @@
         margin: 5px;
     }
 
+    .status-indicator {
+        display: inline-block;
+        background-color: darkgreen;
+        height: 1em;
+        width: 1em;
+        border-radius: 50%;
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -81,11 +91,9 @@
     <div class="dashboard-container">
         <div class="dashboard-item">
             <header>UBZ Status</header>
-            <ul>
-                <li>MMSP</li>
-                <li>Functional relay</li>
-                <li>Motor relay</li>
-            </ul>
+            <div><span class="status-indicator"></span>MMSP</div>
+            <div><span class="status-indicator"></span>Functional relay</div>
+            <div><span class="status-indicator"></span>Motor relay</div>
             <p>Functional relay work mode</p>
             <form id="functional-relay-work-mode-radio">
                 <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
