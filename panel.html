@@ -443,7 +443,8 @@
     }
 
     async function updateVis() {
-        processUbzStatuses();
+        await processUbzStatuses();
+        await processArIndicator();
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
@@ -620,6 +621,17 @@
             }
             lighten = !lighten;
         }, 1000);
+    }
+
+    async function processArIndicator() {
+        const INDICATOR_LIT = "lightgreen";
+        const INDICATOR_DIM = "green";
+        const arStatusRaw = await rawReadRegs(203, 1);
+        if (arStatusRaw.ok[0] == 2) {
+            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
+        }
     }
 
     const Y100 = canvas.height * 0.1;
