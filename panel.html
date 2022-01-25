@@ -445,6 +445,7 @@
     async function updateVis() {
         await processUbzStatuses();
         await processArIndicator();
+        await processRcIndicator();
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
@@ -631,6 +632,19 @@
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
         } else {
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
+        }
+    }
+
+    async function processRcIndicator() {
+        const INDICATOR_LIT = "lightcyan";
+        const INDICATOR_DIM = "dodgerblue";
+        const PROHIBITED = 0;
+
+        const remoteRaw = await rawReadRegs(221, 1);
+        if (remoteRaw.ok[0] != PROHIBITED) {
+            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
         }
     }
 
