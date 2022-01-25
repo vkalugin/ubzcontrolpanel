@@ -91,9 +91,9 @@
     <div class="dashboard-container">
         <div class="dashboard-item">
             <header>UBZ Status</header>
-            <div><span class="status-indicator"></span>MMSP</div>
-            <div><span class="status-indicator"></span>Functional relay</div>
-            <div><span class="status-indicator"></span>Motor relay</div>
+            <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
+            <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
+            <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
             <p>Functional relay work mode</p>
             <form id="functional-relay-work-mode-radio">
                 <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
@@ -431,18 +431,20 @@
         return res;
     }
 
-    async function readRawBit(address, bitPosition) {
+    async function readBit(address, bitPosition) {
         if (bitPosition < 0 || bitPosition > 15) {
             console.log("can't process the bit position");
             return NaN;
         }
         const rawReg = await rawReadRegs(address, 1);
         const regContents = rawReg.ok[0];
-        const bitValue = (regContents >> bitPosition) & 1;
+        const bitValue = (regContents >>> bitPosition) & 1;
         return bitValue;
     }
 
     async function updateVis() {
+        processUbzStatuses();
+
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
         document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[1] * 0.1).toFixed(1);
@@ -574,8 +576,37 @@
         }
     }
 
+    async function processUbzStatuses() {
+        const mmspModeRaw = await rawReadRegs(202, 1);
+
+        const LOAD_REALY_BIT = 1;
+        const FUNCTIONAL_RELAY_BIT = 2;
+        const CLOSED = 1;
+
+        const LED_LIT = "lightgreen";
+        const LED_DIM = "darkgreen";
+
+        if (mmspModeRaw.ok[0] == 1) {
+            document.querySelector("#mmsp-mode").style.backgroundColor = LED_LIT;
+        } else {
+            document.querySelector("#mmsp-mode").style.backgroundColor = LED_DIM;
+        }
+
+        if (await readBit(240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
+            document.querySelector("#functional-relay-mode").style.backgroundColor = LED_LIT;
+        } else {
+            document.querySelector("#functional-relay-mode").style.backgroundColor = LED_DIM;
+        }
+
+        if (await readBit(240, LOAD_REALY_BIT) == CLOSED) {
+            document.querySelector("#motor-relay-mode").style.backgroundColor = LED_LIT;
+        } else {
+            document.querySelector("#motor-relay-mode").style.backgroundColor = LED_DIM;
+        }
+    }
+
     async function processFaultIndicator() {
-        if (await readRawBit(240, 0) != 1) {
+        if (await readBit(240, 0) != 1) {
             return;
         }
 
