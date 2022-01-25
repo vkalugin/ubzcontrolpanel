@@ -671,16 +671,12 @@
         ctx.strokeText("66%", Y100, Y66);
     }
 
-    var firstRun = false;
-    if (!firstRun) {
-        initElements();
-        updateVis();
-        drawGraph();
-        processFaultIndicator();
-        firstRun = false;
-    } else {
-        setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
-    }
+    initElements();
+    updateVis();
+    drawGraph();
+    processFaultIndicator();
+
+    setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
