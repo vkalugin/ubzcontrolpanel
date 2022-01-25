@@ -446,6 +446,7 @@
 
     async function updateVis() {
         await processUbzStatuses();
+        await processFaultIndicator();
         await processArIndicator();
         await processRcIndicator();
 
@@ -610,20 +611,33 @@
     }
 
     async function processFaultIndicator() {
-        if (await readBit(240, 0) != 1) {
-            return;
-        }
+        const FAULT_BIT = 0;
+        const FAULT = 1;
+        const LED_SWITCH_INTERVAL_MS = 1000;
 
-        let lighten = false;
+        var faultIndicatorSet = false;
 
-        setInterval(async function() {
-            if (lighten) {
-                document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
-            } else {
-                document.querySelector("#fault-indicator").style.backgroundColor = "crimson";
+        if (await readBit(240, FAULT_BIT) == FAULT) {
+            if (!faultIndicatorSet) {
+                let lighten = false;
+
+                var faultIndicatorInterval = setInterval(async function() {
+                    if (lighten) {
+                        document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
+                    } else {
+                        document.querySelector("#fault-indicator").style.backgroundColor = "crimson";
+                    }
+                    lighten = !lighten;
+                }, LED_SWITCH_INTERVAL_MS);
+
+                faultIndicatorSet = true;
             }
-            lighten = !lighten;
-        }, 1000);
+        } else {
+            if (faultIndicatorSet) {
+                faultIndicatorSet = false;
+                clearInterval(faultIndicatorInterval);
+            }
+        }
     }
 
     async function processArIndicator() {
@@ -676,7 +690,6 @@
     initElements();
     updateVis();
     drawGraph();
-    processFaultIndicator();
 
     setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
