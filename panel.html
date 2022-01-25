@@ -386,6 +386,8 @@
 
 
 <script type="text/javascript">
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+
     var canvas = document.querySelector("#heating-graph");
     var ctx = canvas.getContext("2d");
     ctx.font = "16px Droid Sans";
@@ -677,7 +679,7 @@
         processFaultIndicator();
         firstRun = false;
     } else {
-        setInterval(updateVis, 10000);
+        setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
     }
 
     // TODO: affect only when changed
