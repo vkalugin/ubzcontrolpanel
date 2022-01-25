@@ -629,8 +629,10 @@
     async function processArIndicator() {
         const INDICATOR_LIT = "lightgreen";
         const INDICATOR_DIM = "green";
+        const ALLOW_REMOTE = 2;
+
         const arStatusRaw = await rawReadRegs(203, 1);
-        if (arStatusRaw.ok[0] == 2) {
+        if (arStatusRaw.ok[0] == ALLOW_REMOTE) {
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
         } else {
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
