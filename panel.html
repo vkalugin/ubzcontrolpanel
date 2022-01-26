@@ -1,3 +1,7 @@
+<script type="text/javascript">
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+</script>
+
 <style type="text/css">
     .dashboard-container {
         display: grid;
@@ -371,6 +375,7 @@
                     <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
+                <button id="motor-start-stop-button" disabled>Motor</button>
                 <button id="save-file-button">Save file</button>
         </div>
     </div>
@@ -386,8 +391,6 @@
 
 
 <script type="text/javascript">
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
-
     var canvas = document.querySelector("#heating-graph");
     var ctx = canvas.getContext("2d");
     ctx.font = "16px Droid Sans";
@@ -584,7 +587,7 @@
     async function processUbzStatuses() {
         const mmspModeRaw = await rawReadRegs(202, 1);
 
-        const LOAD_REALY_BIT = 1;
+        const LOAD_RELAY_BIT = 1;
         const FUNCTIONAL_RELAY_BIT = 2;
         const CLOSED = 1;
 
@@ -603,7 +606,7 @@
             document.querySelector("#functional-relay-mode").style.backgroundColor = LED_DIM;
         }
 
-        if (await readBit(240, LOAD_REALY_BIT) == CLOSED) {
+        if (await readBit(240, LOAD_RELAY_BIT) == CLOSED) {
             document.querySelector("#motor-relay-mode").style.backgroundColor = LED_LIT;
         } else {
             document.querySelector("#motor-relay-mode").style.backgroundColor = LED_DIM;
