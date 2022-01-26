@@ -375,7 +375,7 @@
                     <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
-                <button id="motor-start-stop-button" disabled>Motor</button>
+                <button id="motor-start-stop-button" disabled><img src = ""></button>
                 <button id="save-file-button">Save file</button>
         </div>
     </div>
@@ -664,8 +664,12 @@
         const remoteRaw = await rawReadRegs(221, 1);
         if (remoteRaw.ok[0] != PROHIBITED) {
             document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
+            document.querySelector("#motor-start-stop-button").disabled = false;
         } else {
             document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = ''>";
+            document.querySelector("#motor-start-stop-button").disabled = true;
         }
     }
 
