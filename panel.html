@@ -194,7 +194,7 @@
             <header>Status of communication with UBZ</header>
             <ul>
                 <li>Activity:</li>
-                <li>Status: <span id="status-string">Disconnected</span></li>
+                <li>Status: <span id="connection-status-string">Unknown</span></li>
                 <li>Speed: <span id="speed-value">0</span> bps</li>
                 <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
                 <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
@@ -473,16 +473,16 @@
         }
 
         const zeroSequenceCurrentRaw = await rawReadRegs(103, 1);
-        if (rawReadRegs.ok) {
+        if (zeroSequenceCurrentRaw.ok) {
             deviceConnected = true;
             document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#zero-sequence-current-bar").value = zeroSequenceCurrentRaw.ok[0];
-        } else if (zeroSequenceVoltageRaw.err == "Can't acquire connection") {
+        } else if (zeroSequenceCurrentRaw.err == "Can't acquire connection") {
             deviceConnected = false;
         }
 
         const currentAverageRaw = await rawReadRegs(104, 3);
-        if (rawReadRegs.ok) {
+        if (currentAverageRaw.ok) {
             deviceConnected = true;
             document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAverageRaw.ok[1] * 0.1).toFixed(1);
@@ -678,6 +678,12 @@
             }
         } else if (transferRateRaw.err == "Can't acquire connection") {
             deviceConnected = false;
+        }
+
+        if (deviceConnected) {
+            document.querySelector("#connection-status-string").innerHTML = "Connected";
+        } else {
+            document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
     }
 
