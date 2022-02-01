@@ -5,7 +5,7 @@
 * **Motor**
 	- показывается мотор если запрещено удалённое управление. В противном случае на его месте возникают кнопки пуск и стоп.
 * **Communication status**
-	- добавить (dis)connected.
+	- добавить (dis)connected. ✓
 * **Colored horizontal (or similar) bars on value exceeding**
 	- chart.js (скорее всего).
 * **Scrolling table of faults**
