@@ -461,116 +461,164 @@
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[1] * 0.1).toFixed(1);
             document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[2] * 0.1).toFixed(1);
             document.querySelector("#phase-1-current-rms-bar").value = phaseRmsCurrentRaw.ok[0];
             document.querySelector("#phase-2-current-rms-bar").value = phaseRmsCurrentRaw.ok[1];
             document.querySelector("#phase-3-current-rms-bar").value = phaseRmsCurrentRaw.ok[2];
-        } else if (phaseRmsCurrentRaw.err) {
-            console.log("AN ERROR OCCURED!!!!");
+        } else if (phaseRmsCurrentRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const zeroSequenceCurrentRaw = await rawReadRegs(103, 1);
         if (rawReadRegs.ok) {
+            deviceConnected = true;
             document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#zero-sequence-current-bar").value = zeroSequenceCurrentRaw.ok[0];
+        } else if (zeroSequenceVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const currentAverageRaw = await rawReadRegs(104, 3);
         if (rawReadRegs.ok) {
+            deviceConnected = true;
             document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAverageRaw.ok[1] * 0.1).toFixed(1);
             document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAverageRaw.ok[2] * 0.1).toFixed(1); 
+        } else if (currentAverageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const motorStartCurrentRaw = await rawReadRegs(110, 1);
         if (motorStartCurrentRaw.ok && motorStartCurrentRaw.ok[0]) {
+            deviceConnected = true;
             document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentRaw.ok[0] * 0.1).toFixed(1);
-        } else {
-            console.log(motorStartCurrentRaw.err);
+        } else if (motorStartCurrentRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const overloadCurrentRaw = await rawReadRegs(112, 1);
         if (overloadCurrentRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#overload-current-value").innerHTML = (overloadCurrentRaw.ok[0] * 0.1).toFixed(1);
+        } else if (overloadCurrentRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const negativeSequenceCurrentRaw = await rawReadRegs(113, 1);
         if (negativeSequenceCurrentRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#negative-sequence-current-bar").value = negativeSequenceCurrentRaw.ok[0];
+        } else if (negativeSequenceVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const currentAverageForTimeRaw = await rawReadRegs(153, 1);
         if (currentAverageForTimeRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeRaw.ok[0];
+        } else if (currentAverageForTimeRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const phaseRmsVoltageRaw = await rawReadRegs(114, 3);
         if (phaseRmsVoltageRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[0];
             document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[1];
             document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[2];
             document.querySelector("#phase-1-voltage-bar").value = phaseRmsVoltageRaw.ok[0];
             document.querySelector("#phase-2-voltage-bar").value = phaseRmsVoltageRaw.ok[1];
             document.querySelector("#phase-3-voltage-bar").value = phaseRmsVoltageRaw.ok[2];
+        } else if (phaseRmsVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const lineVoltageRaw = await rawReadRegs(117, 3);
         if (lineVoltageRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageRaw.ok[0];
             document.querySelector("#line-2-voltage-value").innerHTML = lineVoltageRaw.ok[1];
             document.querySelector("#line-3-voltage-value").innerHTML = lineVoltageRaw.ok[2];
             document.querySelector("#line-1-voltage-bar").value = lineVoltageRaw.ok[0];
             document.querySelector("#line-2-voltage-bar").value = lineVoltageRaw.ok[1];
             document.querySelector("#line-3-voltage-bar").value = lineVoltageRaw.ok[2];
+        } else if (lineVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const positiveSequenceVoltageRaw = await rawReadRegs(120, 1);
         if (positiveSequenceVoltageRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#positive-sequence-voltage-value").innerHTML = positiveSequenceVoltageRaw.ok[0];
+        } else if (positiveSequenceVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const negativeSequenceVoltageRaw = await rawReadRegs(121, 1);
         if (negativeSequenceVoltageRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#negative-sequence-voltage-value").innerHTML = negativeSequenceVoltageRaw.ok[0];
             document.querySelector("#negative-sequence-voltage-bar").value = negativeSequenceVoltageRaw.ok[0];
+        } else if (negativeSequenceVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const zeroSequenceVoltageRaw = await rawReadRegs(122, 1);
         if (zeroSequenceVoltageRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageRaw.ok[0];
+        } else if (zeroSequenceVoltageRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const sensorTemperatureRaw = await rawReadRegs(123, 2);
         if (sensorTemperatureRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[0]);
             document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[1]);
+        } else if (sensorTemperatureRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const frequencyRaw = await rawReadRegs(128, 1);
         if (frequencyRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#frequency-value").innerHTML = (frequencyRaw.ok[0] * 0.1).toFixed(1);
+        } else if (frequencyRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const insulationResistanceRaw = await rawReadRegs(132, 1);
         if (insulationResistanceRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceRaw.ok[0] * 0.1).toFixed(1);
+        } else if (insulationResistanceRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const currentInputRaw = await rawReadRegs(125, 1);
         if (currentInputRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#current-input-value").innerHTML = (currentInputRaw.ok[0] * 0.01).toFixed(2);
+        } else if (currentInputRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const analogInputRaw = await rawReadRegs(126, 1);
         if (analogInputRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#analog-input-value").innerHTML = (analogInputRaw.ok[0] * 0.1).toFixed(1);
+        } else if (analogInputRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const timeBeforeArRaw = await rawReadRegs(130, 1);
         if (timeBeforeArRaw.ok) {
+            deviceConnected = true;
             if (timeBeforeArRaw.ok[0] == 0) {
                 document.querySelector("#time-before-ar-string").innerHTML = "Off";
                 document.querySelector("#time-before-ar-bar").value = 0;
@@ -584,10 +632,13 @@
                 document.querySelector("#time-before-ar-string").innerHTML = "???";
                 document.querySelector("#time-before-ar-bar").value = 0;
             }
+        } else if (timeBeforeArRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const relayWorkModeRaw = await rawReadRegs(205, 1);
         if (relayWorkModeRaw.ok) {
+            deviceConnected = true;
             if (relayWorkModeRaw.ok[0] == 0) {
                 document.querySelector("#radio-workmode-alarm").checked = true;
             } else if (relayWorkModeRaw.ok[0] == 1) {
@@ -595,30 +646,38 @@
             } else if (relayWorkModeRaw.ok[0] == 2) {
                 document.querySelector("#radio-workmode-stardelta").checked = true;
             }
+        } else if (relayWorkModeRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
 
         const startupTimeRaw = await rawReadRegs(111, 1); // 111??
         if (startupTimeRaw.ok) {
+            deviceConnected = true;
             document.querySelector("#startup-time-value").innerHTML = startupTimeRaw.ok[0];
+        } else if (startupTimeRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
         
 
         const transferRateRaw = await rawReadRegs(213, 1);
         if (transferRateRaw.ok) {
+            deviceConnected = true;
             switch (transferRateRaw.ok[0]) {
-            case 0: {
-                document.querySelector("#speed-value").innerHTML = "9600";
+                case 0: {
+                    document.querySelector("#speed-value").innerHTML = "9600";
+                }
+                break;
+                case 1: {
+                    document.querySelector("#speed-value").innerHTML = "19200";
+                }
+                break;
+                default: {
+                    document.querySelector("#speed-value").innerHTML = "Incorrect register value";
+                }
+                break;
             }
-            break;
-            case 1: {
-                document.querySelector("#speed-value").innerHTML = "19200";
-            }
-            break;
-            default: {
-                document.querySelector("#speed-value").innerHTML = "Incorrect register value";
-            }
-            break;
-        }
+        } else if (transferRateRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
         }
     }
 
