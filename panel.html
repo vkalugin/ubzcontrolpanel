@@ -764,8 +764,22 @@
         }
     }
 
+    var motorStartedManually = false;
+
     async function startStopMotor() {
-        console.log("asf");
+        const COMMAND_REGISTER = 237;
+        const MOTOR_STOP_MANUALLY = [0];
+        const MOTOR_START_MANUALLY = [2];
+
+        if (!motorStartedManually) {
+            writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Stop";
+            motorStartedManually = true;
+        } else {
+            writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
+            motorStartedManually = false;
+        }
     }
 
     async function processArIndicator() {
