@@ -375,7 +375,7 @@
                     <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
-                <button id="motor-start-stop-button" disabled><img src = ""></button>
+                <div><button id="motor-start-stop-button" disabled><img src = "https://cdn-icons-png.flaticon.com/512/2479/2479510.png" style="width: 100px;"></button></div>
                 <button id="save-file-button">Save file</button>
         </div>
     </div>
@@ -764,6 +764,24 @@
         }
     }
 
+    var motorStartedManually = false;
+
+    async function startStopMotor() {
+        const COMMAND_REGISTER = 237;
+        const MOTOR_STOP_MANUALLY = [0];
+        const MOTOR_START_MANUALLY = [2];
+
+        if (!motorStartedManually) {
+            writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Stop";
+            motorStartedManually = true;
+        } else {
+            writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
+            motorStartedManually = false;
+        }
+    }
+
     async function processArIndicator() {
         const INDICATOR_LIT = "lightgreen";
         const INDICATOR_DIM = "green";
@@ -787,13 +805,12 @@
             document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
             document.querySelector("#motor-start-stop-button").innerHTML = "Start";
             document.querySelector("#motor-start-stop-button").disabled = false;
-            document.querySelector("#motor-start-stop-button").addEventListener("click", async function() {
-                console.log("asf");
-            })
+            document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
         } else {
             document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
-            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = ''>";
+            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = 'https://cdn-icons-png.flaticon.com/512/2479/2479510.png' style='width: 100px;'>";
             document.querySelector("#motor-start-stop-button").disabled = true;
+            document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
         }
     }
 
