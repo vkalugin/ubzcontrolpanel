@@ -680,6 +680,14 @@
             deviceConnected = false;
         }
 
+        const ubzCommunicationAddressRaw = await rawReadRegs(212, 1);
+        if (ubzCommunicationAddressRaw.ok) {
+            deviceConnected = true;
+            document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddressRaw.ok[0];
+        } else if (ubzCommunicationAddressRaw.err == "Can't acquire connection") {
+            deviceConnected = false;
+        }
+
         if (deviceConnected) {
             document.querySelector("#connection-status-string").innerHTML = "Connected";
         } else {
@@ -1055,6 +1063,11 @@
     document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
         const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
         document.querySelector("#power-show-value-3").innerHTML = outstring;
+    })
+
+    document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
+        const addr = document.querySelector("#modbus-address-ubz").value;
+        console.log(await writeRegValues(212, [addr]));
     })
 
     document.querySelector("#save-file-button").addEventListener("click", function () {
