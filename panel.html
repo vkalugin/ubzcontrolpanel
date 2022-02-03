@@ -471,9 +471,9 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
-            document.querySelector("#phase-1-current-rms-bar").value = "Err";
-            document.querySelector("#phase-2-current-rms-bar").value = "Err";
-            document.querySelector("#phase-3-current-rms-bar").value = "Err";
+            document.querySelector("#phase-1-current-rms-bar").value = 0;
+            document.querySelector("#phase-2-current-rms-bar").value = 0;
+            document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
 
         const zeroSequenceCurrentRaw = await rawReadRegs(103, 1);
@@ -514,7 +514,7 @@
         if (negativeSequenceCurrentRaw.ok) {
             document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
             document.querySelector("#negative-sequence-current-bar").value = negativeSequenceCurrentRaw.ok[0];
-        } else if (negativeSequenceVoltageRaw.err) {
+        } else if (negativeSequenceCurrentRaw.err) {
             document.querySelector("#negative-sequence-current-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
