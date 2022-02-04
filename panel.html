@@ -31,6 +31,22 @@
         margin-right: 0.25em;
     }
 
+    .valuebar {
+        min-width: 100px;
+        max-height: 8px;
+        background-color: rgb(192, 192, 192);
+        border: solid 1px black;
+        /* overflow: scroll; */
+        border-radius: 15px;
+        overflow-y: hidden;
+    }
+
+    .valuebar-inner {
+        background-color: green;
+        color: white;
+        padding: 1%;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -205,18 +221,24 @@
                 <div>
                     <p>Phase currents active values:</p>
                     <ul>
-                        <li>Phase1: <progress id="phase-1-current-rms-bar" value="0" max="6300"></progress> <span id="phase-1-current-rms-value">0.0</span> A</li>
-                        <li>Phase2: <progress id="phase-2-current-rms-bar" value="0" max="6300"></progress> <span id="phase-2-current-rms-value">0.0</span> A</li>
-                        <li>Phase3: <progress id="phase-3-current-rms-bar" value="0" max="6300"></progress> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                        <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0" max="6300">
+                            <div class="valuebar-inner"></div>
+                        </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0" max="6300">
+                            <div class="valuebar-inner"></div>
+                        </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0" max="6300">
+                            <div class="valuebar-inner"></div>
+                        </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
                 <div>
                     <p>Negative sequence current:</p>
-                    <progress id="negative-sequence-current-bar" value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
+                    <div class="valuebar" id="negative-sequence-current-bar" value="0" max="2000"></div> <span id="negative-sequence-current-value">0.0</span> A
                 </div>
                 <div>
                     <p>Zero sequence current:</p>
-                    <progress id="zero-sequence-current-bar" value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
+                    <div class="valuebar" id="zero-sequence-current-bar" value="0" max="50"></div> <span id="zero-sequence-current-value">0.0</span> A
                 </div>
 
                 <div>
@@ -255,9 +277,15 @@
                 <div>
                     <p>Phase voltages active values:</p>
                     <ul>
-                        <li>Phase1: <progress id="phase-1-voltage-bar" value="0" max="300"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
-                        <li>Phase2: <progress id="phase-2-voltage-bar" value="0" max="300"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
-                        <li>Phase3: <progress id="phase-3-voltage-bar" value="0" max="300"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
+                        <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
+                        </div> <span id="phase-1-voltage-value">0.0</span> V</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
+                        </div> <span id="phase-2-voltage-value">0.0</span> V</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
+                        </div> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
                 <div>
@@ -453,11 +481,49 @@
         }
     }
 
+    async function minLinearVoltage() {
+        const minLinearVoltageRaw = await rawReadRegs(177, 1);
+        if (minLinearVoltageRaw.ok) {
+            console.log(minLinearVoltageRaw.ok[0]);
+        } else if (minLinearVoltageRaw.err) {
+            console.log("can't get the minimal value");
+        }
+    }
+
+    async function maxLinearVoltage() {
+        const maxLinearVoltageRaw = await rawReadRegs(180, 1);
+        if (maxLinearVoltageRaw.ok) {
+            console.log(maxLinearVoltageRaw.ok[0]);
+        } else if (maxLinearVoltageRaw.err) {
+            console.log("can't get the maximal value");
+        }
+    }
+
+    function barValue(barId, maxValue) {
+        const v = document.querySelector(barId).value;
+        
+        const widthPercentage = 100 * v / maxValue;
+
+        const widthPercentageStr = widthPercentage.toFixed(0) + '%';
+        console.log(widthPercentageStr);
+        const innerBarId = barId + '-inner';
+        console.log(innerBarId);
+        document.querySelector(innerBarId).style.width = widthPercentageStr;
+        console.log(document.querySelector(barId + '-inner').getAttribute("width"));
+    }
+
     async function updateVis() {
         await processUbzStatuses();
         await processFaultIndicator();
         await processArIndicator();
         await processRcIndicator();
+
+        minLinearVoltage();
+        maxLinearVoltage();
+
+        barValue("#phase-1-voltage-bar", 300);
+        barValue("#phase-2-voltage-bar", 300);
+        barValue("#phase-3-voltage-bar", 300);
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
