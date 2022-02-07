@@ -1,5 +1,6 @@
 <script type="text/javascript">
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const PHASE_VOLTAGE_THRESHOLD = 220;
 </script>
 
 <style type="text/css">
@@ -33,18 +34,23 @@
 
     .valuebar {
         min-width: 100px;
-        max-height: 8px;
+        height: 8px;
         background-color: rgb(192, 192, 192);
         border: solid 1px black;
-        /* overflow: scroll; */
-        border-radius: 15px;
-        overflow-y: hidden;
     }
 
     .valuebar-inner {
         background-color: green;
-        color: white;
-        padding: 1%;
+		height: 100%;
+        width: 0%;
+        float: left;
+    }
+
+    .overvaluebar-inner {
+        background-color: orange;
+		height: 100%;
+        width: 0%;
+        float: left;
     }
 
     #heating-graph {
@@ -279,12 +285,15 @@
                     <ul>
                         <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
                             <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
                         </div> <span id="phase-1-voltage-value">0.0</span> V</li>
                         <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
                             <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
                         </div> <span id="phase-2-voltage-value">0.0</span> V</li>
                         <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
                             <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
                         </div> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
@@ -503,13 +512,22 @@
         const v = document.querySelector(barId).value;
         
         const widthPercentage = 100 * v / maxValue;
+ 
+        const THRPERCENTAGE = 100 * PHASE_VOLTAGE_THRESHOLD / maxValue;
 
-        const widthPercentageStr = widthPercentage.toFixed(0) + '%';
-        console.log(widthPercentageStr);
         const innerBarId = barId + '-inner';
-        console.log(innerBarId);
-        document.querySelector(innerBarId).style.width = widthPercentageStr;
-        console.log(document.querySelector(barId + '-inner').getAttribute("width"));
+
+        if (widthPercentage <= THRPERCENTAGE) {
+            const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+            document.querySelector(innerBarId).style.width = widthPercentageStr;
+        } else if (widthPercentage <= 100) {
+            const widthPercentageStr = THRPERCENTAGE.toFixed(0) + '%';       
+            document.querySelector(innerBarId).style.width = widthPercentageStr;
+            const innerOverBarId = barId  + '-over-inner';
+            const widthPercentageOverStr = (widthPercentage - THRPERCENTAGE).toFixed(0) + '%';
+            document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+        }
+
     }
 
     async function updateVis() {
@@ -518,12 +536,8 @@
         await processArIndicator();
         await processRcIndicator();
 
-        minLinearVoltage();
-        maxLinearVoltage();
-
-        barValue("#phase-1-voltage-bar", 300);
-        barValue("#phase-2-voltage-bar", 300);
-        barValue("#phase-3-voltage-bar", 300);
+        // minLinearVoltage();
+        // maxLinearVoltage();
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
@@ -608,6 +622,9 @@
             document.querySelector("#phase-2-voltage-bar").value = 0;
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
+        barValue("#phase-1-voltage-bar", 300);
+        barValue("#phase-2-voltage-bar", 300);
+        barValue("#phase-3-voltage-bar", 300);
 
         const lineVoltageRaw = await rawReadRegs(117, 3);
         if (lineVoltageRaw.ok) {
