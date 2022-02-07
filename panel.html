@@ -53,6 +53,13 @@
         float: left;
     }
 
+    .overvaluebar2-inner {
+        background-color: crimson;
+		height: 100%;
+        width: 0%;
+        float: left;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -303,16 +310,22 @@
                         <li>AB:
                             <div class="valuebar" id="line-1-voltage-bar" value="0">
                                 <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-1-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-1-voltage-bar-over2-inner"></div>
                             </div>
                             <span id="line-1-voltage-value">0.0</span> V</li>
                         <li>BC:
                             <div class="valuebar" id="line-2-voltage-bar" value="0">
                                 <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-2-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-2-voltage-bar-over2-inner"></div>
                             </div>
                             <span id="line-2-voltage-value">0.0</span> V</li>
                         <li>CA:
                             <div class="valuebar" id="line-3-voltage-bar" value="0">
                                 <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-3-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-3-voltage-bar-over2-inner"></div>
                             </div>
                             <span id="line-3-voltage-value">0.0</span> V</li>
                     </ul>
@@ -520,26 +533,54 @@
         }
     }
 
-    function barValue(barId, threshold, maxValue) {
+    function barValue(barId, maxValue, threshold1, threshold2) {
         const v = document.querySelector(barId).value;
-        
         const widthPercentage = 100 * v / maxValue;
- 
-        const thresholdPercentage = 100 * threshold / maxValue;
-
         const innerBarId = barId + '-inner';
 
-        if (widthPercentage <= thresholdPercentage) {
+        let threshold1Percentage = undefined;
+        let threshold2Percentage = undefined;
+ 
+        if ((threshold2 !== undefined) && (threshold1 !== undefined)) {
+            threshold1Percentage = 100 * threshold1 / maxValue;
+            threshold2Percentage = 100 * threshold2 / maxValue;
+            if (widthPercentage <= threshold1Percentage) {
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+            } else if (widthPercentage <= threshold2Percentage) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+            } else if (widthPercentage <= 100) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (threshold2Percentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+                const innerOver2BarId = barId  + '-over2-inner';
+                const widthPercentageOver2Str = (widthPercentage - threshold2Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOver2Str;
+            }
+        }
+        if (threshold1 !== undefined) {
+            threshold1Percentage = 100 * threshold1 / maxValue;
+            if (widthPercentage <= threshold1Percentage) {
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+            } else if (widthPercentage <= 100) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+            }
+        }
+        if ((threshold1 === undefined) && (threshold2 === undefined)) {
             const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
             document.querySelector(innerBarId).style.width = widthPercentageStr;
-        } else if (widthPercentage <= 100) {
-            const widthPercentageStr = thresholdPercentage.toFixed(0) + '%';       
-            document.querySelector(innerBarId).style.width = widthPercentageStr;
-            const innerOverBarId = barId  + '-over-inner';
-            const widthPercentageOverStr = (widthPercentage - thresholdPercentage).toFixed(0) + '%';
-            document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
         }
-
     }
 
     async function updateVis() {
@@ -634,9 +675,9 @@
             document.querySelector("#phase-2-voltage-bar").value = 0;
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
-        barValue("#phase-1-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
-        barValue("#phase-2-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
-        barValue("#phase-3-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
+        barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         const lineVoltageRaw = await rawReadRegs(117, 3);
         if (lineVoltageRaw.ok) {
@@ -653,6 +694,14 @@
             document.querySelector("#line-1-voltage-bar").value = 0;
             document.querySelector("#line-2-voltage-bar").value = 0;
             document.querySelector("#line-3-voltage-bar").value = 0;
+        }
+
+        const lineVoltageMinRaw = await rawReadRegs(177, 1);
+        const lineVoltageMaxRaw = await rawReadRegs(180, 1);
+        if (lineVoltageMinRaw.ok && lineVoltageMaxRaw.ok) {
+            barValue("#line-1-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
+            barValue("#line-2-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
+            barValue("#line-3-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
         }
 
         const positiveSequenceVoltageRaw = await rawReadRegs(120, 1);
