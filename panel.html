@@ -523,24 +523,6 @@
         }
     }
 
-    async function minLinearVoltage() {
-        const minLinearVoltageRaw = await rawReadRegs(177, 1);
-        if (minLinearVoltageRaw.ok) {
-            console.log(minLinearVoltageRaw.ok[0]);
-        } else if (minLinearVoltageRaw.err) {
-            console.log("can't get the minimal value");
-        }
-    }
-
-    async function maxLinearVoltage() {
-        const maxLinearVoltageRaw = await rawReadRegs(180, 1);
-        if (maxLinearVoltageRaw.ok) {
-            console.log(maxLinearVoltageRaw.ok[0]);
-        } else if (maxLinearVoltageRaw.err) {
-            console.log("can't get the maximal value");
-        }
-    }
-
     function barValue(barId, maxValue, threshold1, threshold2) {
         const v = document.querySelector(barId).value;
         const widthPercentage = 100 * v / maxValue;
@@ -595,9 +577,6 @@
         await processFaultIndicator();
         await processArIndicator();
         await processRcIndicator();
-
-        // minLinearVoltage();
-        // maxLinearVoltage();
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
