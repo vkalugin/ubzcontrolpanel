@@ -300,9 +300,21 @@
                 <div>
                     <p>Line voltages active values:</p>
                     <ul>
-                        <li>AB: <progress id="line-1-voltage-bar" value="0" max="475"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
-                        <li>BC: <progress id="line-2-voltage-bar" value="0" max="475"></progress> <span id="line-2-voltage-value">0.0</span> V</li>
-                        <li>CA: <progress id="line-3-voltage-bar" value="0" max="475"></progress> <span id="line-3-voltage-value">0.0</span> V</li>
+                        <li>AB:
+                            <div class="valuebar" id="line-1-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
+                            </div>
+                            <span id="line-1-voltage-value">0.0</span> V</li>
+                        <li>BC:
+                            <div class="valuebar" id="line-2-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
+                            </div>
+                            <span id="line-2-voltage-value">0.0</span> V</li>
+                        <li>CA:
+                            <div class="valuebar" id="line-3-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
+                            </div>
+                            <span id="line-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
 
@@ -508,23 +520,23 @@
         }
     }
 
-    function barValue(barId, maxValue) {
+    function barValue(barId, threshold, maxValue) {
         const v = document.querySelector(barId).value;
         
         const widthPercentage = 100 * v / maxValue;
  
-        const THRPERCENTAGE = 100 * PHASE_VOLTAGE_THRESHOLD / maxValue;
+        const thresholdPercentage = 100 * threshold / maxValue;
 
         const innerBarId = barId + '-inner';
 
-        if (widthPercentage <= THRPERCENTAGE) {
+        if (widthPercentage <= thresholdPercentage) {
             const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
             document.querySelector(innerBarId).style.width = widthPercentageStr;
         } else if (widthPercentage <= 100) {
-            const widthPercentageStr = THRPERCENTAGE.toFixed(0) + '%';       
+            const widthPercentageStr = thresholdPercentage.toFixed(0) + '%';       
             document.querySelector(innerBarId).style.width = widthPercentageStr;
             const innerOverBarId = barId  + '-over-inner';
-            const widthPercentageOverStr = (widthPercentage - THRPERCENTAGE).toFixed(0) + '%';
+            const widthPercentageOverStr = (widthPercentage - thresholdPercentage).toFixed(0) + '%';
             document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
         }
 
@@ -622,9 +634,9 @@
             document.querySelector("#phase-2-voltage-bar").value = 0;
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
-        barValue("#phase-1-voltage-bar", 300);
-        barValue("#phase-2-voltage-bar", 300);
-        barValue("#phase-3-voltage-bar", 300);
+        barValue("#phase-1-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
+        barValue("#phase-2-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
+        barValue("#phase-3-voltage-bar", PHASE_VOLTAGE_THRESHOLD, 300);
 
         const lineVoltageRaw = await rawReadRegs(117, 3);
         if (lineVoltageRaw.ok) {
