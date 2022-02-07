@@ -7,7 +7,7 @@
 * **Communication status**
 	- добавить (dis)connected. ✓
 * **Colored horizontal (or similar) bars on value exceeding**
-	- chart.js (скорее всего).
+	- chart.js (скорее всего). ✓
 * **Scrolling table of faults**
 	- аварии за текущую сессию.
 * **Graph with bars**

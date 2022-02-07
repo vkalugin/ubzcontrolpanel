@@ -1,5 +1,6 @@
 <script type="text/javascript">
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const PHASE_VOLTAGE_THRESHOLD = 220;
 </script>
 
 <style type="text/css">
@@ -29,6 +30,34 @@
         border-radius: 50%;
         margin-left: 0.25em;
         margin-right: 0.25em;
+    }
+
+    .valuebar {
+        min-width: 100px;
+        height: 8px;
+        background-color: rgb(192, 192, 192);
+        border: solid 1px black;
+    }
+
+    .valuebar-inner {
+        background-color: green;
+		height: 100%;
+        width: 0%;
+        float: left;
+    }
+
+    .overvaluebar-inner {
+        background-color: orange;
+		height: 100%;
+        width: 0%;
+        float: left;
+    }
+
+    .overvaluebar2-inner {
+        background-color: crimson;
+		height: 100%;
+        width: 0%;
+        float: left;
     }
 
     #heating-graph {
@@ -205,18 +234,28 @@
                 <div>
                     <p>Phase currents active values:</p>
                     <ul>
-                        <li>Phase1: <progress id="phase-1-current-rms-bar" value="0" max="6300"></progress> <span id="phase-1-current-rms-value">0.0</span> A</li>
-                        <li>Phase2: <progress id="phase-2-current-rms-bar" value="0" max="6300"></progress> <span id="phase-2-current-rms-value">0.0</span> A</li>
-                        <li>Phase3: <progress id="phase-3-current-rms-bar" value="0" max="6300"></progress> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                        <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
+                            <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
+                        </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
+                            <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
+                        </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
+                            <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
+                        </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
                 <div>
                     <p>Negative sequence current:</p>
-                    <progress id="negative-sequence-current-bar" value="0" max="2000"></progress> <span id="negative-sequence-current-value">0.0</span> A
+                    <div class="valuebar" id="negative-sequence-current-bar" value="0">
+                        <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
+                    </div> <span id="negative-sequence-current-value">0.0</span> A
                 </div>
                 <div>
                     <p>Zero sequence current:</p>
-                    <progress id="zero-sequence-current-bar" value="0" max="50"></progress> <span id="zero-sequence-current-value">0.0</span> A
+                    <div class="valuebar" id="zero-sequence-current-bar" value="0">
+                        <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
+                    </div> <span id="zero-sequence-current-value">0.0</span> A
                 </div>
 
                 <div>
@@ -255,24 +294,53 @@
                 <div>
                     <p>Phase voltages active values:</p>
                     <ul>
-                        <li>Phase1: <progress id="phase-1-voltage-bar" value="0" max="300"></progress> <span id="phase-1-voltage-value">0.0</span> V</li>
-                        <li>Phase2: <progress id="phase-2-voltage-bar" value="0" max="300"></progress> <span id="phase-2-voltage-value">0.0</span> V</li>
-                        <li>Phase3: <progress id="phase-3-voltage-bar" value="0" max="300"></progress> <span id="phase-3-voltage-value">0.0</span> V</li>
+                        <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
+                        </div> <span id="phase-1-voltage-value">0.0</span> V</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
+                        </div> <span id="phase-2-voltage-value">0.0</span> V</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
+                            <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
+                        </div> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
                 <div>
                     <p>Line voltages active values:</p>
                     <ul>
-                        <li>AB: <progress id="line-1-voltage-bar" value="0" max="475"></progress> <span id="line-1-voltage-value">0.0</span> V</li>
-                        <li>BC: <progress id="line-2-voltage-bar" value="0" max="475"></progress> <span id="line-2-voltage-value">0.0</span> V</li>
-                        <li>CA: <progress id="line-3-voltage-bar" value="0" max="475"></progress> <span id="line-3-voltage-value">0.0</span> V</li>
+                        <li>AB:
+                            <div class="valuebar" id="line-1-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-1-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-1-voltage-bar-over2-inner"></div>
+                            </div>
+                            <span id="line-1-voltage-value">0.0</span> V</li>
+                        <li>BC:
+                            <div class="valuebar" id="line-2-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-2-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-2-voltage-bar-over2-inner"></div>
+                            </div>
+                            <span id="line-2-voltage-value">0.0</span> V</li>
+                        <li>CA:
+                            <div class="valuebar" id="line-3-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="line-3-voltage-bar-over-inner"></div>
+                                <div class="overvaluebar2-inner" id="line-3-voltage-bar-over2-inner"></div>
+                            </div>
+                            <span id="line-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
 
                 <p>
                     Negative sequence voltage:
                     <div>
-                        <progress id="negative-sequence-voltage-bar" value="0" max="300"></progress> <span id="negative-sequence-voltage-value">0.0</span> V
+                        <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
+                            <div class="valuebar-inner" id="negative-sequence-voltage-bar-inner"></div>
+                        </div> <span id="negative-sequence-voltage-value">0.0</span> V
                     </div>
                 </p>
 
@@ -287,7 +355,9 @@
             <header>Time (sec)</header>
                 <div>
                     <p>Time before AR:</p>
-                    <progress id="time-before-ar-bar" value="0" max="900"></progress> <span id="time-before-ar-string"> Off</span>
+                    <div class="valuebar" id="time-before-ar-bar" value="0">
+                        <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
+                    </div> <span id="time-before-ar-string"> Off</span>
                 </div>
                 <ul>
                     <li>Startup time: <span id="startup-time-value">0</span> sec</li>
@@ -453,6 +523,55 @@
         }
     }
 
+    function barValue(barId, maxValue, threshold1, threshold2) {
+        const v = document.querySelector(barId).value;
+        const widthPercentage = 100 * v / maxValue;
+        const innerBarId = barId + '-inner';
+
+        let threshold1Percentage = undefined;
+        let threshold2Percentage = undefined;
+ 
+        if ((threshold2 !== undefined) && (threshold1 !== undefined)) {
+            threshold1Percentage = 100 * threshold1 / maxValue;
+            threshold2Percentage = 100 * threshold2 / maxValue;
+            if (widthPercentage <= threshold1Percentage) {
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+            } else if (widthPercentage <= threshold2Percentage) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+            } else if (widthPercentage <= 100) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (threshold2Percentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+                const innerOver2BarId = barId  + '-over2-inner';
+                const widthPercentageOver2Str = (widthPercentage - threshold2Percentage).toFixed(0) + '%';
+                document.querySelector(innerOver2BarId).style.width = widthPercentageOver2Str;
+            }
+        } else if (threshold1 !== undefined) {
+            threshold1Percentage = 100 * threshold1 / maxValue;
+            if (widthPercentage <= threshold1Percentage) {
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+            } else if (widthPercentage <= 100) {
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                document.querySelector(innerBarId).style.width = widthPercentageStr;
+                const innerOverBarId = barId  + '-over-inner';
+                const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
+                document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+            }
+        }
+        if ((threshold1 === undefined) && (threshold2 === undefined)) {
+            const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+            document.querySelector(innerBarId).style.width = widthPercentageStr;
+        }
+    }
+
     async function updateVis() {
         await processUbzStatuses();
         await processFaultIndicator();
@@ -484,6 +603,7 @@
             document.querySelector("#zero-sequence-current-value").innerHTML = "Err";
             document.querySelector("#zero-sequence-current-bar").value = 0;
         }
+        barValue("#zero-sequence-current-bar", 50);
 
         const currentAverageRaw = await rawReadRegs(104, 3);
         if (currentAverageRaw.ok) {
@@ -518,6 +638,7 @@
             document.querySelector("#negative-sequence-current-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
+        barValue("#negative-sequence-current-bar", 2000);
 
         const currentAverageForTimeRaw = await rawReadRegs(153, 1);
         if (currentAverageForTimeRaw.ok) {
@@ -542,6 +663,9 @@
             document.querySelector("#phase-2-voltage-bar").value = 0;
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
+        barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         const lineVoltageRaw = await rawReadRegs(117, 3);
         if (lineVoltageRaw.ok) {
@@ -560,6 +684,14 @@
             document.querySelector("#line-3-voltage-bar").value = 0;
         }
 
+        const lineVoltageMinRaw = await rawReadRegs(177, 1);
+        const lineVoltageMaxRaw = await rawReadRegs(180, 1);
+        if (lineVoltageMinRaw.ok && lineVoltageMaxRaw.ok) {
+            barValue("#line-1-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
+            barValue("#line-2-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
+            barValue("#line-3-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
+        }
+
         const positiveSequenceVoltageRaw = await rawReadRegs(120, 1);
         if (positiveSequenceVoltageRaw.ok) {
             document.querySelector("#positive-sequence-voltage-value").innerHTML = positiveSequenceVoltageRaw.ok[0];
@@ -575,6 +707,7 @@
             document.querySelector("#negative-sequence-voltage-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-voltage-bar").value = 0;
         }
+        barValue("#negative-sequence-voltage-bar", 300);
 
         const zeroSequenceVoltageRaw = await rawReadRegs(122, 1);
         if (zeroSequenceVoltageRaw.ok) {
@@ -639,6 +772,7 @@
             document.querySelector("#time-before-ar-string").innerHTML = "Err";
             document.querySelector("#time-before-ar-bar").value = 0;
         }
+        barValue("#negative-sequence-voltage-bar", 900);
 
         const relayWorkModeRaw = await rawReadRegs(205, 1);
         if (relayWorkModeRaw.ok) {
