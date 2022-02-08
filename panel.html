@@ -534,34 +534,41 @@
         if ((threshold2 !== undefined) && (threshold1 !== undefined)) {
             threshold1Percentage = 100 * threshold1 / maxValue;
             threshold2Percentage = 100 * threshold2 / maxValue;
+
+            const innerOverBarId = barId  + '-over-inner';
+            const innerOver2BarId = barId  + '-over2-inner';
+
             if (widthPercentage <= threshold1Percentage) {
                 const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
+                document.querySelector(innerOverBarId).style.width = "0%";
+                document.querySelector(innerOver2BarId).style.width = "0%";
             } else if (widthPercentage <= threshold2Percentage) {
                 const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
-                const innerOverBarId = barId  + '-over-inner';
                 const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
+                document.querySelector(innerOver2BarId).style.width = "0%";
             } else if (widthPercentage <= 100) {
                 const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
-                const innerOverBarId = barId  + '-over-inner';
                 const widthPercentageOverStr = (threshold2Percentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
-                const innerOver2BarId = barId  + '-over2-inner';
                 const widthPercentageOver2Str = (widthPercentage - threshold2Percentage).toFixed(0) + '%';
                 document.querySelector(innerOver2BarId).style.width = widthPercentageOver2Str;
             }
         } else if (threshold1 !== undefined) {
             threshold1Percentage = 100 * threshold1 / maxValue;
+
+            const innerOverBarId = barId  + '-over-inner';
+
             if (widthPercentage <= threshold1Percentage) {
                 const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
+                document.querySelector(innerOverBarId).style.width = "0%";
             } else if (widthPercentage <= 100) {
                 const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
-                const innerOverBarId = barId  + '-over-inner';
                 const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
             }
