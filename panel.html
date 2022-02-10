@@ -466,6 +466,7 @@
     ctx.font = "16px Droid Sans";
 
     var deviceConnected = false;
+    var faultIndicatorSet = false;
     
     const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
@@ -885,8 +886,6 @@
         const FAULT_BIT = 0;
         const FAULT = 1;
         const LED_SWITCH_INTERVAL_MS = 1000;
-
-        var faultIndicatorSet = false;
 
         if (await readBit(240, FAULT_BIT) == FAULT) {
             if (!faultIndicatorSet) {
