@@ -178,54 +178,7 @@
                             Time
                         </th>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    
                 </table>
             </div>
         </div>
@@ -594,6 +547,33 @@
             const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
             document.querySelector(innerBarId).style.width = widthPercentageStr;
         }
+    }
+
+    function addRow(col1Text, col2Text, col3Text, col4Text) {
+        let tableBody = document.getElementsByTagName("tbody").item(0);
+        let row = document.createElement("tr");
+       
+        let cell1 = document.createElement("td");
+        let cell2 = document.createElement("td");
+        let cell3 = document.createElement("td");
+        let cell4 = document.createElement("td");
+
+        let textNode1 = document.createTextNode(col1Text);
+        let textNode2 = document.createTextNode(col2Text);
+        let textNode3 = document.createTextNode(col3Text);
+        let textNode4 = document.createTextNode(col4Text);
+
+        cell1.appendChild(textNode1);
+        cell2.appendChild(textNode2);
+        cell3.appendChild(textNode3);
+        cell4.appendChild(textNode4);
+
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        row.appendChild(cell3);
+        row.appendChild(cell4);
+
+        tableBody.appendChild(row);
     }
 
     async function updateVis() {
