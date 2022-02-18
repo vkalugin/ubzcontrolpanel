@@ -102,11 +102,11 @@
 
     #faults-table thead, tr, tbody{
         border:1px solid black;
-        display:block;
+        display: block;
     }
 
     #faults-table td {
-        display: block;
+        border:1px solid black;
     }
 
     @media only screen and (max-device-width: 1100px) {
@@ -178,7 +178,6 @@
                             Time
                         </th>
                     </tr>
-                    
                 </table>
             </div>
         </div>
@@ -576,11 +575,41 @@
         tableBody.appendChild(row);
     }
 
+    function arraysEqual(arr1, arr2) {
+        const len1 = arr1.length;
+        const len2 = arr2.length;
+        if (len1 !== len2) {
+            return false;
+        } else {
+            for (let i=0; i < len1; i++) {
+                if (arr1[i] !== arr2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    let previousFaultList = [];
+
     async function updateVis() {
         await processUbzStatuses();
-        await processFaultIndicator();
         await processArIndicator();
         await processRcIndicator();
+
+        const FAULT_BIT = 0;
+        const FAULT = 1;
+
+        let isFault = await readBit(240, FAULT_BIT) == FAULT;
+        if (isFault) {
+            let currentFaultList = await readFaultList();
+            if (!arraysEqual(currentFaultList, previousFaultList)) {
+                processFaultIndicator(isFault);
+                writeFaultInfoIntoTable(isFault);
+            }
+            console.log(previousFaultList);
+            previousFaultList = currentFaultList;
+        }
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
@@ -878,16 +907,101 @@
         }
     }
 
-    async function processFaultIndicator() {
-        const FAULT_BIT = 0;
+    async function readFaultList() {
         const FAULT = 1;
-        const LED_SWITCH_INTERVAL_MS = 1000;
+        const faultList = [];
+        if (await readBit(241, 0) == FAULT) {
+            faultList.push("phase overcurrent");
+        }
+        if (await readBit(241, 1) == FAULT) {
+            faultList.push("thermal overload");
+        }
+        if (await readBit(241, 2) == FAULT) {
+            faultList.push("ground fault");
+        }
+        if (await readBit(241, 3) == FAULT) {
+            faultList.push("exceeded multiplicity"); // look for displayed name
+        }
+        if (await readBit(241, 4) == FAULT) {
+            faultList.push("negative sequence current");
+        }
+        if (await readBit(241, 5) == FAULT) {
+            faultList.push("phase undercurrent");
+        }
+        if (await readBit(241, 6) == FAULT) {
+            faultList.push("delayed start");
+        }
+        if (await readBit(241, 7) == FAULT) {
+            faultList.push("rotor blocking");
+        }
+        if (await readBit(241, 8) == FAULT) {
+            faultList.push("temperature threshold sensor 1");
+        }
+        if (await readBit(241, 9) == FAULT) {
+            faultList.push("temperature threshold sensor 2");
+        }
+        if (await readBit(241, 10) == FAULT) {
+            faultList.push("phase sequence");
+        }
+        if (await readBit(241, 11) == FAULT) {
+            faultList.push("external MS");
+        }
+        if (await readBit(241, 12) == FAULT) {
+            faultList.push("line undervoltage");
+        }
+        if (await readBit(241, 13) == FAULT) {
+            faultList.push("line overvoltage");
+        }
+        if (await readBit(241, 14) == FAULT) {
+            faultList.push("phase imbalance");
+        }
+        if (await readBit(241, 15) == FAULT) {
+            faultList.push("motor coil insulation resistance");
+        }
+        if (await readBit(242, 0) == FAULT) {
+            faultList.push("remote control channel fault");
+        }
+        if (await readBit(242, 1) == FAULT) {
+            faultList.push("emergency motor stop without ARC");
+        }
+        if (await readBit(242, 2) == FAULT) {
+            faultList.push("emergency motor stop with ARC");
+        }
+        if (await readBit(242, 3) == FAULT) {
+            faultList.push("short circuit of temperature sensor 1");
+        }
+        if (await readBit(242, 4) == FAULT) {
+            faultList.push("breakout of temperature sensor 1");
+        }
+        if (await readBit(242, 5) == FAULT) {
+            faultList.push("short circuit of temperature sensor 2");
+        }
+        if (await readBit(242, 6) == FAULT) {
+            faultList.push("breakout of temperature sensor 2");
+        }
+        if (await readBit(242, 7) == FAULT) {
+            faultList.push("phase loss");
+        }
+        if (await readBit(242, 8) == FAULT) {
+            faultList.push("EEPROM destruction");
+        }
+        if (await readBit(242, 9) == FAULT) {
+            faultList.push("0-20 mА analog input");
+        }
+        if (await readBit(242, 10) == FAULT) {
+            faultList.push("0-10 V analog input");
+        }
 
-        if (await readBit(240, FAULT_BIT) == FAULT) {
+        return faultList;
+    }
+
+    function processFaultIndicator(isFault) {
+        const LED_SWITCH_INTERVAL_MS = 1000;
+        if (isFault) {
             if (!faultIndicatorSet) {
                 let lighten = false;
 
-                var faultIndicatorInterval = setInterval(async function() {
+                var faultIndicatorInterval = setInterval(function() {
                     if (lighten) {
                         document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
                     } else {
@@ -903,6 +1017,14 @@
                 faultIndicatorSet = false;
                 clearInterval(faultIndicatorInterval);
             }
+        }
+    }
+
+    function writeFaultInfoIntoTable(isFault) {
+        if (isFault) {
+            let currentDateTime = new Date();
+            let time = currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds();
+            addRow("Phase sequence", "AUЧ", "10000", time);
         }
     }
 
