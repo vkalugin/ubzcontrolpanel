@@ -440,6 +440,198 @@
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+
+    const alarms = [
+        {
+            name: "Phase overcurrent",
+            mnemonic: "A,=",
+            address: 241,
+            bit: 0,
+            valueAddress: 300,
+        },
+        {
+            name: "Thermal overload",
+            mnemonic: "Adt",
+            address: 241,
+            bit: 1,
+            valueAddress: 301,
+        },
+        {
+            name: "Ground fault (zero sequence current)",
+            mnemonic: "A,_",
+            address: 241,
+            bit: 2,
+            valueAddress: 302,
+        },
+        {
+            name: "Exceeded multiplicity", // ???
+            mnemonic: "A,O",
+            address: 241,
+            bit: 3,
+            valueAddress: 303,
+        },
+        {
+            name: "Negative sequence current",
+            mnemonic: "A,o",
+            address: 241,
+            bit: 4,
+            valueAddress: 304,
+        },
+        {
+            name: "Phase undercurrent",
+            mnemonic: "A,.",
+            address: 241,
+            bit: 5,
+            valueAddress: 305,
+        },
+        {
+            name: "Delayed start",
+            mnemonic: "APP",
+            address: 241,
+            bit: 6,
+            valueAddress: 306,
+        },
+        {
+            name: "Rotor blocking",
+            mnemonic: "APb",
+            address: 241,
+            bit: 7,
+            valueAddress: 307,
+        },
+        {
+            name: "Temperature threshold at sensor 1",
+            mnemonic: "At1",
+            address: 241,
+            bit: 8,
+            valueAddress: 308,
+        },
+        {
+            name: "Temperature threshold at sensor 2",
+            mnemonic: "At2",
+            address: 241,
+            bit: 9,
+            valueAddress: 309,
+        },
+        {
+            name: "Phase sequence",
+            mnemonic: "AUЧ",
+            address: 241,
+            bit: 10,
+            valueAddress: 310,
+        },
+        {
+            name: "External MS",
+            mnemonic: "ACo",
+            address: 241,
+            bit: 11,
+            valueAddress: 311,
+        },
+        {
+            name: "Line undervoltage",
+            mnemonic: "AU.",
+            address: 241,
+            bit: 12,
+            valueAddress: 312,
+        },
+        {
+            name: "Line overvoltage",
+            mnemonic: "AU=",
+            address: 241,
+            bit: 13,
+            valueAddress: 313,
+        },
+        {
+            name: "Phase imbalance",
+            mnemonic: "AU'",
+            address: 241,
+            bit: 14,
+            valueAddress: 314,
+        },
+        {
+            name: "Motor coil insulation resistance",
+            mnemonic: "Ar,",
+            address: 241,
+            bit: 15,
+            valueAddress: 315,
+        },
+        {
+            name: "Remote control channel fault",
+            mnemonic: "AdU",
+            address: 242,
+            bit: 0,
+            valueAddress: undefined,
+        },
+        {
+            name: "emergency motor stop without ARC",
+            mnemonic: "EAd",
+            address: 242,
+            bit: 1,
+            valueAddress: undefined,
+        },
+        {
+            name: "emergency motor stop with ARC",
+            mnemonic: "EOd",
+            address: 242,
+            bit: 2,
+            valueAddress: undefined,
+        },
+        {
+            name: "Short circuit of temperature sensor 1",
+            mnemonic: "ES1",
+            address: 242,
+            bit: 3,
+            valueAddress: undefined,
+        },
+        {
+            name: "Breakout of temperature sensor 1",
+            mnemonic: "EO1",
+            address: 242,
+            bit: 4,
+            valueAddress: undefined,
+        },
+        {
+            name: "Short circuit of temperature sensor 2",
+            mnemonic: "ES2",
+            address: 242,
+            bit: 5,
+            valueAddress: undefined,
+        },
+        {
+            name: "Breakout of temperature sensor 2",
+            mnemonic: "EO2",
+            address: 242,
+            bit: 6,
+            valueAddress: undefined,
+        },
+        {
+            name: "Phase loss",
+            mnemonic: "E,U",
+            address: 242,
+            bit: 7,
+            valueAddress: undefined,
+        },
+        {
+            name: "EEPROM destruction",
+            mnemonic: "EEP",
+            address: 242,
+            bit: 8,
+            valueAddress: undefined,
+        },
+        {
+            name: "0-20 mA analog input",
+            mnemonic: "AA,",
+            address: 242,
+            bit: 9,
+            valueAddress: 325,
+        },
+        {
+            name: "0-10 V analog input",
+            mnemonic: "AAU",
+            address: 242,
+            bit: 10,
+            valueAddress: 326,
+        },
+    ];
     
     async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
@@ -910,86 +1102,10 @@
     async function readFaultList() {
         const FAULT = 1;
         const faultList = [];
-        if (await readBit(241, 0) == FAULT) {
-            faultList.push("phase overcurrent");
-        }
-        if (await readBit(241, 1) == FAULT) {
-            faultList.push("thermal overload");
-        }
-        if (await readBit(241, 2) == FAULT) {
-            faultList.push("ground fault");
-        }
-        if (await readBit(241, 3) == FAULT) {
-            faultList.push("exceeded multiplicity"); // look for displayed name
-        }
-        if (await readBit(241, 4) == FAULT) {
-            faultList.push("negative sequence current");
-        }
-        if (await readBit(241, 5) == FAULT) {
-            faultList.push("phase undercurrent");
-        }
-        if (await readBit(241, 6) == FAULT) {
-            faultList.push("delayed start");
-        }
-        if (await readBit(241, 7) == FAULT) {
-            faultList.push("rotor blocking");
-        }
-        if (await readBit(241, 8) == FAULT) {
-            faultList.push("temperature threshold sensor 1");
-        }
-        if (await readBit(241, 9) == FAULT) {
-            faultList.push("temperature threshold sensor 2");
-        }
-        if (await readBit(241, 10) == FAULT) {
-            faultList.push("phase sequence");
-        }
-        if (await readBit(241, 11) == FAULT) {
-            faultList.push("external MS");
-        }
-        if (await readBit(241, 12) == FAULT) {
-            faultList.push("line undervoltage");
-        }
-        if (await readBit(241, 13) == FAULT) {
-            faultList.push("line overvoltage");
-        }
-        if (await readBit(241, 14) == FAULT) {
-            faultList.push("phase imbalance");
-        }
-        if (await readBit(241, 15) == FAULT) {
-            faultList.push("motor coil insulation resistance");
-        }
-        if (await readBit(242, 0) == FAULT) {
-            faultList.push("remote control channel fault");
-        }
-        if (await readBit(242, 1) == FAULT) {
-            faultList.push("emergency motor stop without ARC");
-        }
-        if (await readBit(242, 2) == FAULT) {
-            faultList.push("emergency motor stop with ARC");
-        }
-        if (await readBit(242, 3) == FAULT) {
-            faultList.push("short circuit of temperature sensor 1");
-        }
-        if (await readBit(242, 4) == FAULT) {
-            faultList.push("breakout of temperature sensor 1");
-        }
-        if (await readBit(242, 5) == FAULT) {
-            faultList.push("short circuit of temperature sensor 2");
-        }
-        if (await readBit(242, 6) == FAULT) {
-            faultList.push("breakout of temperature sensor 2");
-        }
-        if (await readBit(242, 7) == FAULT) {
-            faultList.push("phase loss");
-        }
-        if (await readBit(242, 8) == FAULT) {
-            faultList.push("EEPROM destruction");
-        }
-        if (await readBit(242, 9) == FAULT) {
-            faultList.push("0-20 mА analog input");
-        }
-        if (await readBit(242, 10) == FAULT) {
-            faultList.push("0-10 V analog input");
+        for (let i=0; i<alarms.length; i++) {
+            if (await readBit(alarms[i].address, alarms[i].bit)) {
+                faultList.push(alarms[i].name);
+            }
         }
 
         return faultList;
