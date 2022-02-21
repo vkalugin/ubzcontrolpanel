@@ -1102,9 +1102,18 @@
     async function readFaultList() {
         const FAULT = 1;
         const faultList = [];
-        for (let i=0; i<alarms.length; i++) {
-            if (await readBit(alarms[i].address, alarms[i].bit)) {
-                faultList.push(alarms[i].name);
+        // set of alarms bit located in these two registers:
+        let alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
+        if(alarmsBitsRaw.ok) {
+            for (let i=0; i<16; i++) {
+                if ((alarmsBitsRaw.ok[0] >>> i) & 1) {
+                    faultList.push(alarms[i].name);
+                }
+            }
+            for (let i=16; i<alarms.length; i++) {
+                if ((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) {
+                    faultList.push(alarms[i].name);
+                }
             }
         }
 
