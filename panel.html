@@ -794,9 +794,10 @@
 
         let isFault = await readBit(240, FAULT_BIT) == FAULT;
         if (isFault) {
+            processFaultIndicator(isFault);
+
             let currentFaultList = await readFaultList();
             if (!arraysEqual(currentFaultList, previousFaultList)) {
-                processFaultIndicator(isFault);
                 writeFaultInfoIntoTable(isFault);
             }
             console.log(previousFaultList);
