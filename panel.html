@@ -802,7 +802,7 @@
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
-                if (faultsToPrint [i]) {
+                if (faultsToPrint[i]) {
                     let currentDateTime = new Date();
                     let time = currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds();
                     const fault = alarms[i];
@@ -1133,7 +1133,7 @@
 
     function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
         if (faultsPrev.length != faultsCurr.length) {
-            console.log("arrays lengths are not equal!");
+            console.log("arrays lengths must be equal!");
             return undefined;
         }
 
@@ -1144,8 +1144,6 @@
                 shouldBePrinted[i] = true;
             }
         }
-
-        console.log(shouldBePrinted);
 
         return shouldBePrinted;
     }
