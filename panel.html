@@ -784,6 +784,8 @@
 
     let previousFaultList = [];
 
+    var faultsPrev = Array(alarms.length).fill(false);
+
     async function updateVis() {
         await processUbzStatuses();
         await processArIndicator();
@@ -796,12 +798,24 @@
         if (isFault) {
             processFaultIndicator(isFault);
 
-            let currentFaultList = await readFaultList();
-            if (!arraysEqual(currentFaultList, previousFaultList)) {
-                writeFaultInfoIntoTable(isFault);
+            let faultsCurr = await determineFaults();
+
+            let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
+            for (let i=0; i<faultsCurr.length; i++) {
+                if (faultsToPrint [i]) {
+                    let currentDateTime = new Date();
+                    let time = currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds();
+                    const fault = alarms[i];
+                    if (fault.valueAddress === undefined) {
+                        addRow(fault.name, fault.mnemonic, "", time);
+                    } else {
+                        let valueRaw = await rawReadRegs(fault.valueAddress, 1);
+                        addRow(fault.name, fault.mnemonic, valueRaw.ok[0].toString(), time);
+                    }
+                }
             }
-            console.log(previousFaultList);
-            previousFaultList = currentFaultList;
+
+            faultsPrev = faultsCurr;
         }
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
@@ -1100,25 +1114,40 @@
         }
     }
 
-    async function readFaultList() {
+    async function determineFaults() {
         const FAULT = 1;
-        const faultList = [];
+        const faultsOccurNow = [];
         // set of alarms bit located in these two registers:
         let alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
         if(alarmsBitsRaw.ok) {
             for (let i=0; i<16; i++) {
-                if ((alarmsBitsRaw.ok[0] >>> i) & 1) {
-                    faultList.push(alarms[i].name);
-                }
+                faultsOccurNow.push(((alarmsBitsRaw.ok[0] >>> i) & 1) === FAULT);
             }
             for (let i=16; i<alarms.length; i++) {
-                if ((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) {
-                    faultList.push(alarms[i].name);
-                }
+                faultsOccurNow.push(((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) === FAULT);
             }
         }
 
-        return faultList;
+        return faultsOccurNow;
+    }
+
+    function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
+        if (faultsPrev.length != faultsCurr.length) {
+            console.log("arrays lengths are not equal!");
+            return undefined;
+        }
+
+        const shouldBePrinted = Array(faultsCurr.length).fill(false);
+
+        for (let i=0; i<faultsCurr.length; i++) {
+            if ((!faultsPrev[i]) && (faultsCurr[i])) {
+                shouldBePrinted[i] = true;
+            }
+        }
+
+        console.log(shouldBePrinted);
+
+        return shouldBePrinted;
     }
 
     function processFaultIndicator(isFault) {
@@ -1143,14 +1172,6 @@
                 faultIndicatorSet = false;
                 clearInterval(faultIndicatorInterval);
             }
-        }
-    }
-
-    function writeFaultInfoIntoTable(isFault) {
-        if (isFault) {
-            let currentDateTime = new Date();
-            let time = currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds();
-            addRow("Phase sequence", "AUЧ", "10000", time);
         }
     }
 
