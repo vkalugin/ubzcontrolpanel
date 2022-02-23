@@ -104,8 +104,7 @@
         width: 100%;
     }
 
-    #faults-table thead > tr, tbody {
-        border:1px solid black;
+    #faults-table thead > tr, tbody { 
         display: block;
     }
 
@@ -808,7 +807,27 @@
             for (let i=0; i<faultsCurr.length; i++) {
                 if (faultsToPrint[i]) {
                     let currentDateTime = new Date();
-                    let time = currentDateTime.getHours() + ":" + currentDateTime.getMinutes() + ":" + currentDateTime.getSeconds();
+
+                    const hoursNum = currentDateTime.getHours();
+                    let hoursStr = hoursNum.toString();
+                    if (hoursNum < 10) {
+                        hoursStr = "0" + hoursStr;
+                    }
+
+                    const minutesNum = currentDateTime.getMinutes();
+                    let minutesStr = minutesNum.toString();
+                    if (minutesNum < 10) {
+                        minutesStr = "0" + minutesStr;
+                    }
+
+                    const secondsNum = currentDateTime.getSeconds();
+                    let secondsStr = secondsNum.toString();
+                    if (secondsNum < 10) {
+                        secondsStr = "0" + secondsStr;
+                    }
+
+                    let time = hoursStr + ":" + minutesStr + ":" + secondsStr;
+
                     const fault = alarms[i];
                     if (fault.valueAddress === undefined) {
                         addRow(fault.name, fault.mnemonic, "", time);
