@@ -15,7 +15,9 @@
     .dashboard-item {
         background-color:lightblue;
         margin: 8px;
-        padding: 15px;
+        padding: 10px;
+        max-width: 320px;
+        min-width: 260px;
     }
 
     .power-characteristic {
@@ -63,10 +65,7 @@
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
-    }
-
-    #faults-table {
-        border: 1px solid lightslategrey;
+        width: 240px;
     }
 
     #fault-indicator {
@@ -94,22 +93,28 @@
     }
 
     #faults-table-container {
-        min-width: 250px;
+        min-width: 240px;
     }
 
-    #faults-table tbody {
-        background-color: white;
+    .faults-table tbody {
+        background-color: lightblue;
         height: 250px;
         overflow: auto;
-        width: 100%;
     }
 
-    #faults-table thead > tr, tbody { 
+    .faults-table thead > tr, tbody { 
         display: block;
     }
 
-    #faults-table td, th {
-        border:1px solid black;
+    .faults-table th {
+        text-align: center;
+    }
+
+    .faults-table td, th {
+        padding: 4px;
+        border: 3px solid lightblue;
+        background-color: whitesmoke;
+        font-size: smaller;
     }
 
     @media only screen and (max-device-width: 1100px) {
@@ -165,8 +170,8 @@
                 <button id="rc-indicator" disabled>RC</button>
                 <button id="reset-fault-button">Reset Fault</button>
             </div>
-            <div id="faults-table-container">
-                <table id="faults-table">
+            <div class="faults-table-container">
+                <table class="faults-table">
                     <tr>
                         <th>
                             Name
@@ -187,7 +192,7 @@
         <div class="dashboard-item">
             <header>Heating</header>
             <div>
-                <canvas id="heating-graph" width="auto" height="auto"></canvas>
+                <canvas id="heating-graph"></canvas>
             </div>
         </div>
         <div class="dashboard-item">
