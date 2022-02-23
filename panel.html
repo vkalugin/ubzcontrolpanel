@@ -93,18 +93,23 @@
         background-color: navajowhite;
     }
 
+    #faults-table-container {
+        min-width: 250px;
+    }
+
     #faults-table tbody {
         background-color: white;
         height: 250px;
         overflow: auto;
+        width: 100%;
     }
 
-    #faults-table thead > tr, tbody{
-        display:block;
+    #faults-table thead > tr, tbody { 
+        display: block;
     }
 
-    #faults-table td {
-        min-width: 50px;
+    #faults-table td, th {
+        border:1px solid black;
     }
 
     @media only screen and (max-device-width: 1100px) {
@@ -160,7 +165,7 @@
                 <button id="rc-indicator" disabled>RC</button>
                 <button id="reset-fault-button">Reset Fault</button>
             </div>
-            <div>
+            <div id="faults-table-container">
                 <table id="faults-table">
                     <tr>
                         <th>
@@ -175,54 +180,6 @@
                         <th>
                             Time
                         </th>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                     </tr>
                 </table>
             </div>
@@ -486,6 +443,198 @@
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+
+    const alarms = [
+        {
+            name: "Phase overcurrent",
+            mnemonic: "A,=",
+            address: 241,
+            bit: 0,
+            valueAddress: 300,
+        },
+        {
+            name: "Thermal overload",
+            mnemonic: "Adt",
+            address: 241,
+            bit: 1,
+            valueAddress: 301,
+        },
+        {
+            name: "Ground fault (zero sequence current)",
+            mnemonic: "A,_",
+            address: 241,
+            bit: 2,
+            valueAddress: 302,
+        },
+        {
+            name: "Exceeded multiplicity", // ???
+            mnemonic: "A,O",
+            address: 241,
+            bit: 3,
+            valueAddress: 303,
+        },
+        {
+            name: "Negative sequence current",
+            mnemonic: "A,o",
+            address: 241,
+            bit: 4,
+            valueAddress: 304,
+        },
+        {
+            name: "Phase undercurrent",
+            mnemonic: "A,.",
+            address: 241,
+            bit: 5,
+            valueAddress: 305,
+        },
+        {
+            name: "Delayed start",
+            mnemonic: "APP",
+            address: 241,
+            bit: 6,
+            valueAddress: 306,
+        },
+        {
+            name: "Rotor blocking",
+            mnemonic: "APb",
+            address: 241,
+            bit: 7,
+            valueAddress: 307,
+        },
+        {
+            name: "Temperature threshold at sensor 1",
+            mnemonic: "At1",
+            address: 241,
+            bit: 8,
+            valueAddress: 308,
+        },
+        {
+            name: "Temperature threshold at sensor 2",
+            mnemonic: "At2",
+            address: 241,
+            bit: 9,
+            valueAddress: 309,
+        },
+        {
+            name: "Phase sequence",
+            mnemonic: "AUЧ",
+            address: 241,
+            bit: 10,
+            valueAddress: 310,
+        },
+        {
+            name: "External MS",
+            mnemonic: "ACo",
+            address: 241,
+            bit: 11,
+            valueAddress: 311,
+        },
+        {
+            name: "Line undervoltage",
+            mnemonic: "AU.",
+            address: 241,
+            bit: 12,
+            valueAddress: 312,
+        },
+        {
+            name: "Line overvoltage",
+            mnemonic: "AU=",
+            address: 241,
+            bit: 13,
+            valueAddress: 313,
+        },
+        {
+            name: "Phase imbalance",
+            mnemonic: "AU'",
+            address: 241,
+            bit: 14,
+            valueAddress: 314,
+        },
+        {
+            name: "Motor coil insulation resistance",
+            mnemonic: "Ar,",
+            address: 241,
+            bit: 15,
+            valueAddress: 315,
+        },
+        {
+            name: "Remote control channel fault",
+            mnemonic: "AdU",
+            address: 242,
+            bit: 0,
+            valueAddress: undefined,
+        },
+        {
+            name: "emergency motor stop without ARC",
+            mnemonic: "EAd",
+            address: 242,
+            bit: 1,
+            valueAddress: undefined,
+        },
+        {
+            name: "emergency motor stop with ARC",
+            mnemonic: "EOd",
+            address: 242,
+            bit: 2,
+            valueAddress: undefined,
+        },
+        {
+            name: "Short circuit of temperature sensor 1",
+            mnemonic: "ES1",
+            address: 242,
+            bit: 3,
+            valueAddress: undefined,
+        },
+        {
+            name: "Breakout of temperature sensor 1",
+            mnemonic: "EO1",
+            address: 242,
+            bit: 4,
+            valueAddress: undefined,
+        },
+        {
+            name: "Short circuit of temperature sensor 2",
+            mnemonic: "ES2",
+            address: 242,
+            bit: 5,
+            valueAddress: undefined,
+        },
+        {
+            name: "Breakout of temperature sensor 2",
+            mnemonic: "EO2",
+            address: 242,
+            bit: 6,
+            valueAddress: undefined,
+        },
+        {
+            name: "Phase loss",
+            mnemonic: "E,U",
+            address: 242,
+            bit: 7,
+            valueAddress: undefined,
+        },
+        {
+            name: "EEPROM destruction",
+            mnemonic: "EEP",
+            address: 242,
+            bit: 8,
+            valueAddress: undefined,
+        },
+        {
+            name: "0-20 mA analog input",
+            mnemonic: "AA,",
+            address: 242,
+            bit: 9,
+            valueAddress: 325,
+        },
+        {
+            name: "0-10 V analog input",
+            mnemonic: "AAU",
+            address: 242,
+            bit: 10,
+            valueAddress: 326,
+        },
+    ];
     
     async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
@@ -594,11 +743,103 @@
         }
     }
 
+    function addRow(col1Text, col2Text, col3Text, col4Text) {
+        let tableBody = document.getElementsByTagName("tbody").item(0);
+        let row = document.createElement("tr");
+       
+        let cell1 = document.createElement("td");
+        let cell2 = document.createElement("td");
+        let cell3 = document.createElement("td");
+        let cell4 = document.createElement("td");
+
+        let textNode1 = document.createTextNode(col1Text);
+        let textNode2 = document.createTextNode(col2Text);
+        let textNode3 = document.createTextNode(col3Text);
+        let textNode4 = document.createTextNode(col4Text);
+
+        cell1.appendChild(textNode1);
+        cell2.appendChild(textNode2);
+        cell3.appendChild(textNode3);
+        cell4.appendChild(textNode4);
+
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        row.appendChild(cell3);
+        row.appendChild(cell4);
+
+        tableBody.appendChild(row);
+    }
+
+    function arraysEqual(arr1, arr2) {
+        const len1 = arr1.length;
+        const len2 = arr2.length;
+        if (len1 !== len2) {
+            return false;
+        } else {
+            for (let i=0; i < len1; i++) {
+                if (arr1[i] !== arr2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    let previousFaultList = [];
+
+    var faultsPrev = Array(alarms.length).fill(false);
+
     async function updateVis() {
         await processUbzStatuses();
-        await processFaultIndicator();
         await processArIndicator();
         await processRcIndicator();
+
+        const FAULT_BIT = 0;
+        const FAULT = 1;
+
+        let isFault = await readBit(240, FAULT_BIT) == FAULT;
+        if (isFault) {
+            processFaultIndicator(isFault);
+
+            let faultsCurr = await determineFaults();
+
+            let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
+            for (let i=0; i<faultsCurr.length; i++) {
+                if (faultsToPrint[i]) {
+                    let currentDateTime = new Date();
+
+                    const hoursNum = currentDateTime.getHours();
+                    let hoursStr = hoursNum.toString();
+                    if (hoursNum < 10) {
+                        hoursStr = "0" + hoursStr;
+                    }
+
+                    const minutesNum = currentDateTime.getMinutes();
+                    let minutesStr = minutesNum.toString();
+                    if (minutesNum < 10) {
+                        minutesStr = "0" + minutesStr;
+                    }
+
+                    const secondsNum = currentDateTime.getSeconds();
+                    let secondsStr = secondsNum.toString();
+                    if (secondsNum < 10) {
+                        secondsStr = "0" + secondsStr;
+                    }
+
+                    let time = hoursStr + ":" + minutesStr + ":" + secondsStr;
+
+                    const fault = alarms[i];
+                    if (fault.valueAddress === undefined) {
+                        addRow(fault.name, fault.mnemonic, "", time);
+                    } else {
+                        let valueRaw = await rawReadRegs(fault.valueAddress, 1);
+                        addRow(fault.name, fault.mnemonic, valueRaw.ok[0].toString(), time);
+                    }
+                }
+            }
+
+            faultsPrev = faultsCurr;
+        }
 
         const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
         if (phaseRmsCurrentRaw.ok) {
@@ -896,16 +1137,47 @@
         }
     }
 
-    async function processFaultIndicator() {
-        const FAULT_BIT = 0;
+    async function determineFaults() {
         const FAULT = 1;
-        const LED_SWITCH_INTERVAL_MS = 1000;
+        const faultsOccurNow = [];
+        // set of alarms bit located in these two registers:
+        let alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
+        if(alarmsBitsRaw.ok) {
+            for (let i=0; i<16; i++) {
+                faultsOccurNow.push(((alarmsBitsRaw.ok[0] >>> i) & 1) === FAULT);
+            }
+            for (let i=16; i<alarms.length; i++) {
+                faultsOccurNow.push(((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) === FAULT);
+            }
+        }
 
-        if (await readBit(240, FAULT_BIT) == FAULT) {
+        return faultsOccurNow;
+    }
+
+    function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
+        if (faultsPrev.length != faultsCurr.length) {
+            console.log("arrays lengths must be equal!");
+            return undefined;
+        }
+
+        const shouldBePrinted = Array(faultsCurr.length).fill(false);
+
+        for (let i=0; i<faultsCurr.length; i++) {
+            if ((!faultsPrev[i]) && (faultsCurr[i])) {
+                shouldBePrinted[i] = true;
+            }
+        }
+
+        return shouldBePrinted;
+    }
+
+    function processFaultIndicator(isFault) {
+        const LED_SWITCH_INTERVAL_MS = 1000;
+        if (isFault) {
             if (!faultIndicatorSet) {
                 let lighten = false;
 
-                var faultIndicatorInterval = setInterval(async function() {
+                var faultIndicatorInterval = setInterval(function() {
                     if (lighten) {
                         document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
                     } else {
