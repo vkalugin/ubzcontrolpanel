@@ -93,11 +93,15 @@
         background-color: navajowhite;
     }
 
+    #faults-table-container {
+        min-width: 250px;
+    }
+
     #faults-table tbody {
         background-color: white;
         height: 250px;
         overflow: auto;
-        min-width: 250px;
+        width: 100%;
     }
 
     #faults-table thead > tr, tbody {
@@ -162,7 +166,7 @@
                 <button id="rc-indicator" disabled>RC</button>
                 <button id="reset-fault-button">Reset Fault</button>
             </div>
-            <div>
+            <div id="faults-table-container">
                 <table id="faults-table">
                     <tr>
                         <th>
