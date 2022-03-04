@@ -1,8 +1,6 @@
 <script type="text/javascript">
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
     const PHASE_VOLTAGE_THRESHOLD = 220;
-
-    src="https://cdn.jsdelivr.net/npm/chart.js"
 </script>
 
 <style type="text/css">
@@ -437,6 +435,7 @@
             <button>About</button>
         </footer>-->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script type="text/javascript">
     var canvas = document.querySelector("#heating-graph");
@@ -986,7 +985,7 @@
             document.querySelector("#zero-sequence-voltage-value").innerHTML = "Err";
         }
 
-        const sensorTemperatureRaw = await rawReadRegs(123, 2);
+        const sensorTemperatureRaw = await rawReadRegs(123, 2); // Put this on the graph
         if (sensorTemperatureRaw.ok) {
             document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[0]);
             document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[1]);
@@ -1257,22 +1256,32 @@
     const Y66 = canvas.height * 0.3;
 
     function drawGraph() {
-        ctx.beginPath();
+        const tempGraph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['-15s', '-10s', '-5s', '0'],
+                datasets: [{
+                    label: 'Temperature, % of max',
+                    data: [50, 65, 80, 60],
+                    backgroundColor: [
+                        'rgba(50, 50, 200, 1)',
+                        'rgba(50, 50, 200, 1)',
+                        'rgba(200, 50, 50, 1)',
+                        'rgba(50, 50, 200, 1)',
+                    ],
 
-        ctx.strokeStyle = "crimson";
-        ctx.lineWidth = 1;
-        ctx.moveTo(0, Y100);
-        ctx.lineTo(canvas.width, Y100);
-        ctx.stroke();
-        ctx.strokeText("100%", Y100, Y100);
-
-        ctx.beginPath();
-        ctx.strokeStyle = "dodgerblue";
-        ctx.moveTo(0, Y66);
-        ctx.lineTo(canvas.width, Y66);
-        ctx.stroke();
-        ctx.strokeText("66%", Y100, Y66);
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
+    
 
     initElements();
     updateVis();
