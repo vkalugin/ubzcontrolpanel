@@ -993,7 +993,7 @@
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
-        drawGraph();
+        drawGraph(Math.floor(Math.random() * 100));
 
         const frequencyRaw = await rawReadRegs(128, 1);
         if (frequencyRaw.ok) {
@@ -1255,27 +1255,40 @@
 
     const Y100 = canvas.height * 0.1;
     const Y66 = canvas.height * 0.3;
+    const temperaturePercentages = [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+    ];
 
-    function drawGraph() {
-        const temperaturePercentages = [undefined,
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        Math.floor(Math.random() * 100),
-        ];
+    const bgColors = [];
+    const labels = ['-60s', '-50s', '-40s', '-30s', '-20s', '-10s', '0'];
 
-        const bgColors = [];
-        for (i=0; i<5; i++) {
+    var currentGraphIndex = 6;
+
+    function drawGraph(tempPercentage) {
+        temperaturePercentages[currentGraphIndex] = tempPercentage;
+        const numTemperatures = tempPercentage.length;
+        currentGraphIndex -= 1;
+        if (currentGraphIndex < 0) {
+            currentGraphIndex = 6;
+        }
+       
+        for (i=0; i<numTemperatures; i++) {
             if (temperaturePercentages[i] >= 66) {
-                bgColors.push('rgba(200, 50, 50, 1)');
+                bgColors.unshift('rgba(200, 50, 50, 1)');
             } else {
-                bgColors.push('rgba(50, 50, 200, 1)');
+                bgColors.unshift('rgba(50, 50, 200, 1)');
             }
         }
         const tempGraph = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['-60s', '-50s', '-40s', '-30s', '-20s', '-10s', '0'],
+                labels: ,
                 datasets: [{
                     label: 'Temperature, % of max',
                     data: temperaturePercentages,
