@@ -993,6 +993,7 @@
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
+        drawGraph();
 
         const frequencyRaw = await rawReadRegs(128, 1);
         if (frequencyRaw.ok) {
@@ -1256,20 +1257,29 @@
     const Y66 = canvas.height * 0.3;
 
     function drawGraph() {
+        const temperaturePercentages = [undefined,
+        Math.floor(Math.random() * 100),
+        Math.floor(Math.random() * 100),
+        Math.floor(Math.random() * 100),
+        Math.floor(Math.random() * 100),
+        ];
+
+        const bgColors = [];
+        for (i=0; i<5; i++) {
+            if (temperaturePercentages[i] >= 66) {
+                bgColors.push('rgba(200, 50, 50, 1)');
+            } else {
+                bgColors.push('rgba(50, 50, 200, 1)');
+            }
+        }
         const tempGraph = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['-15s', '-10s', '-5s', '0'],
+                labels: ['-60s', '-55s', '-50s', '-45s', '-40s', '-35s', '-30s', '-25s', '-20s', '-15s', '-10s', '-5s', '0'],
                 datasets: [{
                     label: 'Temperature, % of max',
-                    data: [50, 65, 80, 60],
-                    backgroundColor: [
-                        'rgba(50, 50, 200, 1)',
-                        'rgba(50, 50, 200, 1)',
-                        'rgba(200, 50, 50, 1)',
-                        'rgba(50, 50, 200, 1)',
-                    ],
-
+                    data: temperaturePercentages,
+                    backgroundColor: bgColors,
                 }]
             },
             options: {
@@ -1285,7 +1295,7 @@
 
     initElements();
     updateVis();
-    drawGraph();
+    // drawGraph();
 
     setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
