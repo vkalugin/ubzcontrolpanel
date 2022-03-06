@@ -1265,26 +1265,25 @@
         undefined,
     ];
 
-    const bgColors = [];
+    const bgColors = ['', '', '', '', '', '', ''];
     const labels = ['-60s', '-50s', '-40s', '-30s', '-20s', '-10s', '0'];
 
-    var currentGraphIndex = 6;
+    var currentGraphIndex = temperaturePercentages.length - 1;
 
     function drawGraph(tempPercentage) {
         temperaturePercentages[currentGraphIndex] = tempPercentage;
-        const numTemperatures = tempPercentage.length;
-        currentGraphIndex -= 1;
+        const numTemperatures = temperaturePercentages.length;
+        
         if (currentGraphIndex < 0) {
-            currentGraphIndex = 6;
+            currentGraphIndex = labels.length;
         }
-       
-        for (i=0; i<numTemperatures; i++) {
-            if (temperaturePercentages[i] >= 66) {
-                bgColors.unshift('rgba(200, 50, 50, 1)');
-            } else {
-                bgColors.unshift('rgba(50, 50, 200, 1)');
-            }
+
+        if (temperaturePercentages[currentGraphIndex] >= 66) {
+            bgColors.unshift('rgba(200, 50, 50, 1)');
+        } else {
+            bgColors.unshift('rgba(50, 50, 200, 1)');
         }
+
         const tempGraph = new Chart(ctx, {
             type: 'line',
             data: {
@@ -1303,12 +1302,14 @@
                 }
             }
         });
+
+        currentGraphIndex -= 1;
     }
     
 
     initElements();
     updateVis();
-    // drawGraph();
+    drawGraph(Math.floor(Math.random() * 100));
 
     setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
