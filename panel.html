@@ -192,7 +192,7 @@
         <div class="dashboard-item">
             <header>Heating</header>
             <div>
-                <canvas id="heating-graph"></canvas>
+                <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -1271,17 +1271,17 @@
     var currentGraphIndex = temperaturePercentages.length - 1;
 
     function drawGraph(tempPercentage) {
-        temperaturePercentages[currentGraphIndex] = tempPercentage;
-        const numTemperatures = temperaturePercentages.length;
-        
         if (currentGraphIndex < 0) {
             currentGraphIndex = labels.length;
         }
 
+        temperaturePercentages[currentGraphIndex] = tempPercentage;
+        const numTemperatures = temperaturePercentages.length;
+
         if (temperaturePercentages[currentGraphIndex] >= 66) {
-            bgColors.unshift('rgba(200, 50, 50, 1)');
+            bgColors[currentGraphIndex] = 'rgba(200, 50, 50, 1)';
         } else {
-            bgColors.unshift('rgba(50, 50, 200, 1)');
+            bgColors[currentGraphIndex] = 'rgba(50, 50, 200, 1)';
         }
 
         const tempGraph = new Chart(ctx, {
