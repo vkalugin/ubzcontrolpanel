@@ -1262,7 +1262,7 @@
     var timeOnGraph = 0;
 
     const tempGraph = new Chart(ctx, {
-        type: 'scatter',
+        type: 'line',
         data: {
             labels: labels,
             datasets: [{
@@ -1283,7 +1283,7 @@
         }
 
         tempGraph.data.labels.push(timeOnGraph.toString() + 's');
-        tempGraph.data.datasets[0].data.push({x: timeOnGraph, y: tempPercentage});
+        tempGraph.data.datasets[0].data.push(tempPercentage);
         tempGraph.data.datasets[0].backgroundColor.push(color);
 
         tempGraph.update();
