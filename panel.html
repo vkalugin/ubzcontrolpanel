@@ -1253,36 +1253,40 @@
         }
     }
 
-    const Y100 = canvas.height * 0.1;
-    const Y66 = canvas.height * 0.3;
+    // const Y100 = canvas.height * 0.1;
+    // const Y66 = canvas.height * 0.3;
     const temperaturePercentages = [];
 
     const bgColors = [];
     const labels = [];
     var timeOnGraph = 0;
 
+    const tempGraph = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Temperature, % of max',
+                data: temperaturePercentages,
+                backgroundColor: bgColors,
+            }]
+        },
+    });
+
     function drawGraph(tempPercentage) {
-        temperaturePercentages.push({x: timeOnGraph, y: tempPercentage});
+        let color = "";
 
         if (tempPercentage >= 66) {
-            bgColors.push('rgba(200, 50, 50, 1)');
+            color = "rgba(200, 50, 50, 1)";
         } else {
-            bgColors.push('rgba(50, 50, 200, 1)');
+            color = "rgba(50, 50, 200, 1)";
         }
 
-        labels.push(timeOnGraph.toString() + 's')
+        tempGraph.data.labels.push(timeOnGraph.toString() + 's');
+        tempGraph.data.datasets[0].data.push({x: timeOnGraph, y: tempPercentage});
+        tempGraph.data.datasets[0].backgroundColor.push(color);
 
-        const tempGraph = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Temperature, % of max',
-                    data: temperaturePercentages,
-                    backgroundColor: bgColors,
-                }]
-            },
-        });
+        tempGraph.update();
 
         timeOnGraph += UPDATE_VISUALIZATION_INTERVAL_MS / 1000;
     }
