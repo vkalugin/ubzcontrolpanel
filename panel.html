@@ -1262,7 +1262,7 @@
     var timeOnGraph = 0;
 
     function drawGraph(tempPercentage) {
-        temperaturePercentages.push(tempPercentage);
+        temperaturePercentages.push({x: timeOnGraph, y: tempPercentage});
 
         if (tempPercentage >= 66) {
             bgColors.push('rgba(200, 50, 50, 1)');
@@ -1273,7 +1273,7 @@
         labels.push(timeOnGraph.toString() + 's')
 
         const tempGraph = new Chart(ctx, {
-            type: 'line',
+            type: 'scatter',
             data: {
                 labels: labels,
                 datasets: [{
