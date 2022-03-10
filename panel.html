@@ -1269,6 +1269,10 @@
                 label: 'Temperature, % of max',
                 data: temperaturePercentages,
                 backgroundColor: bgColors,
+            }, {
+                label: '66%',
+                data: [66],
+                backgroundColor: "rgba(200, 50, 50, 1)",
             }]
         },
     });
@@ -1284,6 +1288,7 @@
 
         tempGraph.data.labels.push(timeOnGraph.toString() + 's');
         tempGraph.data.datasets[0].data.push(tempPercentage);
+        tempGraph.data.datasets[1].data.push(66);
         tempGraph.data.datasets[0].backgroundColor.push(color);
 
         tempGraph.update();
