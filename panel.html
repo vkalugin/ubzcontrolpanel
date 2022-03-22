@@ -1272,6 +1272,12 @@
             }, {
                 label: '66%',
                 data: [66],
+                backgroundColor: "rgba(50, 50, 200, 1)",
+                borderColor: "rgba(50, 50, 200, 1)",
+                radius: 0,
+            }, {
+                label: '100%',
+                data: [100],
                 backgroundColor: "rgba(200, 50, 50, 1)",
                 borderColor: "rgba(200, 50, 50, 1)",
                 radius: 0,
@@ -1294,6 +1300,7 @@
         tempGraph.data.labels.push(timeOnGraph.toString() + 's');
         tempGraph.data.datasets[0].data.push(tempPercentage);
         tempGraph.data.datasets[1].data.push(66);
+        tempGraph.data.datasets[2].data.push(100);
         tempGraph.data.datasets[0].backgroundColor.push(color);
 
         tempGraph.update();
