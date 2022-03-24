@@ -985,7 +985,7 @@
             document.querySelector("#zero-sequence-voltage-value").innerHTML = "Err";
         }
 
-        const sensorTemperatureRaw = await rawReadRegs(123, 2); // Put this on the graph
+        const sensorTemperatureRaw = await rawReadRegs(123, 2);
         if (sensorTemperatureRaw.ok) {
             document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[0]);
             document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[1]);
@@ -993,7 +993,15 @@
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
-        drawGraph(Math.floor(Math.random() * 100));
+
+        const heatSensorRaw = await rawReadRegs(133, 1);
+        if (heatSensorRaw.ok) {
+            const heatPercentage = (heatSensorRaw.ok[0] / 1100000) * 100;
+            drawGraph(heatPercentage);
+        } else {
+            drawGraph(undefined);
+        }
+        // drawGraph(Math.floor(Math.random() * 100));
 
         const frequencyRaw = await rawReadRegs(128, 1);
         if (frequencyRaw.ok) {
