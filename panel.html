@@ -996,7 +996,7 @@
         }
 
         if (TEST_GRAPH) {
-            drawGraph(Math.floor(Math.random() * 110));
+            drawGraph(Math.floor(Math.random() * 125));
         } else {
             const heatSensorRaw = await rawReadRegs(133, 1);
             if (heatSensorRaw.ok) {
@@ -1265,30 +1265,29 @@
         }
     }
 
-    // const Y100 = canvas.height * 0.1;
-    // const Y66 = canvas.height * 0.3;
     const temperaturePercentages = [];
-
     const bgColors = [];
     const labels = [];
     var timeOnGraph = 0;
 
     const tempGraph = new Chart(ctx, {
-        type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Temperature, % of max',
+                type: "bar",
+                label: "Temperature, % of max",
                 data: temperaturePercentages,
                 backgroundColor: bgColors,
             }, {
-                label: '66%',
+                type: "line",
+                label: "66%",
                 data: [66],
                 backgroundColor: "rgba(50, 50, 200, 1)",
                 borderColor: "rgba(50, 50, 200, 1)",
                 radius: 0,
             }, {
-                label: '100%',
+                type: "line",
+                label: "100%",
                 data: [100],
                 backgroundColor: "rgba(200, 50, 50, 1)",
                 borderColor: "rgba(200, 50, 50, 1)",
