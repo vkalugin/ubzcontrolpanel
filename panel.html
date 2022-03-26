@@ -1265,10 +1265,10 @@
         }
     }
 
-    const temperaturePercentages = [];
-    const bgColors = [];
-    const labels = [];
-    var timeOnGraph = 0;
+    const temperaturePercentages = new Array(30).fill(0); // 5 min of 10 second intervals
+    const bgColors = new Array(30);
+    const labels = new Array(30).fill("");
+    var sequenceOnGraph = 29;
 
     const tempGraph = new Chart(ctx, {
         data: {
@@ -1281,14 +1281,14 @@
             }, {
                 type: "line",
                 label: "66%",
-                data: [66],
+                data: new Array(30).fill(66),
                 backgroundColor: "rgba(50, 50, 200, 1)",
                 borderColor: "rgba(50, 50, 200, 1)",
                 radius: 0,
             }, {
                 type: "line",
                 label: "100%",
-                data: [100],
+                data: new Array(30).fill(100),
                 backgroundColor: "rgba(200, 50, 50, 1)",
                 borderColor: "rgba(200, 50, 50, 1)",
                 radius: 0,
@@ -1310,15 +1310,19 @@
             color = "rgba(50, 50, 200, 1)";
         }
 
-        tempGraph.data.labels.push(timeOnGraph.toString() + 's');
-        tempGraph.data.datasets[0].data.push(tempPercentage);
-        tempGraph.data.datasets[1].data.push(66);
-        tempGraph.data.datasets[2].data.push(100);
-        tempGraph.data.datasets[0].backgroundColor.push(color);
+        tempGraph.data.labels[sequenceOnGraph] = (((29 - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
+        tempGraph.data.datasets[0].data[sequenceOnGraph] = tempPercentage;
+        tempGraph.data.datasets[0].backgroundColor[sequenceOnGraph] = color;
 
         tempGraph.update();
 
-        timeOnGraph += UPDATE_VISUALIZATION_INTERVAL_MS / 1000;
+        // timeOnGraph += UPDATE_VISUALIZATION_INTERVAL_MS / 1000;
+
+        if (sequenceOnGraph >= 0) {
+            sequenceOnGraph -= 1;
+        } else {
+            sequenceOnGraph = 29;
+        }
     }
 
     initElements();
