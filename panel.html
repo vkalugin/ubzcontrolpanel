@@ -451,6 +451,50 @@
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
 
+    class Queue {
+        constructor() {
+            this.elements = {};
+            this.head = 0;
+            this.tail = 0;
+        }
+
+        enqueue(element) {
+            this.elements[this.tail] = element;
+            this.tail++;
+        }
+
+        dequeue() {
+            const item = this.elements[this.head];
+            delete this.elements[this.head];
+            this.head++;
+            return item;
+        }
+
+        peek() {
+            return this.elements[this.head];
+        }
+
+        get length() {
+            return this.tail - this.head;
+        }
+
+        get isEmpty() {
+            return this.length === 0;
+        }
+
+        get showFromTail() {
+            let arr = []
+            let arrIndex = 0;
+            for (let i=this.tail - 1; i>=this.head; i--) {
+                arr[arrIndex] = this.elements[i];
+                arrIndex++;
+            }
+            return arr;
+        }
+    }
+
+    var heatQueue = new Queue();
+
     const alarms = [
         {
             name: "Phase overcurrent",
@@ -1310,9 +1354,17 @@
             color = "rgba(50, 50, 200, 1)";
         }
 
+        heatQueue.enqueue({tempPercentage, color});
+        let heatData = heatQueue.showFromTail
+        console.log(heatData);
+
+        let graphIndex = 29;
+        for (let i=0; i<heatData.length; i++) {
+            tempGraph.data.datasets[0].data[graphIndex-i] = heatData[i].tempPercentage;
+            tempGraph.data.datasets[0].backgroundColor[graphIndex-i] = heatData[i].color;
+        }
+
         tempGraph.data.labels[sequenceOnGraph] = (((29 - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
-        tempGraph.data.datasets[0].data[sequenceOnGraph] = tempPercentage;
-        tempGraph.data.datasets[0].backgroundColor[sequenceOnGraph] = color;
 
         tempGraph.update();
 
