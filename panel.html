@@ -1355,6 +1355,9 @@
         }
 
         heatQueue.enqueue({tempPercentage, color});
+        if (heatQueue.length > 30) {
+            heatQueue.dequeue();
+        }
         let heatData = heatQueue.showFromTail
         console.log(heatData);
 
