@@ -1355,7 +1355,7 @@
         }
 
         
-        if (heatQueue.length > 30) {
+        while (heatQueue.length > 30) {
             heatQueue.dequeue();
         }
         heatQueue.enqueue({tempPercentage, color});
