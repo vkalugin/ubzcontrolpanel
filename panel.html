@@ -1,7 +1,8 @@
 <script type="text/javascript">
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
     const PHASE_VOLTAGE_THRESHOLD = 220;
     const TEST_GRAPH = true;
+    const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
 </script>
 
 <style type="text/css">
@@ -1310,9 +1311,9 @@
     }
 
     const temperaturePercentages = new Array(30).fill(0); // 5 min of 10 second intervals
-    const bgColors = new Array(30);
-    const labels = new Array(30).fill("");
-    var sequenceOnGraph = 29;
+    const bgColors = new Array(GRAPH_BARS_NUMBER);
+    const labels = new Array(GRAPH_BARS_NUMBER).fill("");
+    var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
 
     const tempGraph = new Chart(ctx, {
         data: {
@@ -1363,22 +1364,20 @@
         let heatData = heatQueue.showFromTail
         console.log(heatData);
 
-        let graphIndex = 29;
+        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
         for (let i=0; i<heatData.length; i++) {
-            tempGraph.data.datasets[0].data[graphIndex-i] = heatData[i].tempPercentage;
-            tempGraph.data.datasets[0].backgroundColor[graphIndex-i] = heatData[i].color;
+            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
+            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
         }
 
-        tempGraph.data.labels[sequenceOnGraph] = (((29 - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
 
         tempGraph.update();
-
-        // timeOnGraph += UPDATE_VISUALIZATION_INTERVAL_MS / 1000;
 
         if (sequenceOnGraph >= 0) {
             sequenceOnGraph -= 1;
         } else {
-            sequenceOnGraph = 29;
+            sequenceOnGraph = graphMaxIndex;
         }
     }
 
