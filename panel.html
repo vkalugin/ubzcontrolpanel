@@ -1,8 +1,8 @@
 <script type="text/javascript">
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
     const PHASE_VOLTAGE_THRESHOLD = 220;
-
-    src="https://cdn.jsdelivr.net/npm/chart.js"
+    const TEST_GRAPH = false;
+    const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
 </script>
 
 <style type="text/css">
@@ -194,7 +194,7 @@
         <div class="dashboard-item">
             <header>Heating</header>
             <div>
-                <canvas id="heating-graph"></canvas>
+                <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -437,6 +437,7 @@
             <button>About</button>
         </footer>-->
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script type="text/javascript">
     var canvas = document.querySelector("#heating-graph");
@@ -450,6 +451,50 @@
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
     const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+
+    class Queue {
+        constructor() {
+            this.elements = {};
+            this.head = 0;
+            this.tail = 0;
+        }
+
+        enqueue(element) {
+            this.elements[this.tail] = element;
+            this.tail++;
+        }
+
+        dequeue() {
+            const item = this.elements[this.head];
+            delete this.elements[this.head];
+            this.head++;
+            return item;
+        }
+
+        peek() {
+            return this.elements[this.head];
+        }
+
+        get length() {
+            return this.tail - this.head;
+        }
+
+        get isEmpty() {
+            return this.length === 0;
+        }
+
+        get showFromTail() {
+            let arr = []
+            let arrIndex = 0;
+            for (let i=this.tail - 1; i>=this.head; i--) {
+                arr[arrIndex] = this.elements[i];
+                arrIndex++;
+            }
+            return arr;
+        }
+    }
+
+    var heatQueue = new Queue();
 
     const alarms = [
         {
@@ -995,6 +1040,18 @@
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
 
+        if (TEST_GRAPH) {
+            drawGraph(Math.floor(Math.random() * 125));
+        } else {
+            const heatSensorRaw = await rawReadRegs(133, 1);
+            if (heatSensorRaw.ok) {
+                const heatPercentage = (heatSensorRaw.ok[0] / 1100000) * 100;
+                drawGraph(heatPercentage);
+            } else {
+                drawGraph(undefined);
+            }
+        }
+
         const frequencyRaw = await rawReadRegs(128, 1);
         if (frequencyRaw.ok) {
             document.querySelector("#frequency-value").innerHTML = (frequencyRaw.ok[0] * 0.1).toFixed(1);
@@ -1253,30 +1310,79 @@
         }
     }
 
-    const Y100 = canvas.height * 0.1;
-    const Y66 = canvas.height * 0.3;
+    const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
+    const bgColors = new Array(GRAPH_BARS_NUMBER);
+    const labels = new Array(GRAPH_BARS_NUMBER).fill("");
+    var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
 
-    function drawGraph() {
-        ctx.beginPath();
+    const tempGraph = new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [{
+                type: "bar",
+                label: "Temperature, % of max",
+                data: temperaturePercentages,
+                backgroundColor: bgColors,
+            }, {
+                type: "line",
+                label: "66%",
+                data: new Array(GRAPH_BARS_NUMBER).fill(66),
+                backgroundColor: "rgba(50, 50, 200, 1)",
+                borderColor: "rgba(50, 50, 200, 1)",
+                radius: 0,
+            }, {
+                type: "line",
+                label: "100%",
+                data: new Array(GRAPH_BARS_NUMBER).fill(100),
+                backgroundColor: "rgba(200, 50, 50, 1)",
+                borderColor: "rgba(200, 50, 50, 1)",
+                radius: 0,
+            }]
+        },
+        options: {
+            animation: false,
+        }
+    });
 
-        ctx.strokeStyle = "crimson";
-        ctx.lineWidth = 1;
-        ctx.moveTo(0, Y100);
-        ctx.lineTo(canvas.width, Y100);
-        ctx.stroke();
-        ctx.strokeText("100%", Y100, Y100);
+    function drawGraph(tempPercentage) {
+        let color = "";
 
-        ctx.beginPath();
-        ctx.strokeStyle = "dodgerblue";
-        ctx.moveTo(0, Y66);
-        ctx.lineTo(canvas.width, Y66);
-        ctx.stroke();
-        ctx.strokeText("66%", Y100, Y66);
+        if (tempPercentage >= 100) {
+            color = "rgba(200, 50, 50, 1)";
+        } else if (tempPercentage >= 66) {
+            color = "rgba(150, 150, 50, 1)";
+        } else {
+            color = "rgba(50, 50, 200, 1)";
+        }
+
+        
+        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
+            heatQueue.dequeue();
+        }
+        heatQueue.enqueue({tempPercentage, color});
+
+        let heatData = heatQueue.showFromTail
+        console.log(heatData);
+
+        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
+        for (let i=0; i<heatData.length; i++) {
+            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
+            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
+        }
+
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
+
+        tempGraph.update();
+
+        if (sequenceOnGraph >= 0) {
+            sequenceOnGraph -= 1;
+        } else {
+            sequenceOnGraph = graphMaxIndex;
+        }
     }
 
     initElements();
     updateVis();
-    drawGraph();
 
     setInterval(updateVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
