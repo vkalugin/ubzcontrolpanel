@@ -1356,7 +1356,7 @@
         }
 
         
-        while (heatQueue.length >= 30) {
+        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
             heatQueue.dequeue();
         }
         heatQueue.enqueue({tempPercentage, color});
