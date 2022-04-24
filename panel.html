@@ -1310,7 +1310,7 @@
         }
     }
 
-    const temperaturePercentages = new Array(30).fill(0); // 5 min of 10 second intervals
+    const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
     const bgColors = new Array(GRAPH_BARS_NUMBER);
     const labels = new Array(GRAPH_BARS_NUMBER).fill("");
     var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
@@ -1326,14 +1326,14 @@
             }, {
                 type: "line",
                 label: "66%",
-                data: new Array(30).fill(66),
+                data: new Array(GRAPH_BARS_NUMBER).fill(66),
                 backgroundColor: "rgba(50, 50, 200, 1)",
                 borderColor: "rgba(50, 50, 200, 1)",
                 radius: 0,
             }, {
                 type: "line",
                 label: "100%",
-                data: new Array(30).fill(100),
+                data: new Array(GRAPH_BARS_NUMBER).fill(100),
                 backgroundColor: "rgba(200, 50, 50, 1)",
                 borderColor: "rgba(200, 50, 50, 1)",
                 radius: 0,
