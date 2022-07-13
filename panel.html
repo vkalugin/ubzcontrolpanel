@@ -1,7 +1,7 @@
 <script type="text/javascript">
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
     const PHASE_VOLTAGE_THRESHOLD = 220;
-    const TEST_GRAPH = false;
+    const TEST_GRAPH = false; // feed the graph with pseudodata
     const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
 </script>
 
@@ -144,6 +144,7 @@
 </style>
 
 <div id="ubz-vis-container">
+    <!-- put actual device="#DEVICE_ID" number from database instead 16 here -->
     <alias device="#16" name="ubz"></alias>
     <header>UBZ-302 Control Panel</header>
 
