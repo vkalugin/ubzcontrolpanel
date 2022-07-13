@@ -441,62 +441,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script type="text/javascript">
-    var canvas = document.querySelector("#heating-graph");
-    var ctx = canvas.getContext("2d");
-    ctx.font = "16px Droid Sans";
-
-    var deviceConnected = false;
-    var faultIndicatorSet = false;
-    
-    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
-    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
-    const CONTAINER = document.querySelector("#ubz-vis-container");
-    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
-
-    class Queue {
-        constructor() {
-            this.elements = {};
-            this.head = 0;
-            this.tail = 0;
-        }
-
-        enqueue(element) {
-            this.elements[this.tail] = element;
-            this.tail++;
-        }
-
-        dequeue() {
-            const item = this.elements[this.head];
-            delete this.elements[this.head];
-            this.head++;
-            return item;
-        }
-
-        peek() {
-            return this.elements[this.head];
-        }
-
-        get length() {
-            return this.tail - this.head;
-        }
-
-        get isEmpty() {
-            return this.length === 0;
-        }
-
-        get showFromTail() {
-            let arr = []
-            let arrIndex = 0;
-            for (let i=this.tail - 1; i>=this.head; i--) {
-                arr[arrIndex] = this.elements[i];
-                arrIndex++;
-            }
-            return arr;
-        }
-    }
-
-    var heatQueue = new Queue();
-
     const alarms = [
         {
             name: "Phase overcurrent",
@@ -688,7 +632,10 @@
             valueAddress: 326,
         },
     ];
-    
+</script>
+
+<!-- Registers processing -->
+<script type="text/javascript"> 
     async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
@@ -739,6 +686,64 @@
             return undefined;
         }
     }
+</script>
+
+<script type="text/javascript">
+    var canvas = document.querySelector("#heating-graph");
+    var ctx = canvas.getContext("2d");
+    ctx.font = "16px Droid Sans";
+
+    var deviceConnected = false;
+    var faultIndicatorSet = false;
+    
+    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
+    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
+    const CONTAINER = document.querySelector("#ubz-vis-container");
+    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+
+    class Queue {
+        constructor() {
+            this.elements = {};
+            this.head = 0;
+            this.tail = 0;
+        }
+
+        enqueue(element) {
+            this.elements[this.tail] = element;
+            this.tail++;
+        }
+
+        dequeue() {
+            const item = this.elements[this.head];
+            delete this.elements[this.head];
+            this.head++;
+            return item;
+        }
+
+        peek() {
+            return this.elements[this.head];
+        }
+
+        get length() {
+            return this.tail - this.head;
+        }
+
+        get isEmpty() {
+            return this.length === 0;
+        }
+
+        get showFromTail() {
+            let arr = []
+            let arrIndex = 0;
+            for (let i=this.tail - 1; i>=this.head; i--) {
+                arr[arrIndex] = this.elements[i];
+                arrIndex++;
+            }
+            return arr;
+        }
+    }
+
+    var heatQueue = new Queue();
 
     function barValue(barId, maxValue, threshold1, threshold2) {
         const v = document.querySelector(barId).value;
@@ -1363,7 +1368,7 @@
         heatQueue.enqueue({tempPercentage, color});
 
         let heatData = heatQueue.showFromTail
-        console.log(heatData);
+        // console.log(heatData);
 
         let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
         for (let i=0; i<heatData.length; i++) {
@@ -1605,11 +1610,10 @@
 
     document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
         const addr = document.querySelector("#modbus-address-ubz").value;
-        console.log(await writeRegValues(212, [addr]));
+        await writeRegValues(212, [addr]);
     })
 
     document.querySelector("#save-file-button").addEventListener("click", function () {
-        console.log("aaa");
         const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
