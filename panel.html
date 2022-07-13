@@ -440,6 +440,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Alarms defined in device -->
 <script type="text/javascript">
     const alarms = [
         {
@@ -632,10 +633,56 @@
             valueAddress: 326,
         },
     ];
+
+    const ALARM_TYPES_NUMBER = alarms.length;
 </script>
 
 <!-- Registers processing -->
-<script type="text/javascript"> 
+<script type="text/javascript">
+    async function postResponse(body, url) {
+        const res = await new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.onload = function() {
+                const data = JSON.parse(request.response);
+                resolve(data);
+            }
+
+            request.onerror = function(err) {
+                console.error(err);
+                reject(err)
+            }
+
+            request.open("POST", url);
+            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send(JSON.stringify(body));
+        });
+
+        return res;
+    }
+
+    async function getResponse(url) {
+        const res = await new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.onload = function() {
+                const data = JSON.parse(request.response);
+                resolve(data);
+            }
+
+            request.onerror = function(err) {
+                console.error(err);
+                reject(err)
+            }
+
+            request.open("GET", url);
+            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send();
+        });
+
+        return res;
+    }
+
     async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
@@ -688,19 +735,8 @@
     }
 </script>
 
+<!-- Queue -->
 <script type="text/javascript">
-    var canvas = document.querySelector("#heating-graph");
-    var ctx = canvas.getContext("2d");
-    ctx.font = "16px Droid Sans";
-
-    var deviceConnected = false;
-    var faultIndicatorSet = false;
-    
-    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
-    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
-    const CONTAINER = document.querySelector("#ubz-vis-container");
-    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
-
     class Queue {
         constructor() {
             this.elements = {};
@@ -742,6 +778,20 @@
             return arr;
         }
     }
+</script>
+
+<script type="text/javascript">
+    var canvas = document.querySelector("#heating-graph");
+    var ctx = canvas.getContext("2d");
+    ctx.font = "16px Droid Sans";
+
+    var deviceConnected = false;
+    var faultIndicatorSet = false;
+    
+    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
+    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
+    const CONTAINER = document.querySelector("#ubz-vis-container");
+    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
 
     var heatQueue = new Queue();
 
@@ -828,24 +878,7 @@
         tableBody.appendChild(row);
     }
 
-    function arraysEqual(arr1, arr2) {
-        const len1 = arr1.length;
-        const len2 = arr2.length;
-        if (len1 !== len2) {
-            return false;
-        } else {
-            for (let i=0; i < len1; i++) {
-                if (arr1[i] !== arr2[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    let previousFaultList = [];
-
-    var faultsPrev = Array(alarms.length).fill(false);
+    var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
 
     async function updateVis() {
         await processUbzStatuses();
@@ -1209,19 +1242,19 @@
 
     async function determineFaults() {
         const FAULT = 1;
-        const faultsOccurNow = [];
+        const currentFaults = [];
         // set of alarms bit located in these two registers:
         let alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
         if(alarmsBitsRaw.ok) {
             for (let i=0; i<16; i++) {
-                faultsOccurNow.push(((alarmsBitsRaw.ok[0] >>> i) & 1) === FAULT);
+                currentFaults.push(((alarmsBitsRaw.ok[0] >>> i) & 1) === FAULT);
             }
-            for (let i=16; i<alarms.length; i++) {
-                faultsOccurNow.push(((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) === FAULT);
+            for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
+                currentFaults.push(((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) === FAULT);
             }
         }
 
-        return faultsOccurNow;
+        return currentFaults;
     }
 
     function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
@@ -1361,7 +1394,6 @@
             color = "rgba(50, 50, 200, 1)";
         }
 
-        
         while (heatQueue.length >= GRAPH_BARS_NUMBER) {
             heatQueue.dequeue();
         }
@@ -1634,49 +1666,5 @@
         } else {
             return "Und.";
         }
-    }
-    
-    async function postResponse(body, url) {
-        const res = await new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            request.onload = function() {
-                const data = JSON.parse(request.response);
-                resolve(data);
-            }
-
-            request.onerror = function(err) {
-                console.error(err);
-                reject(err)
-            }
-
-            request.open("POST", url);
-            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.send(JSON.stringify(body));
-        });
-
-        return res;
-    }
-
-    async function getResponse(url) {
-        const res = await new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            request.onload = function() {
-                const data = JSON.parse(request.response);
-                resolve(data);
-            }
-
-            request.onerror = function(err) {
-                console.error(err);
-                reject(err)
-            }
-
-            request.open("GET", url);
-            request.setRequestHeader("authorization", `token ${API_TOKEN}`);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.send();
-        });
-
-        return res;
     }
 </script>
