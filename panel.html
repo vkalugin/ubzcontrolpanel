@@ -2,6 +2,7 @@
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
     const PHASE_VOLTAGE_THRESHOLD = 220;
     const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
+    const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
     const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
 </script>
 
@@ -864,9 +865,17 @@
         }
     }
 
+    var rowIsEven = false;
+
     function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
         let tableBody = document.getElementsByTagName("tbody").item(0);
         let row = document.createElement("tr");
+        if (rowIsEven) {
+            row.style.backgroundColor = "whitesmoke";
+        } else {
+            row.style.backgroundColor = "white";
+        }
+        row.style.fontSize = "smaller";
        
         let cell1 = document.createElement("td");
         let cell2 = document.createElement("td");
@@ -884,6 +893,7 @@
         row.appendChild(cell4);
 
         tableBody.appendChild(row);
+        rowIsEven = !rowIsEven;
     }
 
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
@@ -904,7 +914,7 @@
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
-                if (faultsToPrint[i]) {
+                if (faultsToPrint[i] || TEST_FAULT_TABLE) {
                     let currentDateTime = new Date();
 
                     const hoursNum = currentDateTime.getHours();
