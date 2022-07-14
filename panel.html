@@ -768,7 +768,7 @@
             return this.length === 0;
         }
 
-        get showFromTail() {
+        get asArrayFromTail() {
             let arr = []
             let arrIndex = 0;
             for (let i=this.tail - 1; i>=this.head; i--) {
@@ -1420,7 +1420,7 @@
         }
         heatQueue.enqueue({tempPercentage, color});
 
-        let heatData = heatQueue.showFromTail
+        let heatData = heatQueue.asArrayFromTail;
         // console.log(heatData);
 
         let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
