@@ -426,7 +426,7 @@
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
                 <div><button id="motor-start-stop-button" disabled><img src = "https://cdn-icons-png.flaticon.com/512/2479/2479510.png" style="width: 100px;"></button></div>
-                <button id="save-file-button">Save file</button>
+                <button id="save-file-button">Log event UBZ</button>
         </div>
     </div>
 </div>
@@ -770,6 +770,31 @@
             }
             return arr;
         }
+    }
+</script>
+
+<script type="text/javascript">
+    class EventFault {
+        constructor() {
+            this.code = undefined;
+            this.value = undefined;
+            this.time = undefined;
+        }
+    }
+
+    async function processEventLog() {
+        let eventLog = [new EventFault(), new EventFault(), new EventFault(), new EventFault(), new EventFault()];
+        const eventLogRawRegs = await rawReadRegs(243, (4*5));
+        console.log(eventLogRawRegs);
+        if (eventLogRawRegs.ok) {
+            for (let i=0; i<5; i++) {
+                eventLog[i].code = eventLogRawRegs.ok[i*4];
+                eventLog[i].value = eventLogRawRegs.ok[i*4+1];
+                eventLog[i].time = (eventLogRawRegs.ok[i*4+2] << 16) + eventLogRawRegs.ok[i*4+3];
+                console.log(eventLog[i]);
+            }
+        }
+        console.log(eventLog);
     }
 </script>
 
@@ -1659,7 +1684,8 @@
         await writeRegValues(212, [addr]);
     })
 
-    document.querySelector("#save-file-button").addEventListener("click", function () {
+    document.querySelector("#save-file-button").addEventListener("click", async function () {
+        await processEventLog();
         const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
