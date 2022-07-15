@@ -2,6 +2,7 @@
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
     const PHASE_VOLTAGE_THRESHOLD = 220;
     const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
+    const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
     const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
 </script>
 
@@ -425,7 +426,7 @@
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
                 <div><button id="motor-start-stop-button" disabled><img src = "https://cdn-icons-png.flaticon.com/512/2479/2479510.png" style="width: 100px;"></button></div>
-                <button id="save-file-button">Save file</button>
+                <button id="save-file-button">Log event UBZ</button>
         </div>
     </div>
 </div>
@@ -445,7 +446,7 @@
     const alarms = [
         {
             name: "Phase overcurrent",
-            mnemonic: "A,=",
+            mnemonic: "A,<sup>=</sup>",
             address: 241,
             bit: 0,
             valueAddress: 300,
@@ -480,7 +481,7 @@
         },
         {
             name: "Phase undercurrent",
-            mnemonic: "A,.",
+            mnemonic: "A,<sub>=</sub>",
             address: 241,
             bit: 5,
             valueAddress: 305,
@@ -529,21 +530,21 @@
         },
         {
             name: "Line undervoltage",
-            mnemonic: "AU.",
+            mnemonic: "AU<sub>=</sub>",
             address: 241,
             bit: 12,
             valueAddress: 312,
         },
         {
             name: "Line overvoltage",
-            mnemonic: "AU=",
+            mnemonic: "AU<sup>=</sup>",
             address: 241,
             bit: 13,
             valueAddress: 313,
         },
         {
             name: "Phase imbalance",
-            mnemonic: "AU'",
+            mnemonic: "AU<sup>п<\sup>",
             address: 241,
             bit: 14,
             valueAddress: 314,
@@ -772,6 +773,31 @@
     }
 </script>
 
+<script type="text/javascript">
+    class EventFault {
+        constructor() {
+            this.code = undefined;
+            this.value = undefined;
+            this.time = undefined;
+        }
+    }
+
+    async function processEventLog() {
+        let eventLog = [new EventFault(), new EventFault(), new EventFault(), new EventFault(), new EventFault()];
+        const eventLogRawRegs = await rawReadRegs(243, (4*5));
+        console.log(eventLogRawRegs);
+        if (eventLogRawRegs.ok) {
+            for (let i=0; i<5; i++) {
+                eventLog[i].code = eventLogRawRegs.ok[i*4];
+                eventLog[i].value = eventLogRawRegs.ok[i*4+1];
+                eventLog[i].time = (eventLogRawRegs.ok[i*4+2] << 16) + eventLogRawRegs.ok[i*4+3];
+                console.log(eventLog[i]);
+            }
+        }
+        console.log(eventLog);
+    }
+</script>
+
 <!-- Misc. -->
 <script type="text/javascript">
     function temperatureSensorReadable(value) {
@@ -864,24 +890,27 @@
         }
     }
 
-    function addRow(col1Text, col2Text, col3Text, col4Text) {
+    var rowIsEven = false;
+
+    function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
         let tableBody = document.getElementsByTagName("tbody").item(0);
         let row = document.createElement("tr");
+        if (rowIsEven) {
+            row.style.backgroundColor = "whitesmoke";
+        } else {
+            row.style.backgroundColor = "white";
+        }
+        row.style.fontSize = "smaller";
        
         let cell1 = document.createElement("td");
         let cell2 = document.createElement("td");
         let cell3 = document.createElement("td");
         let cell4 = document.createElement("td");
 
-        let textNode1 = document.createTextNode(col1Text);
-        let textNode2 = document.createTextNode(col2Text);
-        let textNode3 = document.createTextNode(col3Text);
-        let textNode4 = document.createTextNode(col4Text);
-
-        cell1.appendChild(textNode1);
-        cell2.appendChild(textNode2);
-        cell3.appendChild(textNode3);
-        cell4.appendChild(textNode4);
+        cell1.innerHTML = col1innerHtml;
+        cell2.innerHTML = col2innerHtml;
+        cell3.innerHTML = col3innerHtml;
+        cell4.innerHTML = col4innerHtml;
 
         row.appendChild(cell1);
         row.appendChild(cell2);
@@ -889,6 +918,7 @@
         row.appendChild(cell4);
 
         tableBody.appendChild(row);
+        rowIsEven = !rowIsEven;
     }
 
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
@@ -909,7 +939,7 @@
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
-                if (faultsToPrint[i]) {
+                if (faultsToPrint[i] || TEST_FAULT_TABLE) {
                     let currentDateTime = new Date();
 
                     const hoursNum = currentDateTime.getHours();
@@ -1208,16 +1238,16 @@
 
     async function initElements() {
         {
-            const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
-            document.querySelector("#power-show-value-1").innerHTML = outstring;
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
+            document.querySelector("#power-show-value-1").innerHTML = characteristicString;
         }
         {
-            const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
-            document.querySelector("#power-show-value-2").innerHTML = outstring;
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
+            document.querySelector("#power-show-value-2").innerHTML = characteristicString;
         }
         {
-            const outstring = await showPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
-            document.querySelector("#power-show-value-3").innerHTML = outstring;
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
+            document.querySelector("#power-show-value-3").innerHTML = characteristicString;
         }
     }
 
@@ -1654,12 +1684,14 @@
         await writeRegValues(212, [addr]);
     })
 
-    document.querySelector("#save-file-button").addEventListener("click", function () {
+    document.querySelector("#save-file-button").addEventListener("click", async function () {
+        await processEventLog();
         const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
         hiddenEl.download = "Overvis";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
         hiddenEl.click();
+        delete(hiddenEl);
     })
 </script>
