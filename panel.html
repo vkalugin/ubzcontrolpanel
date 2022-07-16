@@ -780,21 +780,23 @@
             this.value = undefined;
             this.time = undefined;
         }
+
+        toString() {
+            return "code: " + this.code.toString() + "\nvalue: " + this.value.toString() + "\ntime: " + this.time.toString() + "\n";
+        }
     }
 
     async function processEventLog() {
         let eventLog = [new EventFault(), new EventFault(), new EventFault(), new EventFault(), new EventFault()];
         const eventLogRawRegs = await rawReadRegs(243, (4*5));
-        console.log(eventLogRawRegs);
         if (eventLogRawRegs.ok) {
             for (let i=0; i<5; i++) {
                 eventLog[i].code = eventLogRawRegs.ok[i*4];
                 eventLog[i].value = eventLogRawRegs.ok[i*4+1];
                 eventLog[i].time = (eventLogRawRegs.ok[i*4+2] << 16) + eventLogRawRegs.ok[i*4+3];
-                console.log(eventLog[i]);
             }
         }
-        console.log(eventLog);
+        return eventLog;
     }
 </script>
 
@@ -1685,8 +1687,12 @@
     })
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
-        await processEventLog();
-        const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
+        let eventlog = await processEventLog();
+        let eventLogString = "";
+        for (let event in eventlog) {
+            eventLogString += eventlog[event].toString();
+        }
+        const url = URL.createObjectURL(new Blob([eventLogString], {type: 'text/html'}));
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
