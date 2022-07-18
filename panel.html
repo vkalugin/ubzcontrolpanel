@@ -636,6 +636,10 @@
     ];
 
     const ALARM_TYPES_NUMBER = alarms.length;
+
+    function faultCodeToName(code) {
+        return alarms[code].name;
+    }
 </script>
 
 <!-- Registers processing -->
@@ -842,14 +846,37 @@
             eventLogString += "cannot read time from power on device";
         }
         
-        eventLogString += "<br></p>";
+        eventLogString += "<br></p>\
+        <table border='0' width='100%'>\
+ <tr>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>#</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>The failure name</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Failure time</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Value</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Code</font></strong></td>\
+ </tr> ";
 
-        for (let event in eventlog) {
-            eventLogString += eventlog[event].toString();
+        for (let i=0; i<5; i++) {
+            eventLogString += 
+            "<tr>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i+1).toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + faultCodeToName(eventlog[i].code) + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].time.toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].value.toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].code.toString() + "</font>&nbsp;</td>\
+</tr>";
         }
 
         eventLogString +=
-        "<p>Failure time - is measured from the moment of inclusion UBZ and till the moment of occurrence of failure.</p>\
+        "</table><p>Failure time - is measured from the moment of inclusion UBZ and till the moment of occurrence of failure.</p>\
 <p>Failures are sorted with a bottom upwards by a stack method (i.e. the last failure is from above).</p>\
 </body>\
 </html>";
