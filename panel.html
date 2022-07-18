@@ -800,6 +800,64 @@
     }
 </script>
 
+<script type="text/javascript">
+    var ubzCommunicationAddress = undefined;
+
+    async function createReportURL() {
+        let eventlog = await processEventLog();
+        const now = new Date();
+
+        let eventLogString =
+"<html>\
+<head>\
+    <title>Log of failures UBZ</title>\
+</head>\
+<body bgcolor='#000080' text='#FFFFFF' link='#C1E0FF' vlink='#C1E0FF' alink='#F0FBFF' style='font-family: Arial'>\
+<p><u><strong><big><big>Log of failures UBZ</big></big></strong></u><br>It is generated ";
+
+        eventLogString += now.toDateString() + " at " + now.toLocaleTimeString() + "<p>\
+    The device name: UBZ-302 (standart) <br>\
+    Firmware version: ";
+
+        const firmwareVersionRaw = await rawReadRegs(217, 1);
+        if (firmwareVersionRaw.ok) {
+            eventLogString += firmwareVersionRaw.ok[0].toString();
+        } else {
+            eventLogString += "cannot read firmware version";
+        }
+
+        eventLogString += "<br>Address: ";
+        if (ubzCommunicationAddress) {
+            eventLogString += ubzCommunicationAddress.toString() + "\n";
+        } else {
+            eventLogString += "undefined\n";
+        }
+
+        let timeFromPowerOnRaw = await rawReadRegs(207, 1);
+        eventLogString +=
+        "<br>Time from power on device: ";
+        if (timeFromPowerOnRaw.ok) {
+            eventLogString += timeFromPowerOnRaw.ok[0].toString();
+        } else {
+            eventLogString += "cannot read time from power on device";
+        }
+        
+        eventLogString += "<br></p>";
+
+        for (let event in eventlog) {
+            eventLogString += eventlog[event].toString();
+        }
+
+        eventLogString +=
+        "<p>Failure time - is measured from the moment of inclusion UBZ and till the moment of occurrence of failure.</p>\
+<p>Failures are sorted with a bottom upwards by a stack method (i.e. the last failure is from above).</p>\
+</body>\
+</html>";
+
+        return URL.createObjectURL(new Blob([eventLogString], {type: 'text/html'}));
+    }
+</script>
+
 <!-- Misc. -->
 <script type="text/javascript">
     function temperatureSensorReadable(value) {
@@ -1226,7 +1284,8 @@
         const ubzCommunicationAddressRaw = await rawReadRegs(212, 1);
         if (ubzCommunicationAddressRaw.ok) {
             deviceConnected = true;
-            document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddressRaw.ok[0];
+            ubzCommunicationAddress = ubzCommunicationAddressRaw.ok[0];
+            document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
         } else if (ubzCommunicationAddressRaw.err == "Can't acquire connection") {
             deviceConnected = false;
         }
@@ -1687,16 +1746,12 @@
     })
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
-        let eventlog = await processEventLog();
-        let eventLogString = "";
-        for (let event in eventlog) {
-            eventLogString += eventlog[event].toString();
-        }
-        const url = URL.createObjectURL(new Blob([eventLogString], {type: 'text/html'}));
+        let now = new Date();
+        const url = await createReportURL();
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
-        hiddenEl.download = "Overvis";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
+        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
         hiddenEl.click();
         delete(hiddenEl);
     })
