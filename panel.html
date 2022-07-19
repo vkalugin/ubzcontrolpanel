@@ -804,8 +804,35 @@
     }
 </script>
 
+<!-- Report HTML creation -->
 <script type="text/javascript">
     var ubzCommunicationAddress = undefined;
+
+    // Clarification needed!!!
+    function eventToReadableStrings(event) {
+        let out = {
+            timeStr: "",
+            valueStr : "",
+        };
+
+        // "When UBZ is powered on, 5000000 is written into the registers used to store fault time." - documentation
+        if (event.time == 5000000) {
+            out.timeStr = "-- h : -- m";
+            out.valueStr = event.value.toString();
+        } else {
+            let h = event.time / 3600;
+            let m = (event.time % 3600) / 60;
+            out.timeStr = h.toString() + " h : " + m.toString() + " m";
+        }
+        
+        if (event.code == 10 && event.value == 10000) {
+            out.valueStr = "------";
+        } else {
+            out.valueStr = event.value.toString();
+        }
+
+        return out;
+    }
 
     async function createReportURL() {
         let eventlog = await processEventLog();
@@ -861,15 +888,16 @@
  </tr> ";
 
         for (let i=0; i<5; i++) {
+            const eventReadableStrings = eventToReadableStrings(eventlog[i]);
             eventLogString += 
             "<tr>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i+1).toString() + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + faultCodeToName(eventlog[i].code) + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
-<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].time.toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventReadableStrings.timeStr + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
-<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].value.toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventReadableStrings.valueStr + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].code.toString() + "</font>&nbsp;</td>\
 </tr>";
