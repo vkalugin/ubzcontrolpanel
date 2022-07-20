@@ -636,6 +636,10 @@
     ];
 
     const ALARM_TYPES_NUMBER = alarms.length;
+
+    function faultCodeToName(code) {
+        return alarms[code].name;
+    }
 </script>
 
 <!-- Registers processing -->
@@ -780,21 +784,149 @@
             this.value = undefined;
             this.time = undefined;
         }
+
+        toString() {
+            return "code: " + this.code.toString() + "\nvalue: " + this.value.toString() + "\ntime: " + this.time.toString() + "\n";
+        }
     }
 
     async function processEventLog() {
         let eventLog = [new EventFault(), new EventFault(), new EventFault(), new EventFault(), new EventFault()];
         const eventLogRawRegs = await rawReadRegs(243, (4*5));
-        console.log(eventLogRawRegs);
         if (eventLogRawRegs.ok) {
             for (let i=0; i<5; i++) {
                 eventLog[i].code = eventLogRawRegs.ok[i*4];
                 eventLog[i].value = eventLogRawRegs.ok[i*4+1];
                 eventLog[i].time = (eventLogRawRegs.ok[i*4+2] << 16) + eventLogRawRegs.ok[i*4+3];
-                console.log(eventLog[i]);
             }
         }
-        console.log(eventLog);
+        return eventLog;
+    }
+
+    async function getTimeStrFromSwitchingOn() {
+        const timeRegs = await rawReadRegs(98, 2);
+        if (timeRegs.ok) {
+            const regHi = timeRegs.ok[0];
+            const regLo = timeRegs.ok[1];
+            const time = (regHi << 16) + regLo;
+            const h = Math.floor(time / 60);
+            const m = time % 60;
+            const hStr = (h < 10) ? "0" + h.toString() : h.toString();
+            const mStr = (m < 10) ? "0" + m.toString() : m.toString();
+            return hStr + " h : " + mStr + " m";
+        } else {
+            return "cannot read time from power on device";
+        }
+    }
+</script>
+
+<!-- Report HTML creation -->
+<script type="text/javascript">
+    var ubzCommunicationAddress = undefined;
+
+    function eventToReadableStrings(event) {
+        let out = {
+            timeStr: "",
+            valueStr : "",
+        };
+
+        // "When UBZ is powered on, 5000000 is written into the registers used to store fault time." - documentation
+        if (event.time == 5000000) {
+            out.timeStr = "-- h : -- m";
+            out.valueStr = event.value.toString();
+        } else {
+            let h = event.time / 3600;
+            let m = (event.time % 3600) / 60;
+            out.timeStr = h.toString() + " h : " + m.toString() + " m";
+        }
+        
+        if (event.code == 10 && event.value == 10000) {
+            out.valueStr = "------";
+        } else {
+            out.valueStr = event.value.toString();
+        }
+
+        return out;
+    }
+
+    async function createReportURL() {
+        let eventlog = await processEventLog();
+        const now = new Date();
+
+        let eventLogString =
+"<html>\
+<head>\
+    <title>Log of failures UBZ</title>\
+</head>\
+<body bgcolor='#000080' text='#FFFFFF' link='#C1E0FF' vlink='#C1E0FF' alink='#F0FBFF' style='font-family: Arial'>\
+<p><u><strong><big><big>Log of failures UBZ</big></big></strong></u><br>It is generated ";
+
+        eventLogString += now.toDateString() + " at " + now.toLocaleTimeString() + "<p>\
+    The device name: UBZ-302 (standart) <br>\
+    Firmware version: ";
+
+        const firmwareVersionRaw = await rawReadRegs(217, 1);
+        if (firmwareVersionRaw.ok) {
+            eventLogString += firmwareVersionRaw.ok[0].toString();
+        } else {
+            eventLogString += "cannot read firmware version";
+        }
+
+        eventLogString += "<br>Address: ";
+        if (ubzCommunicationAddress) {
+            eventLogString += ubzCommunicationAddress.toString() + "\n";
+        } else {
+            eventLogString += "undefined\n";
+        }
+
+        let timeFromPowerOnStr = await getTimeStrFromSwitchingOn();
+        eventLogString +=
+        "<br>Time from power on device: ";
+        eventLogString += timeFromPowerOnStr;
+        
+        eventLogString += "<br></p>\
+        <table border='0' width='100%'>\
+ <tr>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>#</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>The failure name</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Failure time</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Value</font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF></font></strong></td>\
+  <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Code</font></strong></td>\
+ </tr> ";
+
+        for (let i=0; i<5; i++) {
+            const eventReadableStrings = eventToReadableStrings(eventlog[i]);
+            let timeStr = "";
+            if (eventlog[i].time == 0) {
+                timeStr = timeFromPowerOnStr;
+            } else {
+                timeStr = eventReadableStrings.timeStr;
+            }
+            eventLogString += 
+            "<tr>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i+1).toString() + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + faultCodeToName(eventlog[i].code) + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + timeStr + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventReadableStrings.valueStr + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventlog[i].code.toString() + "</font>&nbsp;</td>\
+</tr>";
+        }
+
+        eventLogString +=
+        "</table><p>Failure time - is measured from the moment of power on UBZ and till the moment of occurrence of failure.</p>\
+<p>Failures are sorted with a bottom upwards by a stack method (i.e. the last failure is from above).</p>\
+</body>\
+</html>";
+
+        return URL.createObjectURL(new Blob([eventLogString], {type: 'text/html'}));
     }
 </script>
 
@@ -1224,7 +1356,8 @@
         const ubzCommunicationAddressRaw = await rawReadRegs(212, 1);
         if (ubzCommunicationAddressRaw.ok) {
             deviceConnected = true;
-            document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddressRaw.ok[0];
+            ubzCommunicationAddress = ubzCommunicationAddressRaw.ok[0];
+            document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
         } else if (ubzCommunicationAddressRaw.err == "Can't acquire connection") {
             deviceConnected = false;
         }
@@ -1685,12 +1818,12 @@
     })
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
-        await processEventLog();
-        const url = URL.createObjectURL(new Blob(['a', 's', 'd', 'd', 'f', 'g']));
+        let now = new Date();
+        const url = await createReportURL();
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
-        hiddenEl.download = "Overvis";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
+        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
         hiddenEl.click();
         delete(hiddenEl);
     })
