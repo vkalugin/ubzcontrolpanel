@@ -802,13 +802,28 @@
         }
         return eventLog;
     }
+
+    async function getTimeStrFromSwitchingOn() {
+        const timeRegs = await rawReadRegs(98, 2);
+        if (timeRegs.ok) {
+            const regHi = timeRegs.ok[0];
+            const regLo = timeRegs.ok[1];
+            const time = (regHi << 16) + regLo;
+            const h = Math.floor(time / 60);
+            const m = time % 60;
+            const hStr = (h < 10) ? "0" + h.toString() : h.toString();
+            const mStr = (m < 10) ? "0" + m.toString() : m.toString();
+            return hStr + " h : " + mStr + " m";
+        } else {
+            return "cannot read time from power on device";
+        }
+    }
 </script>
 
 <!-- Report HTML creation -->
 <script type="text/javascript">
     var ubzCommunicationAddress = undefined;
 
-    // Clarification needed!!!
     function eventToReadableStrings(event) {
         let out = {
             timeStr: "",
@@ -864,14 +879,10 @@
             eventLogString += "undefined\n";
         }
 
-        let timeFromPowerOnRaw = await rawReadRegs(207, 1);
+        let timeFromPowerOnStr = await getTimeStrFromSwitchingOn();
         eventLogString +=
         "<br>Time from power on device: ";
-        if (timeFromPowerOnRaw.ok) {
-            eventLogString += timeFromPowerOnRaw.ok[0].toString();
-        } else {
-            eventLogString += "cannot read time from power on device";
-        }
+        eventLogString += timeFromPowerOnStr;
         
         eventLogString += "<br></p>\
         <table border='0' width='100%'>\
@@ -889,13 +900,19 @@
 
         for (let i=0; i<5; i++) {
             const eventReadableStrings = eventToReadableStrings(eventlog[i]);
+            let timeStr = "";
+            if (eventlog[i].time == 0) {
+                timeStr = timeFromPowerOnStr;
+            } else {
+                timeStr = eventReadableStrings.timeStr;
+            }
             eventLogString += 
             "<tr>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i+1).toString() + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + faultCodeToName(eventlog[i].code) + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
-<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventReadableStrings.timeStr + "</font>&nbsp;</td>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + timeStr + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + eventReadableStrings.valueStr + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
