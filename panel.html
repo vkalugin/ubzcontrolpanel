@@ -1045,6 +1045,16 @@
             readData3.fill(undefined);
         }
     }
+
+    var readData4 = new Array(2);
+    async function batchRegisters4Read() {
+        const regs = await rawReadRegs(120, 2);
+        if (regs.ok) {
+            readData4 = regs.ok;
+        } else {
+            readData4.fill(undefined);
+        }
+    }
 </script>
 
 <script type="text/javascript">
@@ -1376,9 +1386,9 @@
             }
         }
 
-        const transferRateRaw = await rawReadRegs(213, 1);
-        if (transferRateRaw.ok) {
-            switch (transferRateRaw.ok[0]) {
+        await batchRegisters4Read();
+        if (readData4[1] != undefined) {
+            switch (readData4[1]) {
                 case 0: {
                     document.querySelector("#speed-value").innerHTML = "9600";
                 }
@@ -1392,16 +1402,14 @@
                 }
                 break;
             }
-        } else if (transferRateRaw.err) {
+        } else {
             document.querySelector("#speed-value").innerHTML = "Err";
         }
-
-        const ubzCommunicationAddressRaw = await rawReadRegs(212, 1);
-        if (ubzCommunicationAddressRaw.ok) {
+        if (readData4[0] != undefined) {
             deviceConnected = true;
-            ubzCommunicationAddress = ubzCommunicationAddressRaw.ok[0];
+            ubzCommunicationAddress = readData4[0];
             document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
-        } else if (ubzCommunicationAddressRaw.err == "Can't acquire connection") {
+        } else {
             deviceConnected = false;
         }
 
