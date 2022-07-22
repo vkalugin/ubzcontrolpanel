@@ -688,6 +688,11 @@
         return res;
     }
 
+    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
+    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
+    const CONTAINER = document.querySelector("#ubz-vis-container");
+    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+
     async function rawReadRegs(address, registersNum) {
         const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
@@ -951,21 +956,8 @@
     }
 </script>
 
+<!-- Multicolor bar processing -->
 <script type="text/javascript">
-    var canvas = document.querySelector("#heating-graph");
-    var ctx = canvas.getContext("2d");
-    ctx.font = "16px Droid Sans";
-
-    var deviceConnected = false;
-    var faultIndicatorSet = false;
-    
-    const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
-    const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
-    const CONTAINER = document.querySelector("#ubz-vis-container");
-    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
-
-    var heatQueue = new Queue();
-
     function barValue(barId, maxValue, threshold1, threshold2) {
         const v = document.querySelector(barId).value;
         const widthPercentage = 100 * v / maxValue;
@@ -1021,6 +1013,59 @@
             document.querySelector(innerBarId).style.width = widthPercentageStr;
         }
     }
+</script>
+
+<script type="text/javascript">
+    var readData1 = new Array(7);
+    async function batchRegisters1Read() {
+        const regs = await rawReadRegs(100, 7);
+        if (regs.ok) {
+            readData1 = regs.ok;
+        } else {
+            readData1.fill(undefined);
+        }
+    }
+
+    var readData2 = new Array(10);
+    async function batchRegisters2Read() {
+        const regs = await rawReadRegs(110, 10);
+        if (regs.ok) {
+            readData2 = regs.ok;
+        } else {
+            readData2.fill(undefined);
+        }
+    }
+
+    var readData3 = new Array(7);
+    async function batchRegisters3Read() {
+        const regs = await rawReadRegs(120, 7);
+        if (regs.ok) {
+            readData3 = regs.ok;
+        } else {
+            readData3.fill(undefined);
+        }
+    }
+
+    var readData4 = new Array(2);
+    async function batchRegisters4Read() {
+        const regs = await rawReadRegs(120, 2);
+        if (regs.ok) {
+            readData4 = regs.ok;
+        } else {
+            readData4.fill(undefined);
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var canvas = document.querySelector("#heating-graph");
+    var ctx = canvas.getContext("2d");
+    ctx.font = "16px Droid Sans";
+
+    var deviceConnected = false;
+    var faultIndicatorSet = false;
+
+    var heatQueue = new Queue();
 
     var rowIsEven = false;
 
@@ -1107,110 +1152,127 @@
             faultsPrev = faultsCurr;
         }
 
-        const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
-        if (phaseRmsCurrentRaw.ok) {
-            document.querySelector("#phase-1-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[0] * 0.1).toFixed(1);
-            document.querySelector("#phase-2-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[1] * 0.1).toFixed(1);
-            document.querySelector("#phase-3-current-rms-value").innerHTML = (phaseRmsCurrentRaw.ok[2] * 0.1).toFixed(1);
-            document.querySelector("#phase-1-current-rms-bar").value = phaseRmsCurrentRaw.ok[0];
-            document.querySelector("#phase-2-current-rms-bar").value = phaseRmsCurrentRaw.ok[1];
-            document.querySelector("#phase-3-current-rms-bar").value = phaseRmsCurrentRaw.ok[2];
-        } else if (phaseRmsCurrentRaw.err) {
+        // const phaseRmsCurrentRaw = await rawReadRegs(100, 3);
+        await batchRegisters1Read();
+        if (readData1[0] != undefined) {
+            document.querySelector("#phase-1-current-rms-value").innerHTML = (readData1[0] * 0.1).toFixed(1);
+            document.querySelector("#phase-1-current-rms-bar").value = readData1[0];
+        } else {
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
-            document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
-            document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
+        }
+        if (readData1[1] != undefined) {
+            document.querySelector("#phase-2-current-rms-value").innerHTML = (readData1[1] * 0.1).toFixed(1);
+            document.querySelector("#phase-2-current-rms-bar").value = readData1[1];
+        } else {
+            document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-bar").value = 0;
+        }
+        if (readData1[2] != undefined) {
+            document.querySelector("#phase-3-current-rms-value").innerHTML = (readData1[2] * 0.1).toFixed(1);
+            document.querySelector("#phase-3-current-rms-bar").value = readData1[2];
+        } else {
+            document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
-
-        const zeroSequenceCurrentRaw = await rawReadRegs(103, 1);
-        if (zeroSequenceCurrentRaw.ok) {
-            document.querySelector("#zero-sequence-current-value").innerHTML = (zeroSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
-            document.querySelector("#zero-sequence-current-bar").value = zeroSequenceCurrentRaw.ok[0];
-        } else if (zeroSequenceCurrentRaw.err) {
+        if (readData1[3] != undefined) {
+            document.querySelector("#zero-sequence-current-value").innerHTML = (readData1[3] * 0.1).toFixed(1);
+            document.querySelector("#zero-sequence-current-bar").value = readData1[3];
+        } else {
             document.querySelector("#zero-sequence-current-value").innerHTML = "Err";
             document.querySelector("#zero-sequence-current-bar").value = 0;
         }
         barValue("#zero-sequence-current-bar", 50);
-
-        const currentAverageRaw = await rawReadRegs(104, 3);
-        if (currentAverageRaw.ok) {
-            document.querySelector("#avg-current-value-phase-1").innerHTML = (currentAverageRaw.ok[0] * 0.1).toFixed(1);
-            document.querySelector("#avg-current-value-phase-2").innerHTML = (currentAverageRaw.ok[1] * 0.1).toFixed(1);
-            document.querySelector("#avg-current-value-phase-3").innerHTML = (currentAverageRaw.ok[2] * 0.1).toFixed(1);
-        } else if (currentAverageRaw.err) {
+        if (readData1[4] != undefined) {
+            document.querySelector("#avg-current-value-phase-1").innerHTML = (readData1[4] * 0.1).toFixed(1);
+        } else {
             document.querySelector("#avg-current-value-phase-1").innerHTML = "Err";
+        }
+        if (readData1[5] != undefined) {
+            document.querySelector("#avg-current-value-phase-2").innerHTML = (readData1[5] * 0.1).toFixed(1);
+        } else {
             document.querySelector("#avg-current-value-phase-2").innerHTML = "Err";
+        }
+        if (readData1[6] != undefined) {
+            document.querySelector("#avg-current-value-phase-3").innerHTML = (readData1[6] * 0.1).toFixed(1);
+        } else {
             document.querySelector("#avg-current-value-phase-3").innerHTML = "Err";
         }
-
-        const motorStartCurrentRaw = await rawReadRegs(110, 1);
-        if (motorStartCurrentRaw.ok && motorStartCurrentRaw.ok[0]) {
+        await batchRegisters2Read();
+        if (readData2[0] != undefined && readData2[0] != 0) {
             document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentRaw.ok[0] * 0.1).toFixed(1);
-        } else if (motorStartCurrentRaw.err) {
+        } else {
             document.querySelector("#motor-start-current-value").innerHTML = "Err";
         }
-
-        const overloadCurrentRaw = await rawReadRegs(112, 1);
-        if (overloadCurrentRaw.ok) {
-            document.querySelector("#overload-current-value").innerHTML = (overloadCurrentRaw.ok[0] * 0.1).toFixed(1);
-        } else if (overloadCurrentRaw.err) {
+        if (readData2[1] != undefined) {
+            document.querySelector("#startup-time-value").innerHTML = readData2[1];
+        } else {
+            document.querySelector("#startup-time-value").innerHTML = "Err";
+        }
+        if (readData2[2] != undefined) {
+            document.querySelector("#overload-current-value").innerHTML = (readData2[2] * 0.1).toFixed(1);
+        } else {
             document.querySelector("#overload-current-value").innerHTML = "Err";
         }
-
-        const negativeSequenceCurrentRaw = await rawReadRegs(113, 1);
-        if (negativeSequenceCurrentRaw.ok) {
-            document.querySelector("#negative-sequence-current-value").innerHTML = (negativeSequenceCurrentRaw.ok[0] * 0.1).toFixed(1);
-            document.querySelector("#negative-sequence-current-bar").value = negativeSequenceCurrentRaw.ok[0];
-        } else if (negativeSequenceCurrentRaw.err) {
+        if (readData2[3] != undefined) {
+            document.querySelector("#negative-sequence-current-value").innerHTML = (readData2[3] * 0.1).toFixed(1);
+            document.querySelector("#negative-sequence-current-bar").value = readData2[1];
+        } else {
             document.querySelector("#negative-sequence-current-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
         barValue("#negative-sequence-current-bar", 2000);
+        if (readData2[4] != undefined) {
+            document.querySelector("#phase-1-voltage-value").innerHTML = readData2[4];
+            document.querySelector("#phase-1-voltage-bar").value = readData2[4];
+        } else {
+            document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
+            document.querySelector("#phase-1-voltage-bar").value = 0;
+        }
+        barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        if (readData2[5] != undefined) {
+            document.querySelector("#phase-2-voltage-value").innerHTML = readData2[5];
+            document.querySelector("#phase-2-voltage-bar").value = readData2[5];
+        } else {
+            document.querySelector("#phase-2-voltage-value").innerHTML = "Err";
+            document.querySelector("#phase-2-voltage-bar").value = 0;
+        }
+        barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        if (readData2[6] != undefined) {
+            document.querySelector("#phase-3-voltage-value").innerHTML = readData2[6];
+            document.querySelector("#phase-3-voltage-bar").value = readData2[6];
+        } else {
+            document.querySelector("#phase-3-voltage-value").innerHTML = "Err";
+            document.querySelector("#phase-3-voltage-bar").value = 0;
+        }
+        barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+        if (readData2[7] != undefined) {
+            document.querySelector("#line-1-voltage-value").innerHTML = readData2[7];
+            document.querySelector("#line-1-voltage-bar").value = readData2[7];
+        } else {
+            document.querySelector("#line-1-voltage-value").innerHTML = "Err";
+            document.querySelector("#line-1-voltage-bar").value = 0;
+        }
+        if (readData2[8] != undefined) {
+            document.querySelector("#line-2-voltage-value").innerHTML = readData2[8];
+            document.querySelector("#line-2-voltage-bar").value = readData2[8];
+        } else {
+            document.querySelector("#line-2-voltage-value").innerHTML = "Err";
+            document.querySelector("#line-2-voltage-bar").value = 0;
+        }
+        if (readData2[9] != undefined) {
+            document.querySelector("#line-3-voltage-value").innerHTML = readData2[9];
+            document.querySelector("#line-3-voltage-bar").value = readData2[9];
+        } else {
+            document.querySelector("#line-3-voltage-value").innerHTML = "Err";
+            document.querySelector("#line-3-voltage-bar").value = 0;
+        }
 
         const currentAverageForTimeRaw = await rawReadRegs(153, 1);
         if (currentAverageForTimeRaw.ok) {
             document.querySelector("#current-average-for-time-value").innerHTML = currentAverageForTimeRaw.ok[0];
         } else if (currentAverageForTimeRaw.err) {
             document.querySelector("#current-average-for-time-value").innerHTML = "Err";
-        }
-
-        const phaseRmsVoltageRaw = await rawReadRegs(114, 3);
-        if (phaseRmsVoltageRaw.ok) {
-            document.querySelector("#phase-1-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[0];
-            document.querySelector("#phase-2-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[1];
-            document.querySelector("#phase-3-voltage-value").innerHTML = phaseRmsVoltageRaw.ok[2];
-            document.querySelector("#phase-1-voltage-bar").value = phaseRmsVoltageRaw.ok[0];
-            document.querySelector("#phase-2-voltage-bar").value = phaseRmsVoltageRaw.ok[1];
-            document.querySelector("#phase-3-voltage-bar").value = phaseRmsVoltageRaw.ok[2];
-        } else if (phaseRmsVoltageRaw.err) {
-            document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
-            document.querySelector("#phase-2-voltage-value").innerHTML = "Err";
-            document.querySelector("#phase-3-voltage-value").innerHTML = "Err";
-            document.querySelector("#phase-1-voltage-bar").value = 0;
-            document.querySelector("#phase-2-voltage-bar").value = 0;
-            document.querySelector("#phase-3-voltage-bar").value = 0;
-        }
-        barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-
-        const lineVoltageRaw = await rawReadRegs(117, 3);
-        if (lineVoltageRaw.ok) {
-            document.querySelector("#line-1-voltage-value").innerHTML = lineVoltageRaw.ok[0];
-            document.querySelector("#line-2-voltage-value").innerHTML = lineVoltageRaw.ok[1];
-            document.querySelector("#line-3-voltage-value").innerHTML = lineVoltageRaw.ok[2];
-            document.querySelector("#line-1-voltage-bar").value = lineVoltageRaw.ok[0];
-            document.querySelector("#line-2-voltage-bar").value = lineVoltageRaw.ok[1];
-            document.querySelector("#line-3-voltage-bar").value = lineVoltageRaw.ok[2];
-        } else if (lineVoltageRaw.err) {
-            document.querySelector("#line-1-voltage-value").innerHTML = "Err";
-            document.querySelector("#line-2-voltage-value").innerHTML = "Err";
-            document.querySelector("#line-3-voltage-value").innerHTML = "Err";
-            document.querySelector("#line-1-voltage-bar").value = 0;
-            document.querySelector("#line-2-voltage-bar").value = 0;
-            document.querySelector("#line-3-voltage-bar").value = 0;
         }
 
         const lineVoltageMinRaw = await rawReadRegs(177, 1);
@@ -1221,37 +1283,49 @@
             barValue("#line-3-voltage-bar", 475, lineVoltageMinRaw.ok[0], lineVoltageMaxRaw.ok[0]);
         }
 
-        const positiveSequenceVoltageRaw = await rawReadRegs(120, 1);
-        if (positiveSequenceVoltageRaw.ok) {
-            document.querySelector("#positive-sequence-voltage-value").innerHTML = positiveSequenceVoltageRaw.ok[0];
-        } else if (positiveSequenceVoltageRaw.err) {
+
+        await batchRegisters3Read();
+        if (readData3[0] != undefined) {
+            document.querySelector("#positive-sequence-voltage-value").innerHTML = readData3[0];
+        } else {
             document.querySelector("#positive-sequence-voltage-value").innerHTML = "Err";
         }
 
-        const negativeSequenceVoltageRaw = await rawReadRegs(121, 1);
-        if (negativeSequenceVoltageRaw.ok) {
-            document.querySelector("#negative-sequence-voltage-value").innerHTML = negativeSequenceVoltageRaw.ok[0];
-            document.querySelector("#negative-sequence-voltage-bar").value = negativeSequenceVoltageRaw.ok[0];
-        } else if (negativeSequenceVoltageRaw.err) {
+        if (readData3[1] != undefined) {
+            document.querySelector("#negative-sequence-voltage-value").innerHTML = readData3[1];
+            document.querySelector("#negative-sequence-voltage-bar").value = readData3[1];
+        } else {
             document.querySelector("#negative-sequence-voltage-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-voltage-bar").value = 0;
         }
         barValue("#negative-sequence-voltage-bar", 300);
 
-        const zeroSequenceVoltageRaw = await rawReadRegs(122, 1);
-        if (zeroSequenceVoltageRaw.ok) {
-            document.querySelector("#zero-sequence-voltage-value").innerHTML = zeroSequenceVoltageRaw.ok[0];
-        } else if (zeroSequenceVoltageRaw.err) {
+        if (readData3[2] != undefined) {
+            document.querySelector("#zero-sequence-voltage-value").innerHTML = readData3[2];
+        } else {
             document.querySelector("#zero-sequence-voltage-value").innerHTML = "Err";
         }
 
-        const sensorTemperatureRaw = await rawReadRegs(123, 2);
-        if (sensorTemperatureRaw.ok) {
-            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[0]);
-            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(sensorTemperatureRaw.ok[1]);
-        } else if (sensorTemperatureRaw.err) {
+        if (readData3[3] != undefined) {
+            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(readData3[3]);
+        } else {
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
+        }
+        if (readData3[4] != undefined) {
+            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(readData3[4]);
+        } else {
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
+        }
+        if (readData3[5] != undefined) {
+            document.querySelector("#current-input-value").innerHTML = (readData3[5] * 0.01).toFixed(2);
+        } else {
+            document.querySelector("#current-input-value").innerHTML = "Err";
+        }
+
+        if (readData3[6] != undefined) {
+            document.querySelector("#analog-input-value").innerHTML = (readData3[6] * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#analog-input-value").innerHTML = "Err";
         }
 
         if (TEST_HEAT_GRAPH) {
@@ -1278,20 +1352,6 @@
             document.querySelector("#insulation-resistance-value").innerHTML = (insulationResistanceRaw.ok[0] * 0.1).toFixed(1);
         } else if (insulationResistanceRaw.err) {
             document.querySelector("#insulation-resistance-value").innerHTML = "Err";
-        }
-
-        const currentInputRaw = await rawReadRegs(125, 1);
-        if (currentInputRaw.ok) {
-            document.querySelector("#current-input-value").innerHTML = (currentInputRaw.ok[0] * 0.01).toFixed(2);
-        } else if (currentInputRaw.err) {
-            document.querySelector("#current-input-value").innerHTML = "Err";
-        }
-
-        const analogInputRaw = await rawReadRegs(126, 1);
-        if (analogInputRaw.ok) {
-            document.querySelector("#analog-input-value").innerHTML = (analogInputRaw.ok[0] * 0.1).toFixed(1);
-        } else if (analogInputRaw.err) {
-            document.querySelector("#analog-input-value").innerHTML = "Err";
         }
 
         const timeBeforeArRaw = await rawReadRegs(130, 1);
@@ -1326,16 +1386,9 @@
             }
         }
 
-        const startupTimeRaw = await rawReadRegs(111, 1); // 111??
-        if (startupTimeRaw.ok) {
-            document.querySelector("#startup-time-value").innerHTML = startupTimeRaw.ok[0];
-        } else if (startupTimeRaw.err) {
-            document.querySelector("#startup-time-value").innerHTML = "Err";
-        }
-
-        const transferRateRaw = await rawReadRegs(213, 1);
-        if (transferRateRaw.ok) {
-            switch (transferRateRaw.ok[0]) {
+        await batchRegisters4Read();
+        if (readData4[1] != undefined) {
+            switch (readData4[1]) {
                 case 0: {
                     document.querySelector("#speed-value").innerHTML = "9600";
                 }
@@ -1349,16 +1402,14 @@
                 }
                 break;
             }
-        } else if (transferRateRaw.err) {
+        } else {
             document.querySelector("#speed-value").innerHTML = "Err";
         }
-
-        const ubzCommunicationAddressRaw = await rawReadRegs(212, 1);
-        if (ubzCommunicationAddressRaw.ok) {
+        if (readData4[0] != undefined) {
             deviceConnected = true;
-            ubzCommunicationAddress = ubzCommunicationAddressRaw.ok[0];
+            ubzCommunicationAddress = readData4[0];
             document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
-        } else if (ubzCommunicationAddressRaw.err == "Can't acquire connection") {
+        } else {
             deviceConnected = false;
         }
 
