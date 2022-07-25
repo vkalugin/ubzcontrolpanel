@@ -730,7 +730,7 @@
     }
 
     async function readBit(address, bitPosition) {
-        if (bitPosition < 0 || bitPosition > 15) {
+        if (bitPosition < 0 || bitPosition > 15 || bitPosition == undefined) {
             console.log("can't process the bit position");
             return NaN;
         }
