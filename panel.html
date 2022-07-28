@@ -1071,7 +1071,8 @@
 
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
 
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000; // 10s by default
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const UPDATE_GRAPH_INTERVAL_MS = 10000;
 
     async function updateVis() {
         await processUbzStatuses();
@@ -1598,7 +1599,7 @@
             tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
         }
 
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_GRAPH_INTERVAL_MS / 1000).toString() + 's');
 
         tempGraph.update();
 
