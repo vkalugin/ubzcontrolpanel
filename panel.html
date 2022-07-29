@@ -1015,15 +1015,25 @@
 </script>
 
 <script type="text/javascript">
-    // From 100 to 213
-    var readData = new Array(114);
-
-    async function batchRegistersRead() {
-        const regs = await rawReadRegs(100, 114);
+    // From 100 to 132
+    var readData1 = new Array(33);
+    async function batchRegisters1Read() {
+        const regs = await rawReadRegs(100, 33);
         if (regs.ok) {
-            readData = regs.ok;
+            readData1 = regs.ok;
         } else {
-            readData.fill(undefined);
+            readData1.fill(undefined);
+        }
+    }
+
+    // From 134 to 213
+    var readData2 = new Array(80);
+    async function batchRegisters2Read() {
+        const regs = await rawReadRegs(134, 80);
+        if (regs.ok) {
+            readData2 = regs.ok;
+        } else {
+            readData2.fill(undefined);
         }
     }
 </script>
@@ -1126,174 +1136,175 @@
             faultsPrev = faultsCurr;
         }
 
-        await batchRegistersRead();
+        await batchRegisters1Read();
+        await batchRegisters2Read();
 
-        if (readData[0] != undefined) {
-            document.querySelector("#phase-1-current-rms-value").innerHTML = (readData[0] * 0.1).toFixed(1);
-            document.querySelector("#phase-1-current-rms-bar").value = readData[0];
+        if (readData1[0] != undefined) {
+            document.querySelector("#phase-1-current-rms-value").innerHTML = (readData1[0] * 0.1).toFixed(1);
+            document.querySelector("#phase-1-current-rms-bar").value = readData1[0];
         } else {
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        if (readData[1] != undefined) {
-            document.querySelector("#phase-2-current-rms-value").innerHTML = (readData[1] * 0.1).toFixed(1);
-            document.querySelector("#phase-2-current-rms-bar").value = readData[1];
+        if (readData1[1] != undefined) {
+            document.querySelector("#phase-2-current-rms-value").innerHTML = (readData1[1] * 0.1).toFixed(1);
+            document.querySelector("#phase-2-current-rms-bar").value = readData1[1];
         } else {
             document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-bar").value = 0;
         }
-        if (readData[2] != undefined) {
-            document.querySelector("#phase-3-current-rms-value").innerHTML = (readData[2] * 0.1).toFixed(1);
-            document.querySelector("#phase-3-current-rms-bar").value = readData[2];
+        if (readData1[2] != undefined) {
+            document.querySelector("#phase-3-current-rms-value").innerHTML = (readData1[2] * 0.1).toFixed(1);
+            document.querySelector("#phase-3-current-rms-bar").value = readData1[2];
         } else {
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
-        if (readData[3] != undefined) {
-            document.querySelector("#zero-sequence-current-value").innerHTML = (readData[3] * 0.1).toFixed(1);
-            document.querySelector("#zero-sequence-current-bar").value = readData[3];
+        if (readData1[3] != undefined) {
+            document.querySelector("#zero-sequence-current-value").innerHTML = (readData1[3] * 0.1).toFixed(1);
+            document.querySelector("#zero-sequence-current-bar").value = readData1[3];
         } else {
             document.querySelector("#zero-sequence-current-value").innerHTML = "Err";
             document.querySelector("#zero-sequence-current-bar").value = 0;
         }
         barValue("#zero-sequence-current-bar", 50);
-        if (readData[4] != undefined) {
-            document.querySelector("#avg-current-value-phase-1").innerHTML = (readData[4] * 0.1).toFixed(1);
+        if (readData1[4] != undefined) {
+            document.querySelector("#avg-current-value-phase-1").innerHTML = (readData1[4] * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-1").innerHTML = "Err";
         }
-        if (readData[5] != undefined) {
-            document.querySelector("#avg-current-value-phase-2").innerHTML = (readData[5] * 0.1).toFixed(1);
+        if (readData1[5] != undefined) {
+            document.querySelector("#avg-current-value-phase-2").innerHTML = (readData1[5] * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-2").innerHTML = "Err";
         }
-        if (readData[6] != undefined) {
-            document.querySelector("#avg-current-value-phase-3").innerHTML = (readData[6] * 0.1).toFixed(1);
+        if (readData1[6] != undefined) {
+            document.querySelector("#avg-current-value-phase-3").innerHTML = (readData1[6] * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-3").innerHTML = "Err";
         }
         
-        if (readData[10] != undefined && readData[0] != 0) {
-            document.querySelector("#motor-start-current-value").innerHTML = (motorStartCurrentRaw.ok[10] * 0.1).toFixed(1);
+        if (readData1[10] != undefined && readData1[0] != 0) {
+            document.querySelector("#motor-start-current-value").innerHTML = (readData1[10] * 0.1).toFixed(1);
         } else {
             document.querySelector("#motor-start-current-value").innerHTML = "Err";
         }
-        if (readData[11] != undefined) {
-            document.querySelector("#startup-time-value").innerHTML = readData[11];
+        if (readData1[11] != undefined) {
+            document.querySelector("#startup-time-value").innerHTML = readData1[11];
         } else {
             document.querySelector("#startup-time-value").innerHTML = "Err";
         }
-        if (readData[12] != undefined) {
-            document.querySelector("#overload-current-value").innerHTML = (readData[12] * 0.1).toFixed(1);
+        if (readData1[12] != undefined) {
+            document.querySelector("#overload-current-value").innerHTML = (readData1[12] * 0.1).toFixed(1);
         } else {
             document.querySelector("#overload-current-value").innerHTML = "Err";
         }
-        if (readData[13] != undefined) {
-            document.querySelector("#negative-sequence-current-value").innerHTML = (readData[13] * 0.1).toFixed(1);
-            document.querySelector("#negative-sequence-current-bar").value = readData[1];
+        if (readData1[13] != undefined) {
+            document.querySelector("#negative-sequence-current-value").innerHTML = (readData1[13] * 0.1).toFixed(1);
+            document.querySelector("#negative-sequence-current-bar").value = readData1[1];
         } else {
             document.querySelector("#negative-sequence-current-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
         barValue("#negative-sequence-current-bar", 2000);
-        if (readData[14] != undefined) {
-            document.querySelector("#phase-1-voltage-value").innerHTML = readData[14];
-            document.querySelector("#phase-1-voltage-bar").value = readData[14];
+        if (readData1[14] != undefined) {
+            document.querySelector("#phase-1-voltage-value").innerHTML = readData1[14];
+            document.querySelector("#phase-1-voltage-bar").value = readData1[14];
         } else {
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData[15] != undefined) {
-            document.querySelector("#phase-2-voltage-value").innerHTML = readData[15];
-            document.querySelector("#phase-2-voltage-bar").value = readData[15];
+        if (readData1[15] != undefined) {
+            document.querySelector("#phase-2-voltage-value").innerHTML = readData1[15];
+            document.querySelector("#phase-2-voltage-bar").value = readData1[15];
         } else {
             document.querySelector("#phase-2-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-2-voltage-bar").value = 0;
         }
         barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData[16] != undefined) {
-            document.querySelector("#phase-3-voltage-value").innerHTML = readData[16];
-            document.querySelector("#phase-3-voltage-bar").value = readData[16];
+        if (readData1[16] != undefined) {
+            document.querySelector("#phase-3-voltage-value").innerHTML = readData1[16];
+            document.querySelector("#phase-3-voltage-bar").value = readData1[16];
         } else {
             document.querySelector("#phase-3-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
         barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData[17] != undefined) {
-            document.querySelector("#line-1-voltage-value").innerHTML = readData[17];
-            document.querySelector("#line-1-voltage-bar").value = readData[17];
+        if (readData1[17] != undefined) {
+            document.querySelector("#line-1-voltage-value").innerHTML = readData1[17];
+            document.querySelector("#line-1-voltage-bar").value = readData1[17];
         } else {
             document.querySelector("#line-1-voltage-value").innerHTML = "Err";
             document.querySelector("#line-1-voltage-bar").value = 0;
         }
-        if (readData[18] != undefined) {
-            document.querySelector("#line-2-voltage-value").innerHTML = readData[18];
-            document.querySelector("#line-2-voltage-bar").value = readData[18];
+        if (readData1[18] != undefined) {
+            document.querySelector("#line-2-voltage-value").innerHTML = readData1[18];
+            document.querySelector("#line-2-voltage-bar").value = readData1[18];
         } else {
             document.querySelector("#line-2-voltage-value").innerHTML = "Err";
             document.querySelector("#line-2-voltage-bar").value = 0;
         }
-        if (readData[19] != undefined) {
-            document.querySelector("#line-3-voltage-value").innerHTML = readData[19];
-            document.querySelector("#line-3-voltage-bar").value = readData[19];
+        if (readData1[19] != undefined) {
+            document.querySelector("#line-3-voltage-value").innerHTML = readData1[19];
+            document.querySelector("#line-3-voltage-bar").value = readData1[19];
         } else {
             document.querySelector("#line-3-voltage-value").innerHTML = "Err";
             document.querySelector("#line-3-voltage-bar").value = 0;
         }
 
-        if (readData[53] != undefined) {
-            document.querySelector("#current-average-for-time-value").innerHTML = readData[53];
+        if (readData2[19] != undefined) {
+            document.querySelector("#current-average-for-time-value").innerHTML = readData2[19];
         } else {
             document.querySelector("#current-average-for-time-value").innerHTML = "Err";
         }
 
         // Registers 177 & 180 - line voltage min and max
-        if (readData[77] != undefined && readData[80] != undefined) {
-            barValue("#line-1-voltage-bar", 475, readData[77], readData[80]);
-            barValue("#line-2-voltage-bar", 475, readData[77], readData[80]);
-            barValue("#line-3-voltage-bar", 475, readData[77], readData[80]);
+        if (readData2[43] != undefined && readData2[46] != undefined) {
+            barValue("#line-1-voltage-bar", 475, readData2[43], readData2[46]);
+            barValue("#line-2-voltage-bar", 475, readData2[43], readData2[46]);
+            barValue("#line-3-voltage-bar", 475, readData2[43], readData2[46]);
         }
 
-        if (readData[20] != undefined) {
-            document.querySelector("#positive-sequence-voltage-value").innerHTML = readData[20];
+        if (readData1[20] != undefined) {
+            document.querySelector("#positive-sequence-voltage-value").innerHTML = readData1[20];
         } else {
             document.querySelector("#positive-sequence-voltage-value").innerHTML = "Err";
         }
 
-        if (readData[21] != undefined) {
-            document.querySelector("#negative-sequence-voltage-value").innerHTML = readData[21];
-            document.querySelector("#negative-sequence-voltage-bar").value = readData[21];
+        if (readData1[21] != undefined) {
+            document.querySelector("#negative-sequence-voltage-value").innerHTML = readData1[21];
+            document.querySelector("#negative-sequence-voltage-bar").value = readData1[21];
         } else {
             document.querySelector("#negative-sequence-voltage-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-voltage-bar").value = 0;
         }
         barValue("#negative-sequence-voltage-bar", 300);
 
-        if (readData[22] != undefined) {
-            document.querySelector("#zero-sequence-voltage-value").innerHTML = readData[22];
+        if (readData1[22] != undefined) {
+            document.querySelector("#zero-sequence-voltage-value").innerHTML = readData1[22];
         } else {
             document.querySelector("#zero-sequence-voltage-value").innerHTML = "Err";
         }
 
-        if (readData[23] != undefined) {
-            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(readData[23]);
+        if (readData1[23] != undefined) {
+            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(readData1[23]);
         } else {
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
         }
-        if (readData[24] != undefined) {
-            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(readData[24]);
+        if (readData1[24] != undefined) {
+            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(readData1[24]);
         } else {
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
-        if (readData[25] != undefined) {
-            document.querySelector("#current-input-value").innerHTML = (readData[25] * 0.01).toFixed(2);
+        if (readData1[25] != undefined) {
+            document.querySelector("#current-input-value").innerHTML = (readData1[25] * 0.01).toFixed(2);
         } else {
             document.querySelector("#current-input-value").innerHTML = "Err";
         }
 
-        if (readData[26] != undefined) {
-            document.querySelector("#analog-input-value").innerHTML = (readData[26] * 0.1).toFixed(1);
+        if (readData1[26] != undefined) {
+            document.querySelector("#analog-input-value").innerHTML = (readData1[26] * 0.1).toFixed(1);
         } else {
             document.querySelector("#analog-input-value").innerHTML = "Err";
         }
@@ -1301,34 +1312,35 @@
         if (TEST_HEAT_GRAPH) {
             drawGraph(Math.floor(Math.random() * 125));
         } else {
-            if (readData[33] != undefined) {
-                const heatPercentage = (readData[33] / 1100000) * 100;
+            let heatValueRaw = await rawReadRegs(133, 1);
+            if (heatValueRaw.ok) {
+                const heatPercentage = (heatValueRaw.ok[0] / 1100000) * 100;
                 drawGraph(heatPercentage);
             } else {
                 drawGraph(undefined);
             }
         }
 
-        if (readData[28] != undefined) {
-            document.querySelector("#frequency-value").innerHTML = (readData[28] * 0.1).toFixed(1);
+        if (readData1[28] != undefined) {
+            document.querySelector("#frequency-value").innerHTML = (readData1[28] * 0.1).toFixed(1);
         } else {
             document.querySelector("#frequency-value").innerHTML = "Err";
         }
 
-        if (readData[32] != undefined) {
-            document.querySelector("#insulation-resistance-value").innerHTML = (readData[32] * 0.1).toFixed(1);
+        if (readData1[32] != undefined) {
+            document.querySelector("#insulation-resistance-value").innerHTML = (readData1[32] * 0.1).toFixed(1);
         } else {
             document.querySelector("#insulation-resistance-value").innerHTML = "Err";
         }
 
-        if (readData[30] != undefined) {
-            if (readData[30] == 0) {
+        if (readData1[30] != undefined) {
+            if (readData1[30] == 0) {
                 document.querySelector("#time-before-ar-string").innerHTML = "Off";
                 document.querySelector("#time-before-ar-bar").value = 0;
-            } else if (readData[30] > 0 && readData[30] <= 900) {
-                document.querySelector("#time-before-ar-string").innerHTML = readData[30].toString();
-                document.querySelector("#time-before-ar-bar").value = readData[30];
-            } else if (readData[30] == 950) {
+            } else if (readData1[30] > 0 && readData1[30] <= 900) {
+                document.querySelector("#time-before-ar-string").innerHTML = readData1[30].toString();
+                document.querySelector("#time-before-ar-bar").value = readData1[30];
+            } else if (readData1[30] == 950) {
                 document.querySelector("#time-before-ar-string").innerHTML = "No AR";
                 document.querySelector("#time-before-ar-bar").value = 0;
             } else {
@@ -1341,18 +1353,18 @@
         }
         barValue("#negative-sequence-voltage-bar", 900);
 
-        if (readData[105] != undefined) {
-            if (readData[105] == 0) {
+        if (readData2[71] != undefined) {
+            if (readData2[71] == 0) {
                 document.querySelector("#radio-workmode-alarm").checked = true;
-            } else if (readData[105] == 1) {
+            } else if (readData2[71] == 1) {
                 document.querySelector("#radio-workmode-time").checked = true;
-            } else if (readData[105] == 2) {
+            } else if (readData2[71] == 2) {
                 document.querySelector("#radio-workmode-stardelta").checked = true;
             }
         }
 
-        if (readData[113] != undefined) {
-            switch (readData[112]) {
+        if (readData2[79] != undefined) {
+            switch (readData2[78]) {
                 case 0: {
                     document.querySelector("#speed-value").innerHTML = "9600";
                 }
@@ -1369,9 +1381,9 @@
         } else {
             document.querySelector("#speed-value").innerHTML = "Err";
         }
-        if (readData[112] != undefined) {
+        if (readData2[78] != undefined) {
             deviceConnected = true;
-            ubzCommunicationAddress = readData[111];
+            ubzCommunicationAddress = readData2[77];
             document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
         } else {
             deviceConnected = false;
@@ -1400,7 +1412,7 @@
     }
 
     async function processUbzStatuses() {
-        const mmspModeRaw = readData[102];
+        const mmspModeRaw = readData1[102];
 
         const LOAD_RELAY_BIT = 1;
         const FUNCTIONAL_RELAY_BIT = 2;
@@ -1636,7 +1648,7 @@
         switch (keystring) {
             case "full-power":
                 {
-                    const fullPowerRaw = readData[35];
+                    const fullPowerRaw = readData1[35];
                     if (fullPowerRaw != undefined) {
                         const fullPower = fullPowerRaw * 0.01;
                         outstring = fullPower.toString();
@@ -1645,7 +1657,7 @@
                 break;
             case "active-power":
                 {
-                    const activePowerRaw = readData[37];
+                    const activePowerRaw = readData1[37];
                     if (activePowerRaw != undefined) {
                         const activePower = activePowerRaw * 0.01;
                         outstring = activePower.toString();
@@ -1654,7 +1666,7 @@
                 break;
             case "reactive-power":
                 {
-                    const reactivePowerRaw = readData[39];
+                    const reactivePowerRaw = readData1[39];
                     if (reactivePowerRaw != undefined) {
                         const reactivePower = reactivePowerRaw * 0.01;
                         outstring = reactivePower.toString();
@@ -1663,8 +1675,8 @@
                 break;
             case "phase-1-full-power":
                 {
-                    const RMSVoltagePhase1Raw = readData[14];
-                    const RMSCurrentPhase1Raw = readData[0];
+                    const RMSVoltagePhase1Raw = readData1[14];
+                    const RMSCurrentPhase1Raw = readData1[0];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok * 0.1;
@@ -1675,8 +1687,8 @@
                 break;
             case "phase-2-full-power":
                 {
-                    const RMSVoltagePhase2Raw = readData[15];
-                    const RMSCurrentPhase2Raw = readData[1];
+                    const RMSVoltagePhase2Raw = readData1[15];
+                    const RMSCurrentPhase2Raw = readData1[1];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1687,8 +1699,8 @@
                 break;
             case "phase-3-full-power":
                 {
-                    const RMSVoltagePhase3Raw = readData[16];
-                    const RMSCurrentPhase3Raw = readData[2];
+                    const RMSVoltagePhase3Raw = readData1[16];
+                    const RMSCurrentPhase3Raw = readData1[2];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1699,9 +1711,9 @@
                 break;
             case "phase-1-active-power":
                 {
-                    const RMSVoltagePhase1Raw = readData[14];
-                    const RMSCurrentPhase1Raw = readData[0];
-                    const cosPhiPhase1Raw = readData[41];
+                    const RMSVoltagePhase1Raw = readData1[14];
+                    const RMSCurrentPhase1Raw = readData1[0];
+                    const cosPhiPhase1Raw = readData1[41];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
@@ -1713,9 +1725,9 @@
                 break;
             case "phase-2-active-power":
                 {
-                    const RMSVoltagePhase2Raw = readData[15];
-                    const RMSCurrentPhase2Raw = readData[01];
-                    const cosPhiPhase2Raw = readData[43];
+                    const RMSVoltagePhase2Raw = readData1[15];
+                    const RMSCurrentPhase2Raw = readData1[01];
+                    const cosPhiPhase2Raw = readData1[43];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1727,9 +1739,9 @@
                 break;
             case "phase-3-active-power":
                {
-                    const RMSVoltagePhase3Raw = readData[16];
-                    const RMSCurrentPhase3Raw = readData[2];
-                    const cosPhiPhase3Raw = readData[45];
+                    const RMSVoltagePhase3Raw = readData1[16];
+                    const RMSCurrentPhase3Raw = readData1[2];
+                    const cosPhiPhase3Raw = readData1[45];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1741,9 +1753,9 @@
                 break;
             case "phase-1-reactive-power":
                 {
-                    const RMSVoltagePhase1Raw = readData[14];
-                    const RMSCurrentPhase1Raw = readData[0];
-                    const cosPhiPhase1Raw = readData[41];
+                    const RMSVoltagePhase1Raw = readData1[14];
+                    const RMSCurrentPhase1Raw = readData1[0];
+                    const cosPhiPhase1Raw = readData1[41];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
@@ -1756,9 +1768,9 @@
                 break;
             case "phase-2-reactive-power":
                 {
-                    const RMSVoltagePhase2Raw = readData[15];
-                    const RMSCurrentPhase2Raw = readData[1];
-                    const cosPhiPhase2Raw = readData[43];
+                    const RMSVoltagePhase2Raw = readData1[15];
+                    const RMSCurrentPhase2Raw = readData1[1];
+                    const cosPhiPhase2Raw = readData1[43];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1771,9 +1783,9 @@
                 break;
             case "phase-3-reactive-power":
                 {
-                    const RMSVoltagePhase3Raw = readData[16];
-                    const RMSCurrentPhase3Raw = readData[2];
-                    const cosPhiPhase3Raw = readData[45];
+                    const RMSVoltagePhase3Raw = readData1[16];
+                    const RMSCurrentPhase3Raw = readData1[2];
+                    const cosPhiPhase3Raw = readData1[45];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1786,7 +1798,7 @@
                 break;
             case "phase-1-cos-phi":
                 {
-                    const cosPhiPhase1Raw = readData[41];
+                    const cosPhiPhase1Raw = readData1[41];
                     if (cosPhiPhase1Raw != undefined) {
                         const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
                         outstring = cosPhiPhase1.toFixed(3);
@@ -1795,7 +1807,7 @@
                 break;
             case "phase-2-cos-phi":
                 {
-                    const cosPhiPhase2Raw = readData[43];
+                    const cosPhiPhase2Raw = readData1[43];
                     if (cosPhiPhase2Raw != undefined) {
                         const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
                         outstring = cosPhiPhase2.toFixed(3);
@@ -1804,7 +1816,7 @@
                 break;
             case "phase-3-cos-phi":
                 {
-                    const cosPhiPhase3Raw = readData[45];
+                    const cosPhiPhase3Raw = readData1[45];
                     if (cosPhiPhase3Raw != undefined) {
                         const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
                         outstring = cosPhiPhase3.toFixed(3);
