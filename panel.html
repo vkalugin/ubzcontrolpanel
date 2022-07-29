@@ -1084,7 +1084,7 @@
     const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
     const UPDATE_GRAPH_INTERVAL_MS = 10000;
 
-    async function updateVis() {
+    async function updateValuesOnVis() {
         await processUbzStatuses();
         await processArIndicator();
         await processRcIndicator();
@@ -1309,18 +1309,6 @@
             document.querySelector("#analog-input-value").innerHTML = "Err";
         }
 
-        if (TEST_HEAT_GRAPH) {
-            drawGraph(Math.floor(Math.random() * 125));
-        } else {
-            let heatValueRaw = await rawReadRegs(133, 1);
-            if (heatValueRaw.ok) {
-                const heatPercentage = (heatValueRaw.ok[0] / 1100000) * 100;
-                drawGraph(heatPercentage);
-            } else {
-                drawGraph(undefined);
-            }
-        }
-
         if (readData1[28] != undefined) {
             document.querySelector("#frequency-value").innerHTML = (readData1[28] * 0.1).toFixed(1);
         } else {
@@ -1393,6 +1381,20 @@
             document.querySelector("#connection-status-string").innerHTML = "Connected";
         } else {
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
+        }
+    }
+
+    async function updateGraph() {
+        if (TEST_HEAT_GRAPH) {
+            drawGraph(Math.floor(Math.random() * 125));
+        } else {
+            let heatValueRaw = await rawReadRegs(133, 1);
+            if (heatValueRaw.ok) {
+                const heatPercentage = (heatValueRaw.ok[0] / 1100000) * 100;
+                drawGraph(heatPercentage);
+            } else {
+                drawGraph(undefined);
+            }
         }
     }
 
@@ -1623,11 +1625,19 @@
     }
 
     initElements();
-    (function loop() {
-        setTimeout(function() {
-            updateVis();
-            loop();
+
+    (function loopValues() {
+        setTimeout(async function() {
+            await updateValuesOnVis();
+            loopValues();
         }, UPDATE_VISUALIZATION_INTERVAL_MS)
+    })();
+
+    (function loopGraph() {
+        setTimeout(async function() {
+            await updateGraph();
+            loopGraph();
+        }, UPDATE_GRAPH_INTERVAL_MS)
     })();
 
     // TODO: affect only when changed
