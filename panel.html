@@ -1086,8 +1086,6 @@
     const UPDATE_UBZ_STATUSES_MS = 15000;
 
     async function updateValuesOnVis() {
-        await processArIndicator();
-        await processRcIndicator();
 
         const FAULT_BIT = 0;
         const FAULT = 1;
@@ -1629,6 +1627,8 @@
     (function loopUbzStatuses() {
         setTimeout(async function() {
             await processUbzStatuses();
+            await processArIndicator();
+            await processRcIndicator();
             loopUbzStatuses();
         }, UPDATE_UBZ_STATUSES_MS)
     })();
