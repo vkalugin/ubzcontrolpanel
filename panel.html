@@ -1081,11 +1081,11 @@
 
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
 
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 10000;
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
     const UPDATE_GRAPH_INTERVAL_MS = 10000;
+    const UPDATE_UBZ_STATUSES_MS = 15000;
 
     async function updateValuesOnVis() {
-        await processUbzStatuses();
         await processArIndicator();
         await processRcIndicator();
 
@@ -1625,6 +1625,13 @@
     }
 
     initElements();
+
+    (function loopUbzStatuses() {
+        setTimeout(async function() {
+            await processUbzStatuses();
+            loopUbzStatuses();
+        }, UPDATE_UBZ_STATUSES_MS)
+    })();
 
     (function loopValues() {
         setTimeout(async function() {
