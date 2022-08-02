@@ -704,7 +704,7 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
         return res;
@@ -722,10 +722,20 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body, `${API_BASE_URL}/v1/raw/write-register-group/`);
         return res;
+    }
+
+    async function readRegArray(regsString) {
+        const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
+
+        const body = {
+            params: regsString,
+        };
+
+        const res = await postResponse(body, `${API_BASE_URL}/v1/raw/vis-param-values/`);
     }
 
     async function readBit(address, bitPosition) {
@@ -1036,6 +1046,11 @@
             readData2.fill(undefined);
         }
     }
+
+    const regsString = "#0 #1 #2"; // need to figure out real ids
+    async function batchRegistersRead() {
+        var registerValues = await readRegArray(regsString);
+    }
 </script>
 
 <script type="text/javascript">
@@ -1049,6 +1064,9 @@
     var heatQueue = new Queue();
 
     var rowIsEven = false;
+
+    // Test
+    console.log(batchRegistersRead());
 
     function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
         let tableBody = document.getElementsByTagName("tbody").item(0);
