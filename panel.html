@@ -1552,6 +1552,22 @@
         }
     }
 
+    async function processExternalInputIndicator() {
+        const INDICATOR_LIT = "orange";
+        const INDICATOR_DIM = "darkgoldenrod";
+
+        const algorithm020mARaw = await rawReadRegs(224, 1);
+        const algorithm010VRaw = await rawReadRegs(228, 1);
+
+        if (algorithm020mARaw.ok && algorithm010VRaw.ok) {
+            if (algorithm020mARaw.ok[0] != 0 && algorithm010VRaw.ok[0] != 0) {
+                document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_LIT;
+            }
+        } else {
+            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_DIM;
+        }
+    }
+
     const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
     const bgColors = new Array(GRAPH_BARS_NUMBER);
     const labels = new Array(GRAPH_BARS_NUMBER).fill("");
@@ -1629,6 +1645,7 @@
             await processUbzStatuses();
             await processArIndicator();
             await processRcIndicator();
+            await processExternalInputIndicator();
             loopUbzStatuses();
         }, UPDATE_UBZ_STATUSES_MS)
     })();
