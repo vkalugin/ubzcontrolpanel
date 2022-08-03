@@ -1082,7 +1082,6 @@
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
 
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
-    const UPDATE_GRAPH_INTERVAL_MS = 10000;
 
     async function updateValuesOnVis() {
         const FAULT_BIT = 0;
@@ -1383,9 +1382,7 @@
         } else {
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
-    }
 
-    async function updateGraph() {
         if (TEST_HEAT_GRAPH) {
             drawGraph(Math.floor(Math.random() * 125));
         } else {
@@ -1630,7 +1627,7 @@
             tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
         }
 
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_GRAPH_INTERVAL_MS / 1000).toString() + 's');
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
 
         tempGraph.update();
 
@@ -1642,19 +1639,12 @@
     }
 
     initElements();
-
-    (function loopValues() {
+    // setInterval(updateValuesOnVis, UPDATE_VISUALIZATION_INTERVAL_MS); // need to control start and finish of execution
+    (function loopValues() { // always finishes - didn't cause JSON.parse errors, but the execution will be longer under heavy load
         setTimeout(async function() {
             await updateValuesOnVis();
             loopValues();
         }, UPDATE_VISUALIZATION_INTERVAL_MS)
-    })();
-
-    (function loopGraph() {
-        setTimeout(async function() {
-            await updateGraph();
-            loopGraph();
-        }, UPDATE_GRAPH_INTERVAL_MS)
     })();
 
     // TODO: affect only when changed
