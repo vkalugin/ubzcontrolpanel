@@ -1082,10 +1082,18 @@
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
 
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
+    var busy = false;
+    var loopN = 0;
 
     async function updateValuesOnVis() {
         const FAULT_BIT = 0;
         const FAULT = 1;
+
+        if (busy) {
+            return;
+        } else {
+            busy = true;
+        }
 
         await processUbzStatuses();
         await processArIndicator();
@@ -1394,6 +1402,9 @@
                 drawGraph(undefined);
             }
         }
+
+        busy = false;
+        loopN++;
     }
 
     async function initElements() {
@@ -1639,13 +1650,7 @@
     }
 
     initElements();
-    // setInterval(updateValuesOnVis, UPDATE_VISUALIZATION_INTERVAL_MS); // need to control start and finish of execution
-    (function loopValues() { // always finishes - didn't cause JSON.parse errors, but the execution will be longer under heavy load
-        setTimeout(async function() {
-            await updateValuesOnVis();
-            loopValues();
-        }, UPDATE_VISUALIZATION_INTERVAL_MS)
-    })();
+    setInterval(updateValuesOnVis, UPDATE_VISUALIZATION_INTERVAL_MS);
 
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
