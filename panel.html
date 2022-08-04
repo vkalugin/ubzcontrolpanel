@@ -1054,6 +1054,48 @@
             }
         }
 
+        const reg135 = await rawReadRegs(135, 1);
+        if (reg135.ok) {
+            mapRegisters.set(135, reg135.ok[0]);
+        } else {
+            mapRegisters.set(135, undefined);
+        }
+
+        const reg137 = await rawReadRegs(137, 1);
+        if (reg137.ok) {
+            mapRegisters.set(137, reg137.ok[0]);
+        } else {
+            mapRegisters.set(137, undefined);
+        }
+
+        const reg139 = await rawReadRegs(139, 1);
+        if (reg139.ok) {
+            mapRegisters.set(139, reg139.ok[0]);
+        } else {
+            mapRegisters.set(139, undefined);
+        }
+
+        const reg141 = await rawReadRegs(141, 1);
+        if (reg141.ok) {
+            mapRegisters.set(141, reg141.ok[0]);
+        } else {
+            mapRegisters.set(141, undefined);
+        }
+
+        const reg143 = await rawReadRegs(143, 1);
+        if (reg143.ok) {
+            mapRegisters.set(143, reg143.ok[0]);
+        } else {
+            mapRegisters.set(143, undefined);
+        }
+
+        const reg145 = await rawReadRegs(145, 1);
+        if (reg145.ok) {
+            mapRegisters.set(145, reg145.ok[0]);
+        } else {
+            mapRegisters.set(145, undefined);
+        }
+
         const reg153 = await rawReadRegs(153, 1);
         if (reg153.ok) {
             mapRegisters.set(153, reg153.ok[0]);
@@ -1264,7 +1306,7 @@
             document.querySelector("#phase-2-current-rms-bar").value = 0;
         }
         if (mapRegisters.get(102) != undefined) {
-            document.querySelector("#phase-3-current-rms-value").innerHTML = (mapRegisters(.get102) * 0.1).toFixed(1);
+            document.querySelector("#phase-3-current-rms-value").innerHTML = (mapRegisters.get(102) * 0.1).toFixed(1);
             document.querySelector("#phase-3-current-rms-bar").value = mapRegisters.get(102);
         } else {
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
@@ -1776,38 +1818,38 @@
         switch (keystring) {
             case "full-power":
                 {
-                    const fullPowerRaw = mapRegisters[35];
-                    if (fullPowerRaw != undefined) {
-                        const fullPower = fullPowerRaw * 0.01;
+                    const fullPower = mapRegisters.get(135);
+                    if (fullPower != undefined) {
+                        const fullPower = fullPower * 0.01;
                         outstring = fullPower.toString();
                     }
                 }
                 break;
             case "active-power":
                 {
-                    const activePowerRaw = mapRegisters[37];
-                    if (activePowerRaw != undefined) {
-                        const activePower = activePowerRaw * 0.01;
+                    const activePower = mapRegisters.get(137);
+                    if (activePower != undefined) {
+                        const activePower = activePower * 0.01;
                         outstring = activePower.toString();
                     }
                 }
                 break;
             case "reactive-power":
                 {
-                    const reactivePowerRaw = mapRegisters[39];
-                    if (reactivePowerRaw != undefined) {
-                        const reactivePower = reactivePowerRaw * 0.01;
+                    const reactivePower = mapRegisters.get(139);
+                    if (reactivePower != undefined) {
+                        const reactivePower = reactivePower * 0.01;
                         outstring = reactivePower.toString();
                     }
                 }
                 break;
             case "phase-1-full-power":
                 {
-                    const RMSVoltagePhase1Raw = mapRegisters[14];
-                    const RMSCurrentPhase1Raw = mapRegisters[0];
-                    if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok * 0.1;
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1.ok;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1.ok * 0.1;
                         const phase1FullPower = RMSVoltagePhase1 * RMSCurrentPhase1;
                         outstring = phase1FullPower.toString();
                     }
@@ -1815,11 +1857,11 @@
                 break;
             case "phase-2-full-power":
                 {
-                    const RMSVoltagePhase2Raw = mapRegisters[15];
-                    const RMSCurrentPhase2Raw = mapRegisters[1];
-                    if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
                         const phase2FullPower = RMSVoltagePhase2 * RMSCurrentPhase2;
                         outstring = phase2FullPower.toString();
                     }
@@ -1827,11 +1869,11 @@
                 break;
             case "phase-3-full-power":
                 {
-                    const RMSVoltagePhase3Raw = mapRegisters[16];
-                    const RMSCurrentPhase3Raw = mapRegisters[2];
-                    if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
                         const phase3FullPower = RMSVoltagePhase3 * RMSCurrentPhase3;
                         outstring = phase3FullPower.toString();
                     }
@@ -1839,13 +1881,13 @@
                 break;
             case "phase-1-active-power":
                 {
-                    const RMSVoltagePhase1Raw = mapRegisters[14];
-                    const RMSCurrentPhase1Raw = mapRegisters[0];
-                    const cosPhiPhase1Raw = mapRegisters[41];
-                    if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
-                        const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    const cosPhiPhase1 = mapRegisters.get(141);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
+                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
                         const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * cosPhiPhase1;
                         outstring = phase1activePower.toString();
                     }
@@ -1853,13 +1895,13 @@
                 break;
             case "phase-2-active-power":
                 {
-                    const RMSVoltagePhase2Raw = mapRegisters[15];
-                    const RMSCurrentPhase2Raw = mapRegisters[01];
-                    const cosPhiPhase2Raw = mapRegisters[43];
-                    if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
-                        const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    const cosPhiPhase2 = mapRegisters.get(143);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
+                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
                         const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * cosPhiPhase2;
                         outstring = phase2activePower.toString();
                     }
@@ -1867,13 +1909,13 @@
                 break;
             case "phase-3-active-power":
                {
-                    const RMSVoltagePhase3Raw = mapRegisters[16];
-                    const RMSCurrentPhase3Raw = mapRegisters[2];
-                    const cosPhiPhase3Raw = mapRegisters[45];
-                    if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
-                        const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    const cosPhiPhase3 = mapRegisters.get(145);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
+                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
                         const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * cosPhiPhase3;
                         outstring = phase3activePower.toString();
                     }
@@ -1881,13 +1923,13 @@
                 break;
             case "phase-1-reactive-power":
                 {
-                    const RMSVoltagePhase1Raw = mapRegisters[14];
-                    const RMSCurrentPhase1Raw = mapRegisters[0];
-                    const cosPhiPhase1Raw = mapRegisters[41];
-                    if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
-                        const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    const cosPhiPhase1 = mapRegisters.get(141);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
+                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
                         const sinPhiPhase1 = sinFromCos(cosPhiPhase1);
                         const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * sinPhiPhase1;
                         outstring = phase1reactivePower.toString();
@@ -1896,13 +1938,13 @@
                 break;
             case "phase-2-reactive-power":
                 {
-                    const RMSVoltagePhase2Raw = mapRegisters[15];
-                    const RMSCurrentPhase2Raw = mapRegisters[1];
-                    const cosPhiPhase2Raw = mapRegisters[43];
-                    if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
-                        const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    const cosPhiPhase2 = mapRegisters.get(143);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
+                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
                         const sinPhiPhase2 = sinFromCos(cosPhiPhase2);
                         const phase2reactivePower = RMSVoltagePhase2 * RMSCurrentPhase2 * sinPhiPhase2;
                         outstring = phase2reactivePower.toString();
@@ -1911,13 +1953,13 @@
                 break;
             case "phase-3-reactive-power":
                 {
-                    const RMSVoltagePhase3Raw = mapRegisters[16];
-                    const RMSCurrentPhase3Raw = mapRegisters[2];
-                    const cosPhiPhase3Raw = mapRegisters[45];
-                    if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
-                        const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    const cosPhiPhase3 = mapRegisters.get(145);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
+                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
                         const sinPhiPhase3 = sinFromCos(cosPhiPhase3);
                         const phase3reactivePower = RMSVoltagePhase3 * RMSCurrentPhase3 * sinPhiPhase3;
                         outstring = phase3reactivePower.toString();
@@ -1926,27 +1968,27 @@
                 break;
             case "phase-1-cos-phi":
                 {
-                    const cosPhiPhase1Raw = mapRegisters[41];
-                    if (cosPhiPhase1Raw != undefined) {
-                        const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
+                    const cosPhiPhase1 = mapRegisters.get(141);
+                    if (cosPhiPhase1 != undefined) {
+                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
                         outstring = cosPhiPhase1.toFixed(3);
                     }
                 }
                 break;
             case "phase-2-cos-phi":
                 {
-                    const cosPhiPhase2Raw = mapRegisters[43];
-                    if (cosPhiPhase2Raw != undefined) {
-                        const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
+                    const cosPhiPhase2 = mapRegisters.get(143);
+                    if (cosPhiPhase2 != undefined) {
+                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
                         outstring = cosPhiPhase2.toFixed(3);
                     }
                 }
                 break;
             case "phase-3-cos-phi":
                 {
-                    const cosPhiPhase3Raw = mapRegisters[45];
+                    const cosPhiPhase3 = mapRegisters.get(145);
                     if (cosPhiPhase3Raw != undefined) {
-                        const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
+                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
                         outstring = cosPhiPhase3.toFixed(3);
                     }
                 }

@@ -30,6 +30,12 @@ addr       |bit pos    |name                                                    
         131|           |Wait time after overload de-energizing                                             |
         132|           |Motor insulation resistance                                                        |
         133|           |Motor thermal balance                                                              |
+        135|           |Gross power                                                                        |
+        137|           |Active power                                                                       |
+        141|           |Phase А voltage/current angle cos*1000                                             |
+        143|           |Phase B voltage/current angle cos*1000                                             |
+        145|           |Phase C voltage/current angle cos*1000                                             |
+        123|           |Reactive power                                                                     |
         153|           |Average current measurement time                                                   |
         177|           |Minimum line voltage                                                               |
         180|           |Maximum line voltage                                                               |
@@ -41,6 +47,7 @@ addr       |bit pos    |name                                                    
         221|           |Remote motor start and stop using the RS-232/RS485 interfaces                      |
         224|           |Control algorithm 0-20 mA                                                          |
         228|           |Control algorithm 0-10 V                                                           |
+        237|           |Command                                                                            |Only used for write
         240|          0|Alarm                                                                              |
         240|          1|Relay of load                                                                      |
         240|          2|Functional relay                                                                   |
