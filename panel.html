@@ -735,12 +735,15 @@
         }
         const rawReg = await rawReadRegs(address, 1);
         if (rawReg.ok) {
-            const regContents = rawReg.ok[0];
-            const bitValue = (regContents >>> bitPosition) & 1;
-            return bitValue;
+            return extractBitValue(rawReg.ok[0], bitPosition);
         } else {
             return undefined;
         }
+    }
+
+    function extractBitValue(value, bitPosition) {
+        const bitValue = (value >>> bitPosition) & 1;
+        return bitValue;
     }
 </script>
 
@@ -1015,25 +1018,125 @@
 </script>
 
 <script type="text/javascript">
-    // From 100 to 132
-    var readData1 = new Array(33);
-    async function batchRegisters1Read() {
-        const regs = await rawReadRegs(100, 33);
-        if (regs.ok) {
-            readData1 = regs.ok;
-        } else {
-            readData1.fill(undefined);
-        }
-    }
+    // class RegChunk {
+    //     constructor(firstAddr, lastAddr, priority) {
+    //         this.firstAddr = firstAdd;
+    //         this.lastAddr = lastAddr;
+    //         this.priority = priority;
+    //         this.values = {};
+    //     }
 
-    // From 134 to 213
-    var readData2 = new Array(80);
-    async function batchRegisters2Read() {
-        const regs = await rawReadRegs(134, 80);
-        if (regs.ok) {
-            readData2 = regs.ok;
+    //     get length() {
+    //         return (lastAddr - firstAddr + 1);
+    //     }
+
+    //     async read() {
+    //         const regs = await rawReadRegs(this.firstAddr, this.length);
+    //         if (regs.ok) {
+    //             this.values = regs.ok;
+    //         } else {
+    //             this.values.fill(undefined);
+    //         }
+    //     }
+    // }
+
+    const mapRegisters = new Map();
+
+    async function batchRegistersRead() {
+        const regs100_133 = await rawReadRegs(100, 34);
+        if (regs100_133.ok) {
+            for (i=0; i<34; i++) {
+                mapRegisters.set(100+i, regs100_133.ok[i]);
+            }
         } else {
-            readData2.fill(undefined);
+            for (i=0; i<34; i++) {
+                mapRegisters.set(100+i, undefined);
+            }
+        }
+
+        const reg153 = await rawReadRegs(153, 1);
+        if (reg153.ok) {
+            mapRegisters.set(153, reg153.ok[0]);
+        } else {
+            mapRegisters.set(153, undefined);
+        }
+
+        const reg177 = await rawReadRegs(177, 1);
+        if (reg177.ok) {
+            mapRegisters.set(177, reg177.ok[0]);
+        } else {
+            mapRegisters.set(177, undefined);
+        }
+
+        const reg180 = await rawReadRegs(180, 1);
+        if (reg180.ok) {
+            mapRegisters.set(180, reg180.ok[0]);
+        } else {
+            mapRegisters.set(180, undefined);
+        }
+
+        const reg203 = await rawReadRegs(203, 1);
+        if (reg203.ok) {
+            mapRegisters.set(203, reg203.ok[0]);
+        } else {
+            mapRegisters.set(203, undefined);
+        }
+
+        const reg205 = await rawReadRegs(205, 1);
+        if (reg205.ok) {
+            mapRegisters.set(205, reg205.ok[0]);
+        } else {
+            mapRegisters.set(205, undefined);
+        }
+
+        const regs211 = await rawReadRegs(211, 3);
+        if (regs211.ok) {
+            for (i=0; i<3; i++) {
+                mapRegisters.set(211+i, regs211.ok[i]);
+            }
+        } else {
+            for (i=0; i<3; i++) {
+                mapRegisters.set(211+i, undefined);
+            }
+        }
+
+        const reg221 = await rawReadRegs(221, 1);
+        if (reg221.ok) {
+            mapRegisters.set(221, reg221.ok[0]);
+        } else {
+            mapRegisters.set(221, undefined);
+        }
+
+        const reg224 = await rawReadRegs(224, 1);
+        if (reg224.ok) {
+            mapRegisters.set(224, reg224.ok[0]);
+        } else {
+            mapRegisters.set(224, undefined);
+        }
+
+        const reg228 = await rawReadRegs(228, 1);
+        if (reg228.ok) {
+            mapRegisters.set(228, reg228.ok[0]);
+        } else {
+            mapRegisters.set(228, undefined);
+        }
+
+        const reg240 = await rawReadRegs(240, 1);
+        if (reg240.ok) {
+            mapRegisters.set(240, reg240.ok[0]);
+        } else {
+            mapRegisters.set(240, undefined);
+        }
+
+        const alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
+        if (alarmsBitsRaw.ok) {
+            for (i=0; i<2; i++) {
+                mapRegisters.set(alarms[0].address + i, alarmsBitsRaw.ok[i]);
+            }
+        } else {
+            for (i=0; i<2; i++) {
+                mapRegisters.set(alarms[0].address + i, undefined);
+            }
         }
     }
 </script>
@@ -1095,12 +1198,14 @@
             busy = true;
         }
 
+        await batchRegistersRead();
+
         await processUbzStatuses();
         await processArIndicator();
         await processRcIndicator();
         await processExternalInputIndicator();
 
-        let isFault = await readBit(240, FAULT_BIT) == FAULT;
+        let isFault = extractBitValue(mapRegisters.get(240), FAULT_BIT) == FAULT;
         if (isFault) {
             processFaultIndicator(isFault);
 
@@ -1144,199 +1249,196 @@
             faultsPrev = faultsCurr;
         }
 
-        await batchRegisters1Read();
-        await batchRegisters2Read();
-
-        if (readData1[0] != undefined) {
-            document.querySelector("#phase-1-current-rms-value").innerHTML = (readData1[0] * 0.1).toFixed(1);
-            document.querySelector("#phase-1-current-rms-bar").value = readData1[0];
+        if (mapRegisters.get(100) != undefined) {
+            document.querySelector("#phase-1-current-rms-value").innerHTML = (mapRegisters.get(100) * 0.1).toFixed(1);
+            document.querySelector("#phase-1-current-rms-bar").value = mapRegisters.get(100);
         } else {
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        if (readData1[1] != undefined) {
-            document.querySelector("#phase-2-current-rms-value").innerHTML = (readData1[1] * 0.1).toFixed(1);
-            document.querySelector("#phase-2-current-rms-bar").value = readData1[1];
+        if (mapRegisters.get(101) != undefined) {
+            document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
+            document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
         } else {
             document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-bar").value = 0;
         }
-        if (readData1[2] != undefined) {
-            document.querySelector("#phase-3-current-rms-value").innerHTML = (readData1[2] * 0.1).toFixed(1);
-            document.querySelector("#phase-3-current-rms-bar").value = readData1[2];
+        if (mapRegisters.get(102) != undefined) {
+            document.querySelector("#phase-3-current-rms-value").innerHTML = (mapRegisters(.get102) * 0.1).toFixed(1);
+            document.querySelector("#phase-3-current-rms-bar").value = mapRegisters.get(102);
         } else {
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
-        if (readData1[3] != undefined) {
-            document.querySelector("#zero-sequence-current-value").innerHTML = (readData1[3] * 0.1).toFixed(1);
-            document.querySelector("#zero-sequence-current-bar").value = readData1[3];
+        if (mapRegisters.get(103) != undefined) {
+            document.querySelector("#zero-sequence-current-value").innerHTML = (mapRegisters.get(103) * 0.1).toFixed(1);
+            document.querySelector("#zero-sequence-current-bar").value = mapRegisters.get(103);
         } else {
             document.querySelector("#zero-sequence-current-value").innerHTML = "Err";
             document.querySelector("#zero-sequence-current-bar").value = 0;
         }
         barValue("#zero-sequence-current-bar", 50);
-        if (readData1[4] != undefined) {
-            document.querySelector("#avg-current-value-phase-1").innerHTML = (readData1[4] * 0.1).toFixed(1);
+        if (mapRegisters.get(104) != undefined) {
+            document.querySelector("#avg-current-value-phase-1").innerHTML = (mapRegisters.get(104) * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-1").innerHTML = "Err";
         }
-        if (readData1[5] != undefined) {
-            document.querySelector("#avg-current-value-phase-2").innerHTML = (readData1[5] * 0.1).toFixed(1);
+        if (mapRegisters.get(105) != undefined) {
+            document.querySelector("#avg-current-value-phase-2").innerHTML = (mapRegisters.get(105) * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-2").innerHTML = "Err";
         }
-        if (readData1[6] != undefined) {
-            document.querySelector("#avg-current-value-phase-3").innerHTML = (readData1[6] * 0.1).toFixed(1);
+        if (mapRegisters.get(106) != undefined) {
+            document.querySelector("#avg-current-value-phase-3").innerHTML = (mapRegisters.get(106) * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-3").innerHTML = "Err";
         }
         
-        if (readData1[10] != undefined && readData1[0] != 0) {
-            document.querySelector("#motor-start-current-value").innerHTML = (readData1[10] * 0.1).toFixed(1);
+        if (mapRegisters.get(110) != undefined && mapRegisters.get(100) != 0) {
+            document.querySelector("#motor-start-current-value").innerHTML = (mapRegisters.get(110) * 0.1).toFixed(1);
         } else {
             document.querySelector("#motor-start-current-value").innerHTML = "Err";
         }
-        if (readData1[11] != undefined) {
-            document.querySelector("#startup-time-value").innerHTML = readData1[11];
+        if (mapRegisters.get(111) != undefined) {
+            document.querySelector("#startup-time-value").innerHTML = mapRegisters.get(111);
         } else {
             document.querySelector("#startup-time-value").innerHTML = "Err";
         }
-        if (readData1[12] != undefined) {
-            document.querySelector("#overload-current-value").innerHTML = (readData1[12] * 0.1).toFixed(1);
+        if (mapRegisters.get(112) != undefined) {
+            document.querySelector("#overload-current-value").innerHTML = (mapRegisters.get(112) * 0.1).toFixed(1);
         } else {
             document.querySelector("#overload-current-value").innerHTML = "Err";
         }
-        if (readData1[13] != undefined) {
-            document.querySelector("#negative-sequence-current-value").innerHTML = (readData1[13] * 0.1).toFixed(1);
-            document.querySelector("#negative-sequence-current-bar").value = readData1[1];
+        if (mapRegisters.get(113) != undefined) {
+            document.querySelector("#negative-sequence-current-value").innerHTML = (mapRegisters.get(113) * 0.1).toFixed(1);
+            document.querySelector("#negative-sequence-current-bar").value = mapRegisters.get(113);
         } else {
             document.querySelector("#negative-sequence-current-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
         barValue("#negative-sequence-current-bar", 2000);
-        if (readData1[14] != undefined) {
-            document.querySelector("#phase-1-voltage-value").innerHTML = readData1[14];
-            document.querySelector("#phase-1-voltage-bar").value = readData1[14];
+        if (mapRegisters.get(114) != undefined) {
+            document.querySelector("#phase-1-voltage-value").innerHTML = mapRegisters.get(114);
+            document.querySelector("#phase-1-voltage-bar").value = mapRegisters.get(114);
         } else {
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData1[15] != undefined) {
-            document.querySelector("#phase-2-voltage-value").innerHTML = readData1[15];
-            document.querySelector("#phase-2-voltage-bar").value = readData1[15];
+        if (mapRegisters.get(115) != undefined) {
+            document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
+            document.querySelector("#phase-2-voltage-bar").value = mapRegisters.get(115);
         } else {
             document.querySelector("#phase-2-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-2-voltage-bar").value = 0;
         }
         barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData1[16] != undefined) {
-            document.querySelector("#phase-3-voltage-value").innerHTML = readData1[16];
-            document.querySelector("#phase-3-voltage-bar").value = readData1[16];
+        if (mapRegisters.get(116) != undefined) {
+            document.querySelector("#phase-3-voltage-value").innerHTML = mapRegisters.get(116);
+            document.querySelector("#phase-3-voltage-bar").value = mapRegisters.get(116);
         } else {
             document.querySelector("#phase-3-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
         barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
-        if (readData1[17] != undefined) {
-            document.querySelector("#line-1-voltage-value").innerHTML = readData1[17];
-            document.querySelector("#line-1-voltage-bar").value = readData1[17];
+        if (mapRegisters.get(117) != undefined) {
+            document.querySelector("#line-1-voltage-value").innerHTML = mapRegisters.get(117);
+            document.querySelector("#line-1-voltage-bar").value = mapRegisters.get(117);
         } else {
             document.querySelector("#line-1-voltage-value").innerHTML = "Err";
             document.querySelector("#line-1-voltage-bar").value = 0;
         }
-        if (readData1[18] != undefined) {
-            document.querySelector("#line-2-voltage-value").innerHTML = readData1[18];
-            document.querySelector("#line-2-voltage-bar").value = readData1[18];
+        if (mapRegisters.get(118) != undefined) {
+            document.querySelector("#line-2-voltage-value").innerHTML = mapRegisters.get(118);
+            document.querySelector("#line-2-voltage-bar").value = mapRegisters.get(118);
         } else {
             document.querySelector("#line-2-voltage-value").innerHTML = "Err";
             document.querySelector("#line-2-voltage-bar").value = 0;
         }
-        if (readData1[19] != undefined) {
-            document.querySelector("#line-3-voltage-value").innerHTML = readData1[19];
-            document.querySelector("#line-3-voltage-bar").value = readData1[19];
+        if (mapRegisters.get(119) != undefined) {
+            document.querySelector("#line-3-voltage-value").innerHTML = mapRegisters.get(119);
+            document.querySelector("#line-3-voltage-bar").value = mapRegisters.get(119);
         } else {
             document.querySelector("#line-3-voltage-value").innerHTML = "Err";
             document.querySelector("#line-3-voltage-bar").value = 0;
         }
 
-        if (readData2[19] != undefined) {
-            document.querySelector("#current-average-for-time-value").innerHTML = readData2[19];
+        if (mapRegisters.get(153) != undefined) {
+            document.querySelector("#current-average-for-time-value").innerHTML = mapRegisters.get(153);
         } else {
             document.querySelector("#current-average-for-time-value").innerHTML = "Err";
         }
 
         // Registers 177 & 180 - line voltage min and max
-        if (readData2[43] != undefined && readData2[46] != undefined) {
-            barValue("#line-1-voltage-bar", 475, readData2[43], readData2[46]);
-            barValue("#line-2-voltage-bar", 475, readData2[43], readData2[46]);
-            barValue("#line-3-voltage-bar", 475, readData2[43], readData2[46]);
+        if (mapRegisters.get(177) != undefined && mapRegisters.get(180) != undefined) {
+            barValue("#line-1-voltage-bar", 475, mapRegisters.get(177), mapRegisters.get(180));
+            barValue("#line-2-voltage-bar", 475, mapRegisters.get(177), mapRegisters.get(180));
+            barValue("#line-3-voltage-bar", 475, mapRegisters.get(177), mapRegisters.get(180));
         }
 
-        if (readData1[20] != undefined) {
-            document.querySelector("#positive-sequence-voltage-value").innerHTML = readData1[20];
+        if (mapRegisters.get(120) != undefined) {
+            document.querySelector("#positive-sequence-voltage-value").innerHTML = mapRegisters.get(120);
         } else {
             document.querySelector("#positive-sequence-voltage-value").innerHTML = "Err";
         }
 
-        if (readData1[21] != undefined) {
-            document.querySelector("#negative-sequence-voltage-value").innerHTML = readData1[21];
-            document.querySelector("#negative-sequence-voltage-bar").value = readData1[21];
+        if (mapRegisters.get(121) != undefined) {
+            document.querySelector("#negative-sequence-voltage-value").innerHTML = mapRegisters.get(121);
+            document.querySelector("#negative-sequence-voltage-bar").value = mapRegisters.get(121);
         } else {
             document.querySelector("#negative-sequence-voltage-value").innerHTML = "Err";
             document.querySelector("#negative-sequence-voltage-bar").value = 0;
         }
         barValue("#negative-sequence-voltage-bar", 300);
 
-        if (readData1[22] != undefined) {
-            document.querySelector("#zero-sequence-voltage-value").innerHTML = readData1[22];
+        if (mapRegisters.get(122) != undefined) {
+            document.querySelector("#zero-sequence-voltage-value").innerHTML = mapRegisters.get(122);
         } else {
             document.querySelector("#zero-sequence-voltage-value").innerHTML = "Err";
         }
 
-        if (readData1[23] != undefined) {
-            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(readData1[23]);
+        if (mapRegisters.get(123) != undefined) {
+            document.querySelector("#sensor-1-temperature-value").innerHTML = temperatureSensorReadable(mapRegisters.get(123));
         } else {
             document.querySelector("#sensor-1-temperature-value").innerHTML = "Err";
         }
-        if (readData1[24] != undefined) {
-            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(readData1[24]);
+        if (mapRegisters.get(124) != undefined) {
+            document.querySelector("#sensor-2-temperature-value").innerHTML = temperatureSensorReadable(mapRegisters.get(124));
         } else {
             document.querySelector("#sensor-2-temperature-value").innerHTML = "Err";
         }
-        if (readData1[25] != undefined) {
-            document.querySelector("#current-input-value").innerHTML = (readData1[25] * 0.01).toFixed(2);
+        if (mapRegisters.get(125) != undefined) {
+            document.querySelector("#current-input-value").innerHTML = (mapRegisters.get(125) * 0.01).toFixed(2);
         } else {
             document.querySelector("#current-input-value").innerHTML = "Err";
         }
 
-        if (readData1[26] != undefined) {
-            document.querySelector("#analog-input-value").innerHTML = (readData1[26] * 0.1).toFixed(1);
+        if (mapRegisters.get(126) != undefined) {
+            document.querySelector("#analog-input-value").innerHTML = (mapRegisters.get(126) * 0.1).toFixed(1);
         } else {
             document.querySelector("#analog-input-value").innerHTML = "Err";
         }
 
-        if (readData1[28] != undefined) {
-            document.querySelector("#frequency-value").innerHTML = (readData1[28] * 0.1).toFixed(1);
+        if (mapRegisters.get(128) != undefined) {
+            document.querySelector("#frequency-value").innerHTML = (mapRegisters.get(128) * 0.1).toFixed(1);
         } else {
             document.querySelector("#frequency-value").innerHTML = "Err";
         }
 
-        if (readData1[32] != undefined) {
-            document.querySelector("#insulation-resistance-value").innerHTML = (readData1[32] * 0.1).toFixed(1);
+        if (mapRegisters.get(132) != undefined) {
+            document.querySelector("#insulation-resistance-value").innerHTML = (mapRegisters.get(132) * 0.1).toFixed(1);
         } else {
             document.querySelector("#insulation-resistance-value").innerHTML = "Err";
         }
 
-        if (readData1[30] != undefined) {
-            if (readData1[30] == 0) {
+        if (mapRegisters.get(130) != undefined) {
+            if (mapRegisters.get(130) == 0) {
                 document.querySelector("#time-before-ar-string").innerHTML = "Off";
                 document.querySelector("#time-before-ar-bar").value = 0;
-            } else if (readData1[30] > 0 && readData1[30] <= 900) {
-                document.querySelector("#time-before-ar-string").innerHTML = readData1[30].toString();
-                document.querySelector("#time-before-ar-bar").value = readData1[30];
-            } else if (readData1[30] == 950) {
+            } else if (mapRegisters.get(130) > 0 && mapRegisters.get(130) <= 900) {
+                document.querySelector("#time-before-ar-string").innerHTML = mapRegisters.get(130).toString();
+                document.querySelector("#time-before-ar-bar").value = mapRegisters.get(130);
+            } else if (mapRegisters.get(130) == 950) {
                 document.querySelector("#time-before-ar-string").innerHTML = "No AR";
                 document.querySelector("#time-before-ar-bar").value = 0;
             } else {
@@ -1349,18 +1451,18 @@
         }
         barValue("#negative-sequence-voltage-bar", 900);
 
-        if (readData2[71] != undefined) {
-            if (readData2[71] == 0) {
+        if (mapRegisters.get(205) != undefined) {
+            if (mapRegisters.get(205) == 0) {
                 document.querySelector("#radio-workmode-alarm").checked = true;
-            } else if (readData2[71] == 1) {
+            } else if (mapRegisters.get(205) == 1) {
                 document.querySelector("#radio-workmode-time").checked = true;
-            } else if (readData2[71] == 2) {
+            } else if (mapRegisters.get(205) == 2) {
                 document.querySelector("#radio-workmode-stardelta").checked = true;
             }
         }
 
-        if (readData2[79] != undefined) {
-            switch (readData2[78]) {
+        if (mapRegisters.get(213) != undefined) {
+            switch (mapRegisters.get(212)) {
                 case 0: {
                     document.querySelector("#speed-value").innerHTML = "9600";
                 }
@@ -1377,9 +1479,9 @@
         } else {
             document.querySelector("#speed-value").innerHTML = "Err";
         }
-        if (readData2[78] != undefined) {
+        if (mapRegisters.get(212) != undefined) {
             deviceConnected = true;
-            ubzCommunicationAddress = readData2[77];
+            ubzCommunicationAddress = mapRegisters.get(211);
             document.querySelector("#modbus-address-ubz").value = ubzCommunicationAddress;
         } else {
             deviceConnected = false;
@@ -1394,9 +1496,9 @@
         if (TEST_HEAT_GRAPH) {
             drawGraph(Math.floor(Math.random() * 125));
         } else {
-            let heatValueRaw = await rawReadRegs(133, 1);
-            if (heatValueRaw.ok) {
-                const heatPercentage = (heatValueRaw.ok[0] / 1100000) * 100;
+            let heatValue = mapRegisters.get(133);
+            if (heatValue) {
+                const heatPercentage = (heatValue / 1100000) * 100;
                 drawGraph(heatPercentage);
             } else {
                 drawGraph(undefined);
@@ -1423,7 +1525,7 @@
     }
 
     async function processUbzStatuses() {
-        const mmspModeRaw = readData1[102];
+        const mmspMode = mapRegisters.get(102);
 
         const LOAD_RELAY_BIT = 1;
         const FUNCTIONAL_RELAY_BIT = 2;
@@ -1432,8 +1534,8 @@
         const LED_LIT = "lightgreen";
         const LED_DIM = "darkgreen";
 
-        if (mmspModeRaw != undefined) {
-            if (mmspModeRaw == 1) {
+        if (mmspMode != undefined) {
+            if (mmspMode == 1) {
                 document.querySelector("#mmsp-mode").style.backgroundColor = LED_LIT;
             }
         }
@@ -1441,13 +1543,15 @@
             document.querySelector("#mmsp-mode").style.backgroundColor = LED_DIM;
         }
 
-        if (await readBit(240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
+        const value240 = mapRegisters.get(240);
+
+        if (extractBitValue(value240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
             document.querySelector("#functional-relay-mode").style.backgroundColor = LED_LIT;
         } else {
             document.querySelector("#functional-relay-mode").style.backgroundColor = LED_DIM;
         }
 
-        if (await readBit(240, LOAD_RELAY_BIT) == CLOSED) {
+        if (extractBitValue(value240, LOAD_RELAY_BIT) == CLOSED) {
             document.querySelector("#motor-relay-mode").style.backgroundColor = LED_LIT;
         } else {
             document.querySelector("#motor-relay-mode").style.backgroundColor = LED_DIM;
@@ -1458,13 +1562,16 @@
         const FAULT = 1;
         const currentFaults = [];
         // set of alarms bit located in these two registers:
-        let alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
-        if(alarmsBitsRaw.ok) {
+        let alarmsBits1 = mapRegisters.get(alarms[0].address);
+        if (alarmsBits1) {
             for (let i=0; i<16; i++) {
-                currentFaults.push(((alarmsBitsRaw.ok[0] >>> i) & 1) === FAULT);
+                currentFaults.push(((alarmsBits1 >>> i) & 1) === FAULT);
             }
+        }
+        let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
+        if (alarmsBits2) {
             for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
-                currentFaults.push(((alarmsBitsRaw.ok[1] >>> (i-16)) & 1) === FAULT);
+                currentFaults.push(((alarmsBits2 >>> (i-16)) & 1) === FAULT);
             }
         }
 
@@ -1536,8 +1643,8 @@
         const INDICATOR_DIM = "green";
         const ALLOW_REMOTE = 2;
 
-        const arStatusRaw = await rawReadRegs(203, 1);
-        if (arStatusRaw.ok && arStatusRaw.ok[0] == ALLOW_REMOTE) {
+        const arStatus = mapRegisters.get(203);
+        if (arStatus.ok && arStatus.ok[0] == ALLOW_REMOTE) {
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
         } else {
             document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
@@ -1549,8 +1656,8 @@
         const INDICATOR_DIM = "dodgerblue";
         const PROHIBITED = 0;
 
-        const remoteRaw = await rawReadRegs(221, 1);
-        if (remoteRaw.ok && remoteRaw.ok[0] != PROHIBITED) {
+        const remote = mapRegisters.get(221);
+        if (remote.ok && remote.ok[0] != PROHIBITED) {
             document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
             document.querySelector("#motor-start-stop-button").innerHTML = "Start";
             document.querySelector("#motor-start-stop-button").disabled = false;
@@ -1567,11 +1674,11 @@
         const INDICATOR_LIT = "orange";
         const INDICATOR_DIM = "darkgoldenrod";
 
-        const algorithm020mARaw = await rawReadRegs(224, 1);
-        const algorithm010VRaw = await rawReadRegs(228, 1);
+        const algorithm020mA = mapRegisters.get(224);
+        const algorithm010V = mapRegisters.get(228);
 
-        if (algorithm020mARaw.ok && algorithm010VRaw.ok) {
-            if (algorithm020mARaw.ok[0] != 0 && algorithm010VRaw.ok[0] != 0) {
+        if (algorithm020mA.ok && algorithm010V.ok) {
+            if (algorithm020mA.ok[0] != 0 && algorithm010V.ok[0] != 0) {
                 document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_LIT;
             }
         } else {
@@ -1630,7 +1737,6 @@
         heatQueue.enqueue({tempPercentage, color});
 
         let heatData = heatQueue.asArrayFromTail;
-        // console.log(heatData);
 
         let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
         for (let i=0; i<heatData.length; i++) {
@@ -1670,7 +1776,7 @@
         switch (keystring) {
             case "full-power":
                 {
-                    const fullPowerRaw = readData1[35];
+                    const fullPowerRaw = mapRegisters[35];
                     if (fullPowerRaw != undefined) {
                         const fullPower = fullPowerRaw * 0.01;
                         outstring = fullPower.toString();
@@ -1679,7 +1785,7 @@
                 break;
             case "active-power":
                 {
-                    const activePowerRaw = readData1[37];
+                    const activePowerRaw = mapRegisters[37];
                     if (activePowerRaw != undefined) {
                         const activePower = activePowerRaw * 0.01;
                         outstring = activePower.toString();
@@ -1688,7 +1794,7 @@
                 break;
             case "reactive-power":
                 {
-                    const reactivePowerRaw = readData1[39];
+                    const reactivePowerRaw = mapRegisters[39];
                     if (reactivePowerRaw != undefined) {
                         const reactivePower = reactivePowerRaw * 0.01;
                         outstring = reactivePower.toString();
@@ -1697,8 +1803,8 @@
                 break;
             case "phase-1-full-power":
                 {
-                    const RMSVoltagePhase1Raw = readData1[14];
-                    const RMSCurrentPhase1Raw = readData1[0];
+                    const RMSVoltagePhase1Raw = mapRegisters[14];
+                    const RMSCurrentPhase1Raw = mapRegisters[0];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw.ok;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw.ok * 0.1;
@@ -1709,8 +1815,8 @@
                 break;
             case "phase-2-full-power":
                 {
-                    const RMSVoltagePhase2Raw = readData1[15];
-                    const RMSCurrentPhase2Raw = readData1[1];
+                    const RMSVoltagePhase2Raw = mapRegisters[15];
+                    const RMSCurrentPhase2Raw = mapRegisters[1];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1721,8 +1827,8 @@
                 break;
             case "phase-3-full-power":
                 {
-                    const RMSVoltagePhase3Raw = readData1[16];
-                    const RMSCurrentPhase3Raw = readData1[2];
+                    const RMSVoltagePhase3Raw = mapRegisters[16];
+                    const RMSCurrentPhase3Raw = mapRegisters[2];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1733,9 +1839,9 @@
                 break;
             case "phase-1-active-power":
                 {
-                    const RMSVoltagePhase1Raw = readData1[14];
-                    const RMSCurrentPhase1Raw = readData1[0];
-                    const cosPhiPhase1Raw = readData1[41];
+                    const RMSVoltagePhase1Raw = mapRegisters[14];
+                    const RMSCurrentPhase1Raw = mapRegisters[0];
+                    const cosPhiPhase1Raw = mapRegisters[41];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
@@ -1747,9 +1853,9 @@
                 break;
             case "phase-2-active-power":
                 {
-                    const RMSVoltagePhase2Raw = readData1[15];
-                    const RMSCurrentPhase2Raw = readData1[01];
-                    const cosPhiPhase2Raw = readData1[43];
+                    const RMSVoltagePhase2Raw = mapRegisters[15];
+                    const RMSCurrentPhase2Raw = mapRegisters[01];
+                    const cosPhiPhase2Raw = mapRegisters[43];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1761,9 +1867,9 @@
                 break;
             case "phase-3-active-power":
                {
-                    const RMSVoltagePhase3Raw = readData1[16];
-                    const RMSCurrentPhase3Raw = readData1[2];
-                    const cosPhiPhase3Raw = readData1[45];
+                    const RMSVoltagePhase3Raw = mapRegisters[16];
+                    const RMSCurrentPhase3Raw = mapRegisters[2];
+                    const cosPhiPhase3Raw = mapRegisters[45];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1775,9 +1881,9 @@
                 break;
             case "phase-1-reactive-power":
                 {
-                    const RMSVoltagePhase1Raw = readData1[14];
-                    const RMSCurrentPhase1Raw = readData1[0];
-                    const cosPhiPhase1Raw = readData1[41];
+                    const RMSVoltagePhase1Raw = mapRegisters[14];
+                    const RMSCurrentPhase1Raw = mapRegisters[0];
+                    const cosPhiPhase1Raw = mapRegisters[41];
                     if (RMSVoltagePhase1Raw != undefined && RMSCurrentPhase1Raw != undefined && cosPhiPhase1Raw != undefined) {
                         const RMSVoltagePhase1 = RMSVoltagePhase1Raw;
                         const RMSCurrentPhase1 = RMSCurrentPhase1Raw * 0.1;
@@ -1790,9 +1896,9 @@
                 break;
             case "phase-2-reactive-power":
                 {
-                    const RMSVoltagePhase2Raw = readData1[15];
-                    const RMSCurrentPhase2Raw = readData1[1];
-                    const cosPhiPhase2Raw = readData1[43];
+                    const RMSVoltagePhase2Raw = mapRegisters[15];
+                    const RMSCurrentPhase2Raw = mapRegisters[1];
+                    const cosPhiPhase2Raw = mapRegisters[43];
                     if (RMSVoltagePhase2Raw != undefined && RMSCurrentPhase2Raw != undefined && cosPhiPhase2Raw != undefined) {
                         const RMSVoltagePhase2 = RMSVoltagePhase2Raw;
                         const RMSCurrentPhase2 = RMSCurrentPhase2Raw * 0.1;
@@ -1805,9 +1911,9 @@
                 break;
             case "phase-3-reactive-power":
                 {
-                    const RMSVoltagePhase3Raw = readData1[16];
-                    const RMSCurrentPhase3Raw = readData1[2];
-                    const cosPhiPhase3Raw = readData1[45];
+                    const RMSVoltagePhase3Raw = mapRegisters[16];
+                    const RMSCurrentPhase3Raw = mapRegisters[2];
+                    const cosPhiPhase3Raw = mapRegisters[45];
                     if (RMSVoltagePhase3Raw != undefined && RMSCurrentPhase3Raw != undefined && cosPhiPhase3Raw != undefined) {
                         const RMSVoltagePhase3 = RMSVoltagePhase3Raw;
                         const RMSCurrentPhase3 = RMSCurrentPhase3Raw * 0.1;
@@ -1820,7 +1926,7 @@
                 break;
             case "phase-1-cos-phi":
                 {
-                    const cosPhiPhase1Raw = readData1[41];
+                    const cosPhiPhase1Raw = mapRegisters[41];
                     if (cosPhiPhase1Raw != undefined) {
                         const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
                         outstring = cosPhiPhase1.toFixed(3);
@@ -1829,7 +1935,7 @@
                 break;
             case "phase-2-cos-phi":
                 {
-                    const cosPhiPhase2Raw = readData1[43];
+                    const cosPhiPhase2Raw = mapRegisters[43];
                     if (cosPhiPhase2Raw != undefined) {
                         const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
                         outstring = cosPhiPhase2.toFixed(3);
@@ -1838,7 +1944,7 @@
                 break;
             case "phase-3-cos-phi":
                 {
-                    const cosPhiPhase3Raw = readData1[45];
+                    const cosPhiPhase3Raw = mapRegisters[45];
                     if (cosPhiPhase3Raw != undefined) {
                         const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
                         outstring = cosPhiPhase3.toFixed(3);
