@@ -1017,6 +1017,7 @@
     }
 </script>
 
+<!-- Registers reading in loop -->
 <script type="text/javascript">
     const CYCLE_MAX_NUMBER = 10;
     var cycleNumber = 0;
@@ -1488,15 +1489,17 @@
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
 
-        if (TEST_HEAT_GRAPH) {
-            drawGraph(Math.floor(Math.random() * 125));
-        } else {
-            let heatValue = mapRegisters.get(133);
-            if (heatValue != undefined) {
-                const heatPercentage = (heatValue / 1100000) * 100;
-                drawGraph(heatPercentage);
+        if (cycleNumber % PRIORITY_DIVISOR_2 == 0) { // remove redundant graph redraws caused by low rate of value update
+            if (TEST_HEAT_GRAPH) {
+                drawGraph(Math.floor(Math.random() * 125));
             } else {
-                drawGraph(undefined);
+                let heatValue = mapRegisters.get(133);
+                if (heatValue != undefined) {
+                    const heatPercentage = (heatValue / 1100000) * 100;
+                    drawGraph(heatPercentage);
+                } else {
+                    drawGraph(undefined);
+                }
             }
         }
 
@@ -1734,7 +1737,8 @@
             tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
         }
 
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS / 1000).toString() + 's');
+        // TODO: get this label from proper timestamps
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_2 / 1000).toString() + 's');
 
         tempGraph.update();
 
