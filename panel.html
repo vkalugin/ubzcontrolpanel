@@ -1027,13 +1027,13 @@
     const mapRegisters = new Map();
     async function batchRegistersRead() {
         if (cycleNumber % PRIORITY_DIVISER_1 == 0) {
-            const regs100_133 = await rawReadRegs(100, 34);
-            if (regs100_133.ok) {
-                for (i=0; i<34; i++) {
-                    mapRegisters.set(100+i, regs100_133.ok[i]);
+            const regs100_132 = await rawReadRegs(100, 33);
+            if (regs100_132.ok) {
+                for (i=0; i<33; i++) {
+                    mapRegisters.set(100+i, regs100_132.ok[i]);
                 }
             } else {
-                for (i=0; i<34; i++) {
+                for (i=0; i<33; i++) {
                     mapRegisters.set(100+i, undefined);
                 }
             }
@@ -1061,6 +1061,13 @@
         }
 
         if (cycleNumber % PRIORITY_DIVISER_2 == 0) {
+            const reg133 = await rawReadRegs(133, 1);
+            if (reg133.ok) {
+                mapRegisters.set(133, reg133.ok[0]);
+            } else {
+                mapRegisters.set(133, undefined);
+            }
+
             const reg203 = await rawReadRegs(203, 1);
             if (reg203.ok) {
                 mapRegisters.set(203, reg203.ok[0]);
