@@ -1179,6 +1179,7 @@
     }
 
     var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
+    var faultsCurr = Array(ALARM_TYPES_NUMBER).fill(false);
 
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
     var busy = false;
@@ -1204,7 +1205,7 @@
         if (isFault) {
             processFaultIndicator(isFault);
 
-            let faultsCurr = await determineFaults();
+            await determineFaults();
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
@@ -1553,20 +1554,18 @@
 
     async function determineFaults() {
         const FAULT = 1;
-        const currentFaults = [];
+
         // set of alarms bit located in these two registers:
         let alarmsBits1 = mapRegisters.get(alarms[0].address);
         let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
         if (alarmsBits1 != undefined && alarmsBits2 != undefined) {
             for (let i=0; i<16; i++) {
-                currentFaults.push(((alarmsBits1 >>> i) & 1) === FAULT);
+                faultsCurr[i] = ((alarmsBits1 >>> i) & 1) === FAULT;
             }
             for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
-                currentFaults.push(((alarmsBits2 >>> (i-16)) & 1) === FAULT);
+                faultsCurr[i] = ((alarmsBits2 >>> (i-16)) & 1) === FAULT;
             }
         }
-
-        return currentFaults;
     }
 
     function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
