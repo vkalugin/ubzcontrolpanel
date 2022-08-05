@@ -1021,12 +1021,12 @@
     const CYCLE_MAX_NUMBER = 10;
     var cycleNumber = 0;
 
-    const PRIORITY_DIVISER_1 = 1;
-    const PRIORITY_DIVISER_2 = 10;
+    const PRIORITY_DIVISOR_1 = 1;
+    const PRIORITY_DIVISOR_2 = 10;
 
     const mapRegisters = new Map();
     async function batchRegistersRead() {
-        if (cycleNumber % PRIORITY_DIVISER_1 == 0) {
+        if (cycleNumber % PRIORITY_DIVISOR_1 == 0) {
             const regs100_132 = await rawReadRegs(100, 33);
             if (regs100_132.ok) {
                 for (i=0; i<33; i++) {
@@ -1060,7 +1060,7 @@
             }
         }
 
-        if (cycleNumber % PRIORITY_DIVISER_2 == 0) {
+        if (cycleNumber % PRIORITY_DIVISOR_2 == 0) {
             const reg133 = await rawReadRegs(133, 1);
             if (reg133.ok) {
                 mapRegisters.set(133, reg133.ok[0]);
@@ -1492,7 +1492,7 @@
             drawGraph(Math.floor(Math.random() * 125));
         } else {
             let heatValue = mapRegisters.get(133);
-            if (heatValue) {
+            if (heatValue != undefined) {
                 const heatPercentage = (heatValue / 1100000) * 100;
                 drawGraph(heatPercentage);
             } else {
