@@ -1,6 +1,6 @@
-addr       |bit pos    |name                                                                               | notes
-         98|           |time Hi                                                                            | timestamp, no need to read periodically
-         99|           |time Lo                                                                            | >>
+addr       |bit pos    |name                                                                               |notes
+         98|           |time Hi                                                                            |timestamp, no need to read periodically
+         99|           |time Lo                                                                            |>>
         100|           |Phase currents RMS values(phase 1)                                                 |
         101|           |Phase currents RMS values(phase 2)                                                 |
         102|           |Phase currents RMS values(phase 3)                                                 |
@@ -30,11 +30,12 @@ addr       |bit pos    |name                                                    
         131|           |Wait time after overload de-energizing                                             |
         132|           |Motor insulation resistance                                                        |
         133|           |Motor thermal balance                                                              |
-        135|           |Gross power                                                                        |
-        137|           |Active power                                                                       |
-        141|           |Phase А voltage/current angle cos*1000                                             |
-        143|           |Phase B voltage/current angle cos*1000                                             |
-        145|           |Phase C voltage/current angle cos*1000                                             |
+        135|           |Gross power                                                                        |Read by click, not in loop
+        137|           |Active power                                                                       |>>
+        139|           |Reactive power                                                                     |>>
+        141|           |Phase А voltage/current angle cos*1000                                             |>>
+        143|           |Phase B voltage/current angle cos*1000                                             |>>
+        145|           |Phase C voltage/current angle cos*1000                                             |>>
         123|           |Reactive power                                                                     |
         153|           |Average current measurement time                                                   |
         177|           |Minimum line voltage                                                               |

@@ -1018,168 +1018,115 @@
 </script>
 
 <script type="text/javascript">
-    // class RegChunk {
-    //     constructor(firstAddr, lastAddr, priority) {
-    //         this.firstAddr = firstAdd;
-    //         this.lastAddr = lastAddr;
-    //         this.priority = priority;
-    //         this.values = {};
-    //     }
+    const CYCLE_MAX_NUMBER = 10;
+    var cycleNumber = 0;
 
-    //     get length() {
-    //         return (lastAddr - firstAddr + 1);
-    //     }
-
-    //     async read() {
-    //         const regs = await rawReadRegs(this.firstAddr, this.length);
-    //         if (regs.ok) {
-    //             this.values = regs.ok;
-    //         } else {
-    //             this.values.fill(undefined);
-    //         }
-    //     }
-    // }
+    const PRIORITY_DIVISER_1 = 1;
+    const PRIORITY_DIVISER_2 = 10;
 
     const mapRegisters = new Map();
-
     async function batchRegistersRead() {
-        const regs100_133 = await rawReadRegs(100, 34);
-        if (regs100_133.ok) {
-            for (i=0; i<34; i++) {
-                mapRegisters.set(100+i, regs100_133.ok[i]);
+        if (cycleNumber % PRIORITY_DIVISER_1 == 0) {
+            const regs100_133 = await rawReadRegs(100, 34);
+            if (regs100_133.ok) {
+                for (i=0; i<34; i++) {
+                    mapRegisters.set(100+i, regs100_133.ok[i]);
+                }
+            } else {
+                for (i=0; i<34; i++) {
+                    mapRegisters.set(100+i, undefined);
+                }
             }
-        } else {
-            for (i=0; i<34; i++) {
-                mapRegisters.set(100+i, undefined);
+
+            const reg153 = await rawReadRegs(153, 1);
+            if (reg153.ok) {
+                mapRegisters.set(153, reg153.ok[0]);
+            } else {
+                mapRegisters.set(153, undefined);
             }
-        }
 
-        const reg135 = await rawReadRegs(135, 1);
-        if (reg135.ok) {
-            mapRegisters.set(135, reg135.ok[0]);
-        } else {
-            mapRegisters.set(135, undefined);
-        }
-
-        const reg137 = await rawReadRegs(137, 1);
-        if (reg137.ok) {
-            mapRegisters.set(137, reg137.ok[0]);
-        } else {
-            mapRegisters.set(137, undefined);
-        }
-
-        const reg139 = await rawReadRegs(139, 1);
-        if (reg139.ok) {
-            mapRegisters.set(139, reg139.ok[0]);
-        } else {
-            mapRegisters.set(139, undefined);
-        }
-
-        const reg141 = await rawReadRegs(141, 1);
-        if (reg141.ok) {
-            mapRegisters.set(141, reg141.ok[0]);
-        } else {
-            mapRegisters.set(141, undefined);
-        }
-
-        const reg143 = await rawReadRegs(143, 1);
-        if (reg143.ok) {
-            mapRegisters.set(143, reg143.ok[0]);
-        } else {
-            mapRegisters.set(143, undefined);
-        }
-
-        const reg145 = await rawReadRegs(145, 1);
-        if (reg145.ok) {
-            mapRegisters.set(145, reg145.ok[0]);
-        } else {
-            mapRegisters.set(145, undefined);
-        }
-
-        const reg153 = await rawReadRegs(153, 1);
-        if (reg153.ok) {
-            mapRegisters.set(153, reg153.ok[0]);
-        } else {
-            mapRegisters.set(153, undefined);
-        }
-
-        const reg177 = await rawReadRegs(177, 1);
-        if (reg177.ok) {
-            mapRegisters.set(177, reg177.ok[0]);
-        } else {
-            mapRegisters.set(177, undefined);
-        }
-
-        const reg180 = await rawReadRegs(180, 1);
-        if (reg180.ok) {
-            mapRegisters.set(180, reg180.ok[0]);
-        } else {
-            mapRegisters.set(180, undefined);
-        }
-
-        const reg203 = await rawReadRegs(203, 1);
-        if (reg203.ok) {
-            mapRegisters.set(203, reg203.ok[0]);
-        } else {
-            mapRegisters.set(203, undefined);
-        }
-
-        const reg205 = await rawReadRegs(205, 1);
-        if (reg205.ok) {
-            mapRegisters.set(205, reg205.ok[0]);
-        } else {
-            mapRegisters.set(205, undefined);
-        }
-
-        const regs211 = await rawReadRegs(211, 3);
-        if (regs211.ok) {
-            for (i=0; i<3; i++) {
-                mapRegisters.set(211+i, regs211.ok[i]);
+            const reg177 = await rawReadRegs(177, 1);
+            if (reg177.ok) {
+                mapRegisters.set(177, reg177.ok[0]);
+            } else {
+                mapRegisters.set(177, undefined);
             }
-        } else {
-            for (i=0; i<3; i++) {
-                mapRegisters.set(211+i, undefined);
+
+            const reg180 = await rawReadRegs(180, 1);
+            if (reg180.ok) {
+                mapRegisters.set(180, reg180.ok[0]);
+            } else {
+                mapRegisters.set(180, undefined);
             }
         }
 
-        const reg221 = await rawReadRegs(221, 1);
-        if (reg221.ok) {
-            mapRegisters.set(221, reg221.ok[0]);
-        } else {
-            mapRegisters.set(221, undefined);
-        }
-
-        const reg224 = await rawReadRegs(224, 1);
-        if (reg224.ok) {
-            mapRegisters.set(224, reg224.ok[0]);
-        } else {
-            mapRegisters.set(224, undefined);
-        }
-
-        const reg228 = await rawReadRegs(228, 1);
-        if (reg228.ok) {
-            mapRegisters.set(228, reg228.ok[0]);
-        } else {
-            mapRegisters.set(228, undefined);
-        }
-
-        const reg240 = await rawReadRegs(240, 1);
-        if (reg240.ok) {
-            mapRegisters.set(240, reg240.ok[0]);
-        } else {
-            mapRegisters.set(240, undefined);
-        }
-
-        const alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
-        if (alarmsBitsRaw.ok) {
-            for (i=0; i<2; i++) {
-                mapRegisters.set(alarms[0].address + i, alarmsBitsRaw.ok[i]);
+        if (cycleNumber % PRIORITY_DIVISER_2 == 0) {
+            const reg203 = await rawReadRegs(203, 1);
+            if (reg203.ok) {
+                mapRegisters.set(203, reg203.ok[0]);
+            } else {
+                mapRegisters.set(203, undefined);
             }
-        } else {
-            for (i=0; i<2; i++) {
-                mapRegisters.set(alarms[0].address + i, undefined);
+
+            const reg205 = await rawReadRegs(205, 1);
+            if (reg205.ok) {
+                mapRegisters.set(205, reg205.ok[0]);
+            } else {
+                mapRegisters.set(205, undefined);
+            }
+
+            const regs211 = await rawReadRegs(211, 3);
+            if (regs211.ok) {
+                for (i=0; i<3; i++) {
+                    mapRegisters.set(211+i, regs211.ok[i]);
+                }
+            } else {
+                for (i=0; i<3; i++) {
+                    mapRegisters.set(211+i, undefined);
+                }
+            }
+
+            const reg221 = await rawReadRegs(221, 1);
+            if (reg221.ok) {
+                mapRegisters.set(221, reg221.ok[0]);
+            } else {
+                mapRegisters.set(221, undefined);
+            }
+
+            const reg224 = await rawReadRegs(224, 1);
+            if (reg224.ok) {
+                mapRegisters.set(224, reg224.ok[0]);
+            } else {
+                mapRegisters.set(224, undefined);
+            }
+
+            const reg228 = await rawReadRegs(228, 1);
+            if (reg228.ok) {
+                mapRegisters.set(228, reg228.ok[0]);
+            } else {
+                mapRegisters.set(228, undefined);
+            }
+
+            const reg240 = await rawReadRegs(240, 1);
+            if (reg240.ok) {
+                mapRegisters.set(240, reg240.ok[0]);
+            } else {
+                mapRegisters.set(240, undefined);
+            }
+
+            const alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
+            if (alarmsBitsRaw.ok) {
+                for (i=0; i<2; i++) {
+                    mapRegisters.set(alarms[0].address + i, alarmsBitsRaw.ok[i]);
+                }
+            } else {
+                for (i=0; i<2; i++) {
+                    mapRegisters.set(alarms[0].address + i, undefined);
+                }
             }
         }
+
+        cycleNumber = (cycleNumber + 1) % CYCLE_MAX_NUMBER;
     }
 </script>
 
@@ -1228,7 +1175,6 @@
 
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
     var busy = false;
-    var loopN = 0;
 
     async function updateValuesOnVis() {
         const FAULT_BIT = 0;
@@ -1411,7 +1357,6 @@
             document.querySelector("#current-average-for-time-value").innerHTML = "Err";
         }
 
-        // Registers 177 & 180 - line voltage min and max
         if (mapRegisters.get(177) != undefined && mapRegisters.get(180) != undefined) {
             barValue("#line-1-voltage-bar", 475, mapRegisters.get(177), mapRegisters.get(180));
             barValue("#line-2-voltage-bar", 475, mapRegisters.get(177), mapRegisters.get(180));
@@ -1548,7 +1493,6 @@
         }
 
         busy = false;
-        loopN++;
     }
 
     async function initElements() {
@@ -1816,27 +1760,27 @@
         switch (keystring) {
             case "full-power":
                 {
-                    const fullPower = mapRegisters.get(135);
-                    if (fullPower != undefined) {
-                        const fullPower = fullPower * 0.01;
+                    const fullPowerRaw = await rawReadRegs(135, 1);
+                    if (fullPowerRaw.ok) {
+                        const fullPower = fullPowerRaw.ok[0] * 0.01;
                         outstring = fullPower.toString();
                     }
                 }
                 break;
             case "active-power":
                 {
-                    const activePower = mapRegisters.get(137);
-                    if (activePower != undefined) {
-                        const activePower = activePower * 0.01;
+                    const activePowerRaw = await rawReadRegs(137, 1);
+                    if (activePowerRaw.ok) {
+                        const activePower = activePowerRaw.ok[0] * 0.01;
                         outstring = activePower.toString();
                     }
                 }
                 break;
             case "reactive-power":
                 {
-                    const reactivePower = mapRegisters.get(139);
-                    if (reactivePower != undefined) {
-                        const reactivePower = reactivePower * 0.01;
+                    const reactivePowerRaw = await rawReadRegs(139, 1);
+                    if (reactivePowerRaw.ok) {
+                        const reactivePower = reactivePowerRaw.ok[0] * 0.01;
                         outstring = reactivePower.toString();
                     }
                 }
@@ -1966,27 +1910,27 @@
                 break;
             case "phase-1-cos-phi":
                 {
-                    const cosPhiPhase1 = mapRegisters.get(141);
-                    if (cosPhiPhase1 != undefined) {
-                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
+                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
+                    if (cosPhiPhase1Raw.ok) {
+                        const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
                         outstring = cosPhiPhase1.toFixed(3);
                     }
                 }
                 break;
             case "phase-2-cos-phi":
                 {
-                    const cosPhiPhase2 = mapRegisters.get(143);
-                    if (cosPhiPhase2 != undefined) {
-                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
+                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
+                    if (cosPhiPhase2Raw.ok) {
+                        const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
                         outstring = cosPhiPhase2.toFixed(3);
                     }
                 }
                 break;
             case "phase-3-cos-phi":
                 {
-                    const cosPhiPhase3 = mapRegisters.get(145);
-                    if (cosPhiPhase3Raw != undefined) {
-                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
+                    const cosPhiPhase3Raw = await rawReadRegs(145, 1);
+                    if (cosPhiPhase3Raw.ok) {
+                        const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
                         outstring = cosPhiPhase3.toFixed(3);
                     }
                 }
