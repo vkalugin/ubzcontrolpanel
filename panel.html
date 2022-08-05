@@ -1605,13 +1605,11 @@
         const currentFaults = [];
         // set of alarms bit located in these two registers:
         let alarmsBits1 = mapRegisters.get(alarms[0].address);
-        if (alarmsBits1) {
+        let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
+        if (alarmsBits1 != undefined && alarmsBits2 != undefined) {
             for (let i=0; i<16; i++) {
                 currentFaults.push(((alarmsBits1 >>> i) & 1) === FAULT);
             }
-        }
-        let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
-        if (alarmsBits2) {
             for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
                 currentFaults.push(((alarmsBits2 >>> (i-16)) & 1) === FAULT);
             }
@@ -1622,7 +1620,7 @@
 
     function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
         if (faultsPrev.length != faultsCurr.length) {
-            console.log("arrays lengths must be equal!");
+            console.warn("arrays lengths must be equal!");
             return undefined;
         }
 
