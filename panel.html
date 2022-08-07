@@ -3,6 +3,7 @@
     const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
     const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
     const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
 </script>
 
 <style type="text/css">
@@ -429,14 +430,6 @@
         </div>
     </div>
 </div>
-<!--        <footer>
-            <button>Connect</button>
-            <button>Database</button>
-            <button>Settings</button>
-            <button>UBZ Parameters</button>
-            <button>Log event UBZ</button>
-            <button>About</button>
-        </footer>-->
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -784,6 +777,7 @@
     }
 </script>
 
+<!-- Event fault class -->
 <script type="text/javascript">
     class EventFault {
         constructor() {
@@ -1017,6 +1011,40 @@
     }
 </script>
 
+<!-- Add a row in the table -->
+<script type="text/javascript">
+    var rowIsEven = false;
+
+    function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
+        let tableBody = document.getElementsByTagName("tbody").item(0);
+        let row = document.createElement("tr");
+        if (rowIsEven) {
+            row.style.backgroundColor = "whitesmoke";
+        } else {
+            row.style.backgroundColor = "white";
+        }
+        row.style.fontSize = "smaller";
+    
+        let cell1 = document.createElement("td");
+        let cell2 = document.createElement("td");
+        let cell3 = document.createElement("td");
+        let cell4 = document.createElement("td");
+
+        cell1.innerHTML = col1innerHtml;
+        cell2.innerHTML = col2innerHtml;
+        cell3.innerHTML = col3innerHtml;
+        cell4.innerHTML = col4innerHtml;
+
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        row.appendChild(cell3);
+        row.appendChild(cell4);
+
+        tableBody.appendChild(row);
+        rowIsEven = !rowIsEven;
+    }
+</script>
+
 <!-- Registers reading in loop -->
 <script type="text/javascript">
     const CYCLE_MAX_NUMBER = 10;
@@ -1138,65 +1166,511 @@
     }
 </script>
 
+<!-- Fault processing -->
+<script type="text/javascript">
+    var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
+    var faultsCurr = Array(ALARM_TYPES_NUMBER).fill(false);
+
+    async function determineFaults() {
+        const FAULT = 1;
+
+        // set of alarms bit located in these two registers:
+        let alarmsBits1 = mapRegisters.get(alarms[0].address);
+        let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
+        if (alarmsBits1 != undefined && alarmsBits2 != undefined) {
+            for (let i=0; i<16; i++) {
+                faultsCurr[i] = ((alarmsBits1 >>> i) & 1) === FAULT;
+            }
+            for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
+                faultsCurr[i] = ((alarmsBits2 >>> (i-16)) & 1) === FAULT;
+            }
+        }
+    }
+
+    function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
+        if (faultsPrev.length != faultsCurr.length) {
+            console.warn("arrays lengths must be equal!");
+            return undefined;
+        }
+
+        const shouldBePrinted = Array(faultsCurr.length).fill(false);
+
+        for (let i=0; i<faultsCurr.length; i++) {
+            if ((!faultsPrev[i]) && (faultsCurr[i])) {
+                shouldBePrinted[i] = true;
+            }
+        }
+
+        return shouldBePrinted;
+    }
+</script>
+
+<!-- Graph -->
 <script type="text/javascript">
     var canvas = document.querySelector("#heating-graph");
     var ctx = canvas.getContext("2d");
     ctx.font = "16px Droid Sans";
+    const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
+    const bgColors = new Array(GRAPH_BARS_NUMBER);
+    const labels = new Array(GRAPH_BARS_NUMBER).fill("");
+    var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
 
-    var deviceConnected = false;
-    var faultIndicatorSet = false;
-
-    var heatQueue = new Queue();
-
-    var rowIsEven = false;
-
-    function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
-        let tableBody = document.getElementsByTagName("tbody").item(0);
-        let row = document.createElement("tr");
-        if (rowIsEven) {
-            row.style.backgroundColor = "whitesmoke";
-        } else {
-            row.style.backgroundColor = "white";
+    const tempGraph = new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [{
+                type: "bar",
+                label: "Temperature, % of max",
+                data: temperaturePercentages,
+                backgroundColor: bgColors,
+            }, {
+                type: "line",
+                label: "66%",
+                data: new Array(GRAPH_BARS_NUMBER).fill(66),
+                backgroundColor: "rgba(50, 50, 200, 1)",
+                borderColor: "rgba(50, 50, 200, 1)",
+                radius: 0,
+            }, {
+                type: "line",
+                label: "100%",
+                data: new Array(GRAPH_BARS_NUMBER).fill(100),
+                backgroundColor: "rgba(200, 50, 50, 1)",
+                borderColor: "rgba(200, 50, 50, 1)",
+                radius: 0,
+            }]
+        },
+        options: {
+            animation: false,
         }
-        row.style.fontSize = "smaller";
-       
-        let cell1 = document.createElement("td");
-        let cell2 = document.createElement("td");
-        let cell3 = document.createElement("td");
-        let cell4 = document.createElement("td");
+    });
 
-        cell1.innerHTML = col1innerHtml;
-        cell2.innerHTML = col2innerHtml;
-        cell3.innerHTML = col3innerHtml;
-        cell4.innerHTML = col4innerHtml;
+    function drawGraph(tempPercentage) {
+        let color = "";
 
-        row.appendChild(cell1);
-        row.appendChild(cell2);
-        row.appendChild(cell3);
-        row.appendChild(cell4);
+        if (tempPercentage >= 100) {
+            color = "rgba(200, 50, 50, 1)";
+        } else if (tempPercentage >= 66) {
+            color = "rgba(150, 150, 50, 1)";
+        } else {
+            color = "rgba(50, 50, 200, 1)";
+        }
 
-        tableBody.appendChild(row);
-        rowIsEven = !rowIsEven;
+        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
+            heatQueue.dequeue();
+        }
+        heatQueue.enqueue({tempPercentage, color});
+
+        let heatData = heatQueue.asArrayFromTail;
+
+        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
+        for (let i=0; i<heatData.length; i++) {
+            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
+            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
+        }
+
+        // TODO: get this label from proper timestamps
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_2 / 1000).toString() + 's');
+
+        tempGraph.update();
+
+        if (sequenceOnGraph >= 0) {
+            sequenceOnGraph -= 1;
+        } else {
+            sequenceOnGraph = graphMaxIndex;
+        }
+    }
+</script>
+
+<!-- Indicators -->
+<script type="text/javascript">
+    async function processUbzStatuses() {
+        const mmspMode = mapRegisters.get(102);
+
+        const LOAD_RELAY_BIT = 1;
+        const FUNCTIONAL_RELAY_BIT = 2;
+        const CLOSED = 1;
+
+        const INDICATOR_LIT = "lightgreen";
+        const INDICATOR_DIM = "darkgreen";
+
+        if (mmspMode != undefined) {
+            if (mmspMode == 1) {
+                document.querySelector("#mmsp-mode").style.backgroundColor = INDICATOR_LIT;
+            }
+        }
+        else {
+            document.querySelector("#mmsp-mode").style.backgroundColor = INDICATOR_DIM;
+        }
+
+        const value240 = mapRegisters.get(240);
+
+        if (extractBitValue(value240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
+            document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_DIM;
+        }
+
+        if (extractBitValue(value240, LOAD_RELAY_BIT) == CLOSED) {
+            document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_DIM;
+        }
     }
 
-    var faultsPrev = Array(ALARM_TYPES_NUMBER).fill(false);
-    var faultsCurr = Array(ALARM_TYPES_NUMBER).fill(false);
+    var motorStartedManually = false;
 
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
-    var busy = false;
+    async function startStopMotor() {
+        const COMMAND_REGISTER = 237;
+        const MOTOR_STOP_MANUALLY = [0];
+        const MOTOR_START_MANUALLY = [2];
+
+        if (!motorStartedManually) {
+            writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Stop";
+            motorStartedManually = true;
+        } else {
+            writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
+            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
+            motorStartedManually = false;
+        }
+    }
+
+    async function processArIndicator() {
+        const INDICATOR_LIT = "lightgreen";
+        const INDICATOR_DIM = "green";
+        const ALLOW_REMOTE = 2;
+
+        if (mapRegisters.get(203) == ALLOW_REMOTE) {
+            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
+        }
+    }
+
+    async function processRcIndicator() {
+        const INDICATOR_LIT = "lightcyan";
+        const INDICATOR_DIM = "dodgerblue";
+        const PROHIBITED = 0;
+
+        if (mapRegisters.get(221) != PROHIBITED && mapRegisters.get(221) != undefined) {
+            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
+            document.querySelector("#motor-start-stop-button").disabled = false;
+            document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
+        } else {
+            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = 'https://cdn-icons-png.flaticon.com/512/2479/2479510.png' style='width: 100px;'>";
+            document.querySelector("#motor-start-stop-button").disabled = true;
+            document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
+        }
+    }
+
+    async function processExternalInputIndicator() {
+        const INDICATOR_LIT = "orange";
+        const INDICATOR_DIM = "darkgoldenrod";
+
+        if (mapRegisters.get(224) != 0 && mapRegisters.get(228) != 0) {
+            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_LIT;
+        } else {
+            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_DIM;
+        }
+    }
+
+    function processFaultIndicator(isFault) {
+        const INDICATOR_LIT = "lightsalmon";
+        const INDICATOR_DIM = "crimson";
+
+        const LED_SWITCH_INTERVAL_MS = 1000;
+        if (isFault) {
+            if (!faultIndicatorSet) {
+                let lighten = false;
+
+                var faultIndicatorInterval = setInterval(function() {
+                    if (lighten) {
+                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_LIT;
+                    } else {
+                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_DIM;
+                    }
+                    lighten = !lighten;
+                }, LED_SWITCH_INTERVAL_MS);
+
+                faultIndicatorSet = true;
+            }
+        } else {
+            if (faultIndicatorSet) {
+                faultIndicatorSet = false;
+                clearInterval(faultIndicatorInterval);
+            }
+        }
+    }
+</script>
+
+<!-- For drop-down selectors -->
+<script type="text/javascript">
+    async function stringPowerCharacteristicByKey(keystring) {
+        var outstring = "Unknown";
+        switch (keystring) {
+            case "full-power":
+                {
+                    const fullPowerRaw = await rawReadRegs(135, 1);
+                    if (fullPowerRaw.ok) {
+                        const fullPower = fullPowerRaw.ok[0] * 0.01;
+                        outstring = fullPower.toString();
+                    }
+                }
+                break;
+            case "active-power":
+                {
+                    const activePowerRaw = await rawReadRegs(137, 1);
+                    if (activePowerRaw.ok) {
+                        const activePower = activePowerRaw.ok[0] * 0.01;
+                        outstring = activePower.toString();
+                    }
+                }
+                break;
+            case "reactive-power":
+                {
+                    const reactivePowerRaw = await rawReadRegs(139, 1);
+                    if (reactivePowerRaw.ok) {
+                        const reactivePower = reactivePowerRaw.ok[0] * 0.01;
+                        outstring = reactivePower.toString();
+                    }
+                }
+                break;
+            case "phase-1-full-power":
+                {
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1.ok;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1.ok * 0.1;
+                        const phase1FullPower = RMSVoltagePhase1 * RMSCurrentPhase1;
+                        outstring = phase1FullPower.toString();
+                    }
+                }
+                break;
+            case "phase-2-full-power":
+                {
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
+                        const phase2FullPower = RMSVoltagePhase2 * RMSCurrentPhase2;
+                        outstring = phase2FullPower.toString();
+                    }
+                }
+                break;
+            case "phase-3-full-power":
+                {
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
+                        const phase3FullPower = RMSVoltagePhase3 * RMSCurrentPhase3;
+                        outstring = phase3FullPower.toString();
+                    }
+                }
+                break;
+            case "phase-1-active-power":
+                {
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    const cosPhiPhase1 = mapRegisters.get(141);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
+                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
+                        const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * cosPhiPhase1;
+                        outstring = phase1activePower.toString();
+                    }
+                }
+                break;
+            case "phase-2-active-power":
+                {
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    const cosPhiPhase2 = mapRegisters.get(143);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
+                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
+                        const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * cosPhiPhase2;
+                        outstring = phase2activePower.toString();
+                    }
+                }
+                break;
+            case "phase-3-active-power":
+                {
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    const cosPhiPhase3 = mapRegisters.get(145);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
+                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
+                        const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * cosPhiPhase3;
+                        outstring = phase3activePower.toString();
+                    }
+                }
+                break;
+            case "phase-1-reactive-power":
+                {
+                    const RMSVoltagePhase1 = mapRegisters.get(114);
+                    const RMSCurrentPhase1 = mapRegisters.get(100);
+                    const cosPhiPhase1 = mapRegisters.get(141);
+                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+                        const RMSVoltagePhase1 = RMSVoltagePhase1;
+                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
+                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
+                        const sinPhiPhase1 = sinFromCos(cosPhiPhase1);
+                        const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * sinPhiPhase1;
+                        outstring = phase1reactivePower.toString();
+                    }
+                }
+                break;
+            case "phase-2-reactive-power":
+                {
+                    const RMSVoltagePhase2 = mapRegisters.get(115);
+                    const RMSCurrentPhase2 = mapRegisters.get(101);
+                    const cosPhiPhase2 = mapRegisters.get(143);
+                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+                        const RMSVoltagePhase2 = RMSVoltagePhase2;
+                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
+                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
+                        const sinPhiPhase2 = sinFromCos(cosPhiPhase2);
+                        const phase2reactivePower = RMSVoltagePhase2 * RMSCurrentPhase2 * sinPhiPhase2;
+                        outstring = phase2reactivePower.toString();
+                    }
+                }
+                break;
+            case "phase-3-reactive-power":
+                {
+                    const RMSVoltagePhase3 = mapRegisters.get(116);
+                    const RMSCurrentPhase3 = mapRegisters.get(102);
+                    const cosPhiPhase3 = mapRegisters.get(145);
+                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+                        const RMSVoltagePhase3 = RMSVoltagePhase3;
+                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
+                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
+                        const sinPhiPhase3 = sinFromCos(cosPhiPhase3);
+                        const phase3reactivePower = RMSVoltagePhase3 * RMSCurrentPhase3 * sinPhiPhase3;
+                        outstring = phase3reactivePower.toString();
+                    }
+                }
+                break;
+            case "phase-1-cos-phi":
+                {
+                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
+                    if (cosPhiPhase1Raw.ok) {
+                        const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
+                        outstring = cosPhiPhase1.toFixed(3);
+                    }
+                }
+                break;
+            case "phase-2-cos-phi":
+                {
+                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
+                    if (cosPhiPhase2Raw.ok) {
+                        const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
+                        outstring = cosPhiPhase2.toFixed(3);
+                    }
+                }
+                break;
+            case "phase-3-cos-phi":
+                {
+                    const cosPhiPhase3Raw = await rawReadRegs(145, 1);
+                    if (cosPhiPhase3Raw.ok) {
+                        const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
+                        outstring = cosPhiPhase3.toFixed(3);
+                    }
+                }
+                break;
+        }
+        return outstring;
+    }
+</script>
+
+<!-- Event listeners -->
+<script type="text/javascript">
+    // TODO: affect only when changed
+    document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
+        await writeRegValues(205, [0]);
+    })
+
+    document.querySelector("#radio-workmode-time").addEventListener("click", async function () {
+        await writeRegValues(205, [1]);
+    })
+
+    document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
+        await writeRegValues(205, [2]);
+    })
+
+    document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
+        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
+        document.querySelector("#power-show-value-1").innerHTML = characteristicString;
+    })
+
+    document.querySelector("#power-characteristic-value-2").addEventListener("change", async function () {
+        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
+        document.querySelector("#power-show-value-2").innerHTML = characteristicString;
+    })
+
+    document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
+        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
+        document.querySelector("#power-show-value-3").innerHTML = characteristicString;
+    })
+
+    document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
+        const addr = document.querySelector("#modbus-address-ubz").value;
+        await writeRegValues(212, [addr]);
+    })
+
+    document.querySelector("#save-file-button").addEventListener("click", async function () {
+        let now = new Date();
+        const url = await createReportURL();
+        const hiddenEl = document.createElement("a");
+        hiddenEl.href = url;
+        hiddenEl.target = "_blank";
+        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
+        hiddenEl.click();
+        delete(hiddenEl);
+    })
+</script>
+
+<script type="text/javascript">
+    var deviceConnected = false;
+    var faultIndicatorSet = false;
+    var heatQueue = new Queue();
+    var loopLock = false;
+
+    async function initElements() {
+        {
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
+            document.querySelector("#power-show-value-1").innerHTML = characteristicString;
+        }
+        {
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
+            document.querySelector("#power-show-value-2").innerHTML = characteristicString;
+        }
+        {
+            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
+            document.querySelector("#power-show-value-3").innerHTML = characteristicString;
+        }
+    }
 
     async function updateValuesOnVis() {
         const FAULT_BIT = 0;
         const FAULT = 1;
 
-        if (busy) {
+        if (loopLock) {
             return;
         } else {
-            busy = true;
+            loopLock = true;
         }
 
         await batchRegistersRead();
-
         await processUbzStatuses();
         await processArIndicator();
         await processRcIndicator();
@@ -1503,480 +1977,9 @@
             }
         }
 
-        busy = false;
-    }
-
-    async function initElements() {
-        {
-            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
-            document.querySelector("#power-show-value-1").innerHTML = characteristicString;
-        }
-        {
-            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
-            document.querySelector("#power-show-value-2").innerHTML = characteristicString;
-        }
-        {
-            const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
-            document.querySelector("#power-show-value-3").innerHTML = characteristicString;
-        }
-    }
-
-    async function processUbzStatuses() {
-        const mmspMode = mapRegisters.get(102);
-
-        const LOAD_RELAY_BIT = 1;
-        const FUNCTIONAL_RELAY_BIT = 2;
-        const CLOSED = 1;
-
-        const LED_LIT = "lightgreen";
-        const LED_DIM = "darkgreen";
-
-        if (mmspMode != undefined) {
-            if (mmspMode == 1) {
-                document.querySelector("#mmsp-mode").style.backgroundColor = LED_LIT;
-            }
-        }
-        else {
-            document.querySelector("#mmsp-mode").style.backgroundColor = LED_DIM;
-        }
-
-        const value240 = mapRegisters.get(240);
-
-        if (extractBitValue(value240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
-            document.querySelector("#functional-relay-mode").style.backgroundColor = LED_LIT;
-        } else {
-            document.querySelector("#functional-relay-mode").style.backgroundColor = LED_DIM;
-        }
-
-        if (extractBitValue(value240, LOAD_RELAY_BIT) == CLOSED) {
-            document.querySelector("#motor-relay-mode").style.backgroundColor = LED_LIT;
-        } else {
-            document.querySelector("#motor-relay-mode").style.backgroundColor = LED_DIM;
-        }
-    }
-
-    async function determineFaults() {
-        const FAULT = 1;
-
-        // set of alarms bit located in these two registers:
-        let alarmsBits1 = mapRegisters.get(alarms[0].address);
-        let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
-        if (alarmsBits1 != undefined && alarmsBits2 != undefined) {
-            for (let i=0; i<16; i++) {
-                faultsCurr[i] = ((alarmsBits1 >>> i) & 1) === FAULT;
-            }
-            for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
-                faultsCurr[i] = ((alarmsBits2 >>> (i-16)) & 1) === FAULT;
-            }
-        }
-    }
-
-    function faultsSouldBePrinted(faultsPrev, faultsCurr) /* boolean arrays */ {
-        if (faultsPrev.length != faultsCurr.length) {
-            console.warn("arrays lengths must be equal!");
-            return undefined;
-        }
-
-        const shouldBePrinted = Array(faultsCurr.length).fill(false);
-
-        for (let i=0; i<faultsCurr.length; i++) {
-            if ((!faultsPrev[i]) && (faultsCurr[i])) {
-                shouldBePrinted[i] = true;
-            }
-        }
-
-        return shouldBePrinted;
-    }
-
-    function processFaultIndicator(isFault) {
-        const LED_SWITCH_INTERVAL_MS = 1000;
-        if (isFault) {
-            if (!faultIndicatorSet) {
-                let lighten = false;
-
-                var faultIndicatorInterval = setInterval(function() {
-                    if (lighten) {
-                        document.querySelector("#fault-indicator").style.backgroundColor = "lightsalmon";
-                    } else {
-                        document.querySelector("#fault-indicator").style.backgroundColor = "crimson";
-                    }
-                    lighten = !lighten;
-                }, LED_SWITCH_INTERVAL_MS);
-
-                faultIndicatorSet = true;
-            }
-        } else {
-            if (faultIndicatorSet) {
-                faultIndicatorSet = false;
-                clearInterval(faultIndicatorInterval);
-            }
-        }
-    }
-
-    var motorStartedManually = false;
-
-    async function startStopMotor() {
-        const COMMAND_REGISTER = 237;
-        const MOTOR_STOP_MANUALLY = [0];
-        const MOTOR_START_MANUALLY = [2];
-
-        if (!motorStartedManually) {
-            writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
-            document.querySelector("#motor-start-stop-button").innerHTML = "Stop";
-            motorStartedManually = true;
-        } else {
-            writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
-            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
-            motorStartedManually = false;
-        }
-    }
-
-    async function processArIndicator() {
-        const INDICATOR_LIT = "lightgreen";
-        const INDICATOR_DIM = "green";
-        const ALLOW_REMOTE = 2;
-
-        const arStatus = mapRegisters.get(203);
-        if (arStatus.ok && arStatus.ok[0] == ALLOW_REMOTE) {
-            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
-        } else {
-            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
-        }
-    }
-
-    async function processRcIndicator() {
-        const INDICATOR_LIT = "lightcyan";
-        const INDICATOR_DIM = "dodgerblue";
-        const PROHIBITED = 0;
-
-        const remote = mapRegisters.get(221);
-        if (remote.ok && remote.ok[0] != PROHIBITED) {
-            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
-            document.querySelector("#motor-start-stop-button").innerHTML = "Start";
-            document.querySelector("#motor-start-stop-button").disabled = false;
-            document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
-        } else {
-            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
-            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = 'https://cdn-icons-png.flaticon.com/512/2479/2479510.png' style='width: 100px;'>";
-            document.querySelector("#motor-start-stop-button").disabled = true;
-            document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
-        }
-    }
-
-    async function processExternalInputIndicator() {
-        const INDICATOR_LIT = "orange";
-        const INDICATOR_DIM = "darkgoldenrod";
-
-        const algorithm020mA = mapRegisters.get(224);
-        const algorithm010V = mapRegisters.get(228);
-
-        if (algorithm020mA.ok && algorithm010V.ok) {
-            if (algorithm020mA.ok[0] != 0 && algorithm010V.ok[0] != 0) {
-                document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_LIT;
-            }
-        } else {
-            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_DIM;
-        }
-    }
-
-    const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
-    const bgColors = new Array(GRAPH_BARS_NUMBER);
-    const labels = new Array(GRAPH_BARS_NUMBER).fill("");
-    var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
-
-    const tempGraph = new Chart(ctx, {
-        data: {
-            labels: labels,
-            datasets: [{
-                type: "bar",
-                label: "Temperature, % of max",
-                data: temperaturePercentages,
-                backgroundColor: bgColors,
-            }, {
-                type: "line",
-                label: "66%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(66),
-                backgroundColor: "rgba(50, 50, 200, 1)",
-                borderColor: "rgba(50, 50, 200, 1)",
-                radius: 0,
-            }, {
-                type: "line",
-                label: "100%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(100),
-                backgroundColor: "rgba(200, 50, 50, 1)",
-                borderColor: "rgba(200, 50, 50, 1)",
-                radius: 0,
-            }]
-        },
-        options: {
-            animation: false,
-        }
-    });
-
-    function drawGraph(tempPercentage) {
-        let color = "";
-
-        if (tempPercentage >= 100) {
-            color = "rgba(200, 50, 50, 1)";
-        } else if (tempPercentage >= 66) {
-            color = "rgba(150, 150, 50, 1)";
-        } else {
-            color = "rgba(50, 50, 200, 1)";
-        }
-
-        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
-            heatQueue.dequeue();
-        }
-        heatQueue.enqueue({tempPercentage, color});
-
-        let heatData = heatQueue.asArrayFromTail;
-
-        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
-        for (let i=0; i<heatData.length; i++) {
-            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
-            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
-        }
-
-        // TODO: get this label from proper timestamps
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_2 / 1000).toString() + 's');
-
-        tempGraph.update();
-
-        if (sequenceOnGraph >= 0) {
-            sequenceOnGraph -= 1;
-        } else {
-            sequenceOnGraph = graphMaxIndex;
-        }
+        loopLock = false;
     }
 
     initElements();
     setInterval(updateValuesOnVis, UPDATE_VISUALIZATION_INTERVAL_MS);
-
-    // TODO: affect only when changed
-    document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
-        await writeRegValues(205, [0]);
-    })
-
-    document.querySelector("#radio-workmode-time").addEventListener("click", async function () {
-        await writeRegValues(205, [1]);
-    })
-
-    document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
-        await writeRegValues(205, [2]);
-    })
-
-    async function stringPowerCharacteristicByKey(keystring) {
-        var outstring = "Unknown";
-        switch (keystring) {
-            case "full-power":
-                {
-                    const fullPowerRaw = await rawReadRegs(135, 1);
-                    if (fullPowerRaw.ok) {
-                        const fullPower = fullPowerRaw.ok[0] * 0.01;
-                        outstring = fullPower.toString();
-                    }
-                }
-                break;
-            case "active-power":
-                {
-                    const activePowerRaw = await rawReadRegs(137, 1);
-                    if (activePowerRaw.ok) {
-                        const activePower = activePowerRaw.ok[0] * 0.01;
-                        outstring = activePower.toString();
-                    }
-                }
-                break;
-            case "reactive-power":
-                {
-                    const reactivePowerRaw = await rawReadRegs(139, 1);
-                    if (reactivePowerRaw.ok) {
-                        const reactivePower = reactivePowerRaw.ok[0] * 0.01;
-                        outstring = reactivePower.toString();
-                    }
-                }
-                break;
-            case "phase-1-full-power":
-                {
-                    const RMSVoltagePhase1 = mapRegisters.get(114);
-                    const RMSCurrentPhase1 = mapRegisters.get(100);
-                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1.ok;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1.ok * 0.1;
-                        const phase1FullPower = RMSVoltagePhase1 * RMSCurrentPhase1;
-                        outstring = phase1FullPower.toString();
-                    }
-                }
-                break;
-            case "phase-2-full-power":
-                {
-                    const RMSVoltagePhase2 = mapRegisters.get(115);
-                    const RMSCurrentPhase2 = mapRegisters.get(101);
-                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
-                        const phase2FullPower = RMSVoltagePhase2 * RMSCurrentPhase2;
-                        outstring = phase2FullPower.toString();
-                    }
-                }
-                break;
-            case "phase-3-full-power":
-                {
-                    const RMSVoltagePhase3 = mapRegisters.get(116);
-                    const RMSCurrentPhase3 = mapRegisters.get(102);
-                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
-                        const phase3FullPower = RMSVoltagePhase3 * RMSCurrentPhase3;
-                        outstring = phase3FullPower.toString();
-                    }
-                }
-                break;
-            case "phase-1-active-power":
-                {
-                    const RMSVoltagePhase1 = mapRegisters.get(114);
-                    const RMSCurrentPhase1 = mapRegisters.get(100);
-                    const cosPhiPhase1 = mapRegisters.get(141);
-                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
-                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
-                        const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * cosPhiPhase1;
-                        outstring = phase1activePower.toString();
-                    }
-                }
-                break;
-            case "phase-2-active-power":
-                {
-                    const RMSVoltagePhase2 = mapRegisters.get(115);
-                    const RMSCurrentPhase2 = mapRegisters.get(101);
-                    const cosPhiPhase2 = mapRegisters.get(143);
-                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
-                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
-                        const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * cosPhiPhase2;
-                        outstring = phase2activePower.toString();
-                    }
-                }
-                break;
-            case "phase-3-active-power":
-               {
-                    const RMSVoltagePhase3 = mapRegisters.get(116);
-                    const RMSCurrentPhase3 = mapRegisters.get(102);
-                    const cosPhiPhase3 = mapRegisters.get(145);
-                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
-                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
-                        const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * cosPhiPhase3;
-                        outstring = phase3activePower.toString();
-                    }
-                }
-                break;
-            case "phase-1-reactive-power":
-                {
-                    const RMSVoltagePhase1 = mapRegisters.get(114);
-                    const RMSCurrentPhase1 = mapRegisters.get(100);
-                    const cosPhiPhase1 = mapRegisters.get(141);
-                    if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
-                        const RMSVoltagePhase1 = RMSVoltagePhase1;
-                        const RMSCurrentPhase1 = RMSCurrentPhase1 * 0.1;
-                        const cosPhiPhase1 = cosPhiPhase1 * 0.001;
-                        const sinPhiPhase1 = sinFromCos(cosPhiPhase1);
-                        const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * sinPhiPhase1;
-                        outstring = phase1reactivePower.toString();
-                    }
-                }
-                break;
-            case "phase-2-reactive-power":
-                {
-                    const RMSVoltagePhase2 = mapRegisters.get(115);
-                    const RMSCurrentPhase2 = mapRegisters.get(101);
-                    const cosPhiPhase2 = mapRegisters.get(143);
-                    if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
-                        const RMSVoltagePhase2 = RMSVoltagePhase2;
-                        const RMSCurrentPhase2 = RMSCurrentPhase2 * 0.1;
-                        const cosPhiPhase2 = cosPhiPhase2 * 0.001;
-                        const sinPhiPhase2 = sinFromCos(cosPhiPhase2);
-                        const phase2reactivePower = RMSVoltagePhase2 * RMSCurrentPhase2 * sinPhiPhase2;
-                        outstring = phase2reactivePower.toString();
-                    }
-                }
-                break;
-            case "phase-3-reactive-power":
-                {
-                    const RMSVoltagePhase3 = mapRegisters.get(116);
-                    const RMSCurrentPhase3 = mapRegisters.get(102);
-                    const cosPhiPhase3 = mapRegisters.get(145);
-                    if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
-                        const RMSVoltagePhase3 = RMSVoltagePhase3;
-                        const RMSCurrentPhase3 = RMSCurrentPhase3 * 0.1;
-                        const cosPhiPhase3 = cosPhiPhase3 * 0.001;
-                        const sinPhiPhase3 = sinFromCos(cosPhiPhase3);
-                        const phase3reactivePower = RMSVoltagePhase3 * RMSCurrentPhase3 * sinPhiPhase3;
-                        outstring = phase3reactivePower.toString();
-                    }
-                }
-                break;
-            case "phase-1-cos-phi":
-                {
-                    const cosPhiPhase1Raw = await rawReadRegs(141, 1);
-                    if (cosPhiPhase1Raw.ok) {
-                        const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
-                        outstring = cosPhiPhase1.toFixed(3);
-                    }
-                }
-                break;
-            case "phase-2-cos-phi":
-                {
-                    const cosPhiPhase2Raw = await rawReadRegs(143, 1);
-                    if (cosPhiPhase2Raw.ok) {
-                        const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
-                        outstring = cosPhiPhase2.toFixed(3);
-                    }
-                }
-                break;
-            case "phase-3-cos-phi":
-                {
-                    const cosPhiPhase3Raw = await rawReadRegs(145, 1);
-                    if (cosPhiPhase3Raw.ok) {
-                        const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
-                        outstring = cosPhiPhase3.toFixed(3);
-                    }
-                }
-                break;
-        }
-        return outstring;
-    }
-
-    document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
-        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
-        document.querySelector("#power-show-value-1").innerHTML = characteristicString;
-    })
-
-    document.querySelector("#power-characteristic-value-2").addEventListener("change", async function () {
-        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
-        document.querySelector("#power-show-value-2").innerHTML = characteristicString;
-    })
-
-    document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
-        const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
-        document.querySelector("#power-show-value-3").innerHTML = characteristicString;
-    })
-
-    document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
-        const addr = document.querySelector("#modbus-address-ubz").value;
-        await writeRegValues(212, [addr]);
-    })
-
-    document.querySelector("#save-file-button").addEventListener("click", async function () {
-        let now = new Date();
-        const url = await createReportURL();
-        const hiddenEl = document.createElement("a");
-        hiddenEl.href = url;
-        hiddenEl.target = "_blank";
-        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
-        hiddenEl.click();
-        delete(hiddenEl);
-    })
 </script>
