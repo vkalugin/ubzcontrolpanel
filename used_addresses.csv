@@ -48,40 +48,40 @@ addr |bit pos|name                                                              
   224|       |Control algorithm 0-20 mA                                                       |               10|
   228|       |Control algorithm 0-10 V                                                        |               10|
   237|       |Command                                                                         |                 |Only used for write
-  240|      0|Alarm                                                                           |               10|
-  240|      1|Relay of load                                                                   |               10|
-  240|      2|Functional relay                                                                |               10|
-  240|      3|Restart                                                                         |               10|
-  240|      4|Functional relay operating mode                                                 |               10|
-  240|      6|Mode                                                                            |               10|
-  240|      7|Mode of operation                                                               |               10|
-  241|      0|Alarm: maximum phase voltage                                                    |               10|
-  241|      1|Alarm: thermal overload                                                         |               10|
-  241|      2|Alarm: ground fault (zero sequence current)                                     |               10|
-  241|      3|Alarm: exceeded value of negative sequence current ratio divided by negative seq|               10|
-  241|      4|Alarm: negative sequence current                                                |               10|
-  241|      5|Alarm: phase undercurrent                                                       |               10|
-  241|      6|Alarm: delayed start                                                            |               10|
-  241|      7|Alarm: rotor blocking                                                           |               10|
-  241|      8|Alarm: temperature threshold at sensor 1                                        |               10|
-  241|      9|Alarm: temperature threshold at sensor 2                                        |               10|
-  241|     10|Alarm: phase sequence                                                           |               10|
-  241|     11|Alarm: currents present with open load relay (contactor fault)                  |               10|
-  241|     12|Alarm: line undervoltage                                                        |               10|
-  241|     13|Alarm: line overvoltage                                                         |               10|
-  241|     14|Alarm: phase imbalance                                                          |               10|
-  241|     15|Alarm: motor coil insulation resistance                                         |               10|
-  242|      0|Alarm: remote control channel fault                                             |               10|
-  242|      1|Alarm: emergency motor stop without ARC                                         |               10|
-  242|      2|Alarm:emergency motor stop with ARC                                             |               10|
-  242|      3|Alarm: short circuit of temperature sensor 1                                    |               10|
-  242|      4|Alarm: breakout of temperature sensor 1                                         |               10|
-  242|      5|Alarm: short circuit of temperature sensor 2                                    |               10|
-  242|      6|Alarm: breakout of temperature sensor 2                                         |               10|
-  242|      7|Alarm: phase loss                                                               |               10|
-  242|      8|Alarm: EEPROM destruction                                                       |               10|
-  242|      9|Alarm: 0-20 mА analog input                                                     |               10|
-  242|     10|Alarm: 0-10 V analog input                                                      |               10|
+  240|      0|Alarm                                                                           |               5|
+  240|      1|Relay of load                                                                   |               5|
+  240|      2|Functional relay                                                                |               5|
+  240|      3|Restart                                                                         |               5|
+  240|      4|Functional relay operating mode                                                 |               5|
+  240|      6|Mode                                                                            |               5|
+  240|      7|Mode of operation                                                               |               5|
+  241|      0|Alarm: maximum phase voltage                                                    |               5|
+  241|      1|Alarm: thermal overload                                                         |               5|
+  241|      2|Alarm: ground fault (zero sequence current)                                     |               5|
+  241|      3|Alarm: exceeded value of negative sequence current ratio divided by negative seq|               5|
+  241|      4|Alarm: negative sequence current                                                |               5|
+  241|      5|Alarm: phase undercurrent                                                       |               5|
+  241|      6|Alarm: delayed start                                                            |               5|
+  241|      7|Alarm: rotor blocking                                                           |               5|
+  241|      8|Alarm: temperature threshold at sensor 1                                        |               5|
+  241|      9|Alarm: temperature threshold at sensor 2                                        |               5|
+  241|     10|Alarm: phase sequence                                                           |               5|
+  241|     11|Alarm: currents present with open load relay (contactor fault)                  |               5|
+  241|     12|Alarm: line undervoltage                                                        |               5|
+  241|     13|Alarm: line overvoltage                                                         |               5|
+  241|     14|Alarm: phase imbalance                                                          |               5|
+  241|     15|Alarm: motor coil insulation resistance                                         |               5|
+  242|      0|Alarm: remote control channel fault                                             |               5|
+  242|      1|Alarm: emergency motor stop without ARC                                         |               5|
+  242|      2|Alarm:emergency motor stop with ARC                                             |               5|
+  242|      3|Alarm: short circuit of temperature sensor 1                                    |               5|
+  242|      4|Alarm: breakout of temperature sensor 1                                         |               5|
+  242|      5|Alarm: short circuit of temperature sensor 2                                    |               5|
+  242|      6|Alarm: breakout of temperature sensor 2                                         |               5|
+  242|      7|Alarm: phase loss                                                               |               5|
+  242|      8|Alarm: EEPROM destruction                                                       |               5|
+  242|      9|Alarm: 0-20 mА analog input                                                     |               5|
+  242|     10|Alarm: 0-10 V analog input                                                      |               5|
   300|       |Alarm: maximum phase voltage                                                    |        irregular|Reading is used for altering the table
   301|       |Alarm: thermal overload value                                                   |        irregular|>>
   302|       |Alarm: ground fault (zero sequence current)                                     |        irregular|>>

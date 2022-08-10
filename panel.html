@@ -1050,12 +1050,13 @@
     const CYCLE_MAX_NUMBER = 10;
     var cycleNumber = 0;
 
-    const PRIORITY_DIVISOR_1 = 1;
-    const PRIORITY_DIVISOR_2 = 10;
+    const PRIORITY_DIVISOR_HIGH = 1;
+    const PRIORITY_DIVISOR_MID = 5;
+    const PRIORITY_DIVISOR_LOW = 10;
 
     const mapRegisters = new Map();
     async function batchRegistersRead() {
-        if (cycleNumber % PRIORITY_DIVISOR_1 == 0) {
+        if (cycleNumber % PRIORITY_DIVISOR_HIGH == 0) {
             const regs100_132 = await rawReadRegs(100, 33);
             if (regs100_132.ok) {
                 for (i=0; i<33; i++) {
@@ -1089,7 +1090,7 @@
             }
         }
 
-        if (cycleNumber % PRIORITY_DIVISOR_2 == 0) {
+        if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) {
             const reg133 = await rawReadRegs(133, 1);
             if (reg133.ok) {
                 mapRegisters.set(133, reg133.ok[0]);
@@ -1142,23 +1143,18 @@
             } else {
                 mapRegisters.set(228, undefined);
             }
+        }
 
-            const reg240 = await rawReadRegs(240, 1);
-            if (reg240.ok) {
-                mapRegisters.set(240, reg240.ok[0]);
+        if (cycleNumber % PRIORITY_DIVISOR_MID == 0) {
+            const regsModeAlarms = await rawReadRegs(240, 3);
+            if (regsModeAlarms.ok) {
+                mapRegisters.set(240, regsModeAlarms.ok[0]);
+                mapRegisters.set(241, regsModeAlarms.ok[1]);
+                mapRegisters.set(242, regsModeAlarms.ok[2]);
             } else {
                 mapRegisters.set(240, undefined);
-            }
-
-            const alarmsBitsRaw = await rawReadRegs(alarms[0].address, 2);
-            if (alarmsBitsRaw.ok) {
-                for (i=0; i<2; i++) {
-                    mapRegisters.set(alarms[0].address + i, alarmsBitsRaw.ok[i]);
-                }
-            } else {
-                for (i=0; i<2; i++) {
-                    mapRegisters.set(alarms[0].address + i, undefined);
-                }
+                mapRegisters.set(241, undefined);
+                mapRegisters.set(242, undefined);
             }
         }
 
@@ -1269,7 +1265,7 @@
         }
 
         // TODO: get this label from proper timestamps
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_2 / 1000).toString() + 's');
+        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_LOW / 1000).toString() + 's');
 
         tempGraph.update();
 
@@ -1939,7 +1935,7 @@
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
 
-        if (cycleNumber % PRIORITY_DIVISOR_2 == 0) { // remove redundant graph redraws caused by low rate of value update
+        if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
             if (TEST_HEAT_GRAPH) {
                 drawGraph(Math.floor(Math.random() * 125));
             } else {
