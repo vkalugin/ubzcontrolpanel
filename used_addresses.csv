@@ -1,0 +1,102 @@
+addr |bit pos|name                                                                            |at each Nth cycle|notes
+   98|       |time Hi                                                                         |                -|Timestamp, no need to read periodically
+   99|       |time Lo                                                                         |                -|>>
+  100|       |Phase currents RMS values(phase 1)                                              |                1|
+  101|       |Phase currents RMS values(phase 2)                                              |                1|
+  102|       |Phase currents RMS values(phase 3)                                              |                1|
+  103|       |Zero sequence current RMS value                                                 |                1|
+  104|       |Phase 1 average current value at the time specified in tSi                      |                1|
+  105|       |Phase 2 average current value at the time specified in tSi                      |                1|
+  106|       |Phase 3 average current value at the time specified in tSi                      |                1|
+  110|       |Motor starting current (phase average)                                          |                1|
+  111|       |Start time                                                                      |                1|
+  112|       |Overcurrent (phase average)                                                     |                1|
+  113|       |Negative sequence current (current imbalance)                                   |                1|
+  114|       |Phase voltages RMS values (phase 1)                                             |                1|
+  115|       |Phase voltages RMS values (phase 2)                                             |                1|
+  116|       |Phase voltages RMS values (phase 3)                                             |                1|
+  117|       |Line voltage RMS values (phase 1)                                               |                1|
+  118|       |Line voltage RMS values (phase 2)                                               |                1|
+  119|       |Line voltage RMS values (phase 3)                                               |                1|
+  120|       |Positive-sequence voltage                                                       |                1|
+  121|       |Negative-sequence voltage                                                       |                1|
+  122|       |Zero-sequence voltage                                                           |                1|
+  123|       |Sensor 1 temperature                                                            |                1|
+  124|       |Sensor 2 temperature                                                            |                1|
+  125|       |Current value at (4-20) mА input                                                |                1|
+  126|       |Voltage value at 0-10 V analog input                                            |                1|
+  128|       |Mains frequency                                                                 |                1|
+  130|       |Time before ARC delay termination                                               |                1|
+  131|       |Wait time after overload de-energizing                                          |                1|
+  132|       |Motor insulation resistance                                                     |                1|
+  133|       |Motor thermal balance                                                           |               10|
+  135|       |Gross power                                                                     |                -|Read by click, not in loop
+  137|       |Active power                                                                    |                -|>>
+  139|       |Reactive power                                                                  |                -|>>
+  141|       |Phase А voltage/current angle cos*1000                                          |                -|>>
+  143|       |Phase B voltage/current angle cos*1000                                          |                -|>>
+  145|       |Phase C voltage/current angle cos*1000                                          |                -|>>
+  153|       |Average current measurement time                                                |                1|
+  177|       |Minimum line voltage                                                            |                1|
+  180|       |Maximum line voltage                                                            |                1|
+  203|       |Indication on UBZ display before motor power on                                 |               10|
+  205|       |Functional relay operation mode                                                 |               10|
+  211|       |Reset to factory settings                                                       |               10|
+  212|       |UBZ communication address                                                       |               10|
+  213|       |Transfer rate                                                                   |               10|
+  221|       |Remote motor start and stop using the RS-232/RS485 interfaces                   |               10|
+  224|       |Control algorithm 0-20 mA                                                       |               10|
+  228|       |Control algorithm 0-10 V                                                        |               10|
+  237|       |Command                                                                         |                 |Only used for write
+  240|      0|Alarm                                                                           |               5|
+  240|      1|Relay of load                                                                   |               5|
+  240|      2|Functional relay                                                                |               5|
+  240|      3|Restart                                                                         |               5|
+  240|      4|Functional relay operating mode                                                 |               5|
+  240|      6|Mode                                                                            |               5|
+  240|      7|Mode of operation                                                               |               5|
+  241|      0|Alarm: maximum phase voltage                                                    |               5|
+  241|      1|Alarm: thermal overload                                                         |               5|
+  241|      2|Alarm: ground fault (zero sequence current)                                     |               5|
+  241|      3|Alarm: exceeded value of negative sequence current ratio divided by negative seq|               5|
+  241|      4|Alarm: negative sequence current                                                |               5|
+  241|      5|Alarm: phase undercurrent                                                       |               5|
+  241|      6|Alarm: delayed start                                                            |               5|
+  241|      7|Alarm: rotor blocking                                                           |               5|
+  241|      8|Alarm: temperature threshold at sensor 1                                        |               5|
+  241|      9|Alarm: temperature threshold at sensor 2                                        |               5|
+  241|     10|Alarm: phase sequence                                                           |               5|
+  241|     11|Alarm: currents present with open load relay (contactor fault)                  |               5|
+  241|     12|Alarm: line undervoltage                                                        |               5|
+  241|     13|Alarm: line overvoltage                                                         |               5|
+  241|     14|Alarm: phase imbalance                                                          |               5|
+  241|     15|Alarm: motor coil insulation resistance                                         |               5|
+  242|      0|Alarm: remote control channel fault                                             |               5|
+  242|      1|Alarm: emergency motor stop without ARC                                         |               5|
+  242|      2|Alarm:emergency motor stop with ARC                                             |               5|
+  242|      3|Alarm: short circuit of temperature sensor 1                                    |               5|
+  242|      4|Alarm: breakout of temperature sensor 1                                         |               5|
+  242|      5|Alarm: short circuit of temperature sensor 2                                    |               5|
+  242|      6|Alarm: breakout of temperature sensor 2                                         |               5|
+  242|      7|Alarm: phase loss                                                               |               5|
+  242|      8|Alarm: EEPROM destruction                                                       |               5|
+  242|      9|Alarm: 0-20 mА analog input                                                     |               5|
+  242|     10|Alarm: 0-10 V analog input                                                      |               5|
+  300|       |Alarm: maximum phase voltage                                                    |        irregular|Reading is used for altering the table
+  301|       |Alarm: thermal overload value                                                   |        irregular|>>
+  302|       |Alarm: ground fault (zero sequence current)                                     |        irregular|>>
+  303|       |Alarm: exceeded value of negative sequence current ratio divided by negative seq|        irregular|>>
+  304|       |Alarm: negative sequence current                                                |        irregular|>>
+  305|       |Alarm: phase undercurrent                                                       |        irregular|>>
+  306|       |Alarm: delayed start                                                            |        irregular|>>
+  307|       |Alarm: rotor blocking                                                           |        irregular|>>
+  308|       |Alarm: temperature threshold at sensor 1                                        |        irregular|>>
+  309|       |Alarm: temperature threshold at sensor 2                                        |        irregular|>>
+  310|       |Alarm: phase sequence                                                           |        irregular|>>
+  311|       |Alarm: currents present with open load relay (contactor fault)                  |        irregular|>>
+  312|       |Alarm: line undervoltage                                                        |        irregular|>>
+  313|       |Alarm: line overvoltage                                                         |        irregular|>>
+  314|       |Alarm: phase imbalance                                                          |        irregular|>>
+  315|       |Alarm: motor coil insulation resistance                                         |        irregular|>>
+  325|       |Alarm: 0-20 mА analog input                                                     |        irregular|>>
+  326|       |Alarm: 0-10 V analog input                                                      |        irregular|>>
