@@ -148,6 +148,7 @@
     <!-- put actual device="#DEVICE_ID" number from database instead 16 here -->
     <alias device="#16" name="ubz"></alias>
     <header>UBZ-302 Control Panel</header>
+    <div style="text-align: left;" id="session-time">Session time: </div>
 
     <div class="dashboard-container">
         <div class="dashboard-item">
@@ -950,6 +951,50 @@
     function sinFromCos(cosValue) {
         return Math.sqrt(1 - Math.pow(cosValue, 2));
     }
+
+    function timeString(dateTime) {
+        const hoursNum = dateTime.getHours();
+        let hoursStr = hoursNum.toString();
+        if (hoursNum < 10) {
+            hoursStr = "0" + hoursStr;
+        }
+
+        const minutesNum = dateTime.getMinutes();
+        let minutesStr = minutesNum.toString();
+        if (minutesNum < 10) {
+            minutesStr = "0" + minutesStr;
+        }
+
+        const secondsNum = dateTime.getSeconds();
+        let secondsStr = secondsNum.toString();
+        if (secondsNum < 10) {
+            secondsStr = "0" + secondsStr;
+        }
+
+        return hoursStr + ":" + minutesStr + ":" + secondsStr;
+    }
+
+    function timeStringFromMillis(milliseconds) {
+        let hoursNum = Math.floor(milliseconds / 3600000);
+        let hoursStr = hoursNum.toString();
+        if (hoursNum < 10) {
+            hoursStr = "0" + hoursStr;
+        }
+
+        const minutesNum = Math.floor((milliseconds % 3600000) / 60000);
+        let minutesStr = minutesNum.toString();
+        if (minutesNum < 10) {
+            minutesStr = "0" + minutesStr;
+        }
+
+        const secondsNum = Math.floor((milliseconds % 60000) / 1000);
+        let secondsStr = secondsNum.toString();
+        if (secondsNum < 10) {
+            secondsStr = "0" + secondsStr;
+        }
+
+        return hoursStr + ":" + minutesStr + ":" + secondsStr;
+    }
 </script>
 
 <!-- Multicolor bar processing -->
@@ -1612,6 +1657,8 @@
 </script>
 
 <script type="text/javascript">
+    const dateTimeStart = new Date();
+
     var deviceConnected = false;
     var faultIndicatorSet = false;
     var heatQueue = new Queue();
@@ -1636,6 +1683,10 @@
         const FAULT_BIT = 0;
         const FAULT = 1;
 
+        let currentDateTime = new Date();
+        let sessionTimeString = timeStringFromMillis((currentDateTime - dateTimeStart));
+        document.querySelector("#session-time").innerHTML = "Session time: " + sessionTimeString;
+
         if (loopLock) {
             return;
         } else {
@@ -1657,27 +1708,9 @@
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
                 if (faultsToPrint[i] || TEST_FAULT_TABLE) {
-                    let currentDateTime = new Date();
+                    
 
-                    const hoursNum = currentDateTime.getHours();
-                    let hoursStr = hoursNum.toString();
-                    if (hoursNum < 10) {
-                        hoursStr = "0" + hoursStr;
-                    }
-
-                    const minutesNum = currentDateTime.getMinutes();
-                    let minutesStr = minutesNum.toString();
-                    if (minutesNum < 10) {
-                        minutesStr = "0" + minutesStr;
-                    }
-
-                    const secondsNum = currentDateTime.getSeconds();
-                    let secondsStr = secondsNum.toString();
-                    if (secondsNum < 10) {
-                        secondsStr = "0" + secondsStr;
-                    }
-
-                    let time = hoursStr + ":" + minutesStr + ":" + secondsStr;
+                    let time = timeString(currentDateTime);
 
                     const fault = alarms[i];
                     if (fault.valueAddress === undefined) {
