@@ -165,6 +165,22 @@
                 <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
                 <label for="radio-workmode-stardelta">Star / delta</label><br>
             </form>
+            <div>CT in use
+                <ul>
+                    <li>
+                        <select id="CT-in-use">
+                            <option value="internal-CT">Internal CT</option>
+                            <option value="external-CT">External CT</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+            <div>For external CT
+                <input type="number" value="100" min="20" max="800" id="external-ct-current">
+            </div>
+            <div>Motor rated current
+                <input type="number" value="0" min="0" max="630" id="motor-rated-current">
+            </div>
         </div>
         <div class="dashboard-item">
             <div>
@@ -1665,6 +1681,21 @@
     var loopLock = false;
 
     async function initElements() {
+        {
+            const engineAndCT = await rawReadRegs(150, 3);
+            if (engineAndCT.ok) {
+                if (engineAndCT.ok[0] == 0) {
+                    document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                }
+                if (engineAndCT.ok[0] == 1) {
+                    document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                }
+
+                document.querySelector("#external-ct-current").value = engineAndCT.ok[1];
+                document.querySelector("#motor-rated-current").value = engineAndCT.ok[2];
+            }
+        }
+
         {
             const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
             document.querySelector("#power-show-value-1").innerHTML = characteristicString;
