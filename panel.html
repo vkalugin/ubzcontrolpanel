@@ -1129,10 +1129,16 @@
                 }
             }
 
-            const reg153 = await rawReadRegs(153, 1);
-            if (reg153.ok) {
-                mapRegisters.set(153, reg153.ok[0]);
+            const regs150_153 = await rawReadRegs(150, 4);
+            if (regs150_153.ok) {
+                mapRegisters.set(150, regs150_153.ok[0]);
+                mapRegisters.set(151, regs150_153.ok[1]);
+                mapRegisters.set(152, regs150_153.ok[2]);
+                mapRegisters.set(153, regs150_153.ok[3]);
             } else {
+                mapRegisters.set(150, undefined);
+                mapRegisters.set(151, undefined);
+                mapRegisters.set(152, undefined);
                 mapRegisters.set(153, undefined);
             }
 
@@ -1462,7 +1468,7 @@
     }
 </script>
 
-<!-- For drop-down selectors -->
+<!-- Selection listeners -->
 <script type="text/javascript">
     async function stringPowerCharacteristicByKey(keystring) {
         var outstring = "Unknown";
@@ -1884,6 +1890,23 @@
         } else {
             document.querySelector("#line-3-voltage-value").innerHTML = "Err";
             document.querySelector("#line-3-voltage-bar").value = 0;
+        }
+
+        if (mapRegisters.get(150) != undefined) {
+            if (mapRegisters.get(150) == 0) {
+                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+            }
+            if (mapRegisters.get(150) == 1) {
+                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+            }
+        }
+
+        if (mapRegisters.get(151) != undefined) {
+            document.querySelector("#external-ct-current").value = mapRegisters.get(151);
+        }
+
+        if (mapRegisters.get(152) != undefined) {
+            document.querySelector("#motor-rated-current").value = mapRegisters.get(152);
         }
 
         if (mapRegisters.get(153) != undefined) {
