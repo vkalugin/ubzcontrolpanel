@@ -169,7 +169,7 @@
                 <ul>
                     <li>
                         <select id="CT-in-use">
-                            <option value="internal-CT">Internal CT</option>
+                            <option value="integrated-CT">Integrated CT</option>
                             <option value="external-CT">External CT</option>
                         </select>
                     </li>
@@ -1630,35 +1630,35 @@
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
         await writeRegValues(205, [0]);
-    })
+    });
 
     document.querySelector("#radio-workmode-time").addEventListener("click", async function () {
         await writeRegValues(205, [1]);
-    })
+    });
 
     document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
         await writeRegValues(205, [2]);
-    })
+    });
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
         document.querySelector("#power-show-value-1").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#power-characteristic-value-2").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
         document.querySelector("#power-show-value-2").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
         document.querySelector("#power-show-value-3").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
         const addr = document.querySelector("#modbus-address-ubz").value;
         await writeRegValues(212, [addr]);
-    })
+    });
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
         let now = new Date();
@@ -1669,7 +1669,23 @@
         hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
         hiddenEl.click();
         delete(hiddenEl);
-    })
+    });
+
+    document.querySelector("#CT-in-use").addEventListener("change", async function() {
+        if (document.querySelector("#CT-in-use").value == "integrated-CT") {
+            await writeRegValues(150, [0]);
+        } else if (document.querySelector("#CT-in-use").value == "external-CT") {
+            await writeRegValues(150, [1]);
+        }
+    });
+
+    document.querySelector("#external-ct-current").addEventListener("change", async function() {
+        await writeRegValues(151, [document.querySelector("#external-ct-current").value]);
+    });
+
+    document.querySelector("#motor-rated-current").addEventListener("change", async function() {
+        await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
+    });
 </script>
 
 <script type="text/javascript">
