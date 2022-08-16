@@ -1700,14 +1700,8 @@
     document.querySelector("#CT-in-use").addEventListener("change", async function() {
         if (document.querySelector("#CT-in-use").value == "integrated-CT") {
             const res = await writeRegValues(150, [0]);
-            if (res.status == "ok") {
-                deactivateExternalCTsettings();
-            }
         } else if (document.querySelector("#CT-in-use").value == "external-CT") {
             const res = await writeRegValues(150, [1]);
-            if (res.status == "ok") {
-                activateExternalCTsettings();
-            }
         }
     });
 
