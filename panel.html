@@ -370,11 +370,12 @@
 
                 <header>Power</header>
                 <ul>
+                    <li>Full power: <span id="full-power-value">-</span></li>
+                    <li>Active power: <span id="active-power-value">-</span></li>
+                    <li>Reactive power: <span id="reactive-power-value">-</span></li>
                     <li>
                         <select id="power-characteristic-value-1" class="power-characteristic" name="power-characteristic-value-1">
-                            <option value="full-power">Full power</option>
-                            <option value="active-power">Active power</option>
-                            <option value="reactive-power">Reactive power</option>
+                            <option value="no-selection"> -select- </option>
                             <option value="phase-1-full-power">Phase 1 full power</option>
                             <option value="phase-2-full-power">Phase 2 full power</option>
                             <option value="phase-3-full-power">Phase 3 full power</option>
@@ -394,9 +395,7 @@
                     </li>
                     <li>
                         <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
-                            <option value="full-power">Full power</option>
-                            <option value="active-power">Active power</option>
-                            <option value="reactive-power">Reactive power</option>
+                            <option value="no-selection"> -select- </option>
                             <option value="phase-1-full-power">Phase 1 full power</option>
                             <option value="phase-2-full-power">Phase 2 full power</option>
                             <option value="phase-3-full-power">Phase 3 full power</option>
@@ -416,9 +415,7 @@
                     </li>
                     <li>
                         <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
-                            <option value="full-power">Full power</option>
-                            <option value="active-power">Active power</option>
-                            <option value="reactive-power">Reactive power</option>
+                            <option value="no-selection"> -select- </option>
                             <option value="phase-1-full-power">Phase 1 full power</option>
                             <option value="phase-2-full-power">Phase 2 full power</option>
                             <option value="phase-3-full-power">Phase 3 full power</option>
@@ -1649,6 +1646,9 @@
                         outstring = cosPhiPhase3.toFixed(3);
                     }
                 }
+                break;
+            case "no-selection":
+                outstring = "";
                 break;
         }
         return outstring;
