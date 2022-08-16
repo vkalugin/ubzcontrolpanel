@@ -65,6 +65,10 @@
         float: left;
     }
 
+    .ubz-number-input {
+        width: 4em;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -165,6 +169,24 @@
                 <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
                 <label for="radio-workmode-stardelta">Star / delta</label><br>
             </form>
+            <div>CT in use
+                <span>
+                    <select id="CT-in-use">
+                        <option value="integrated-CT">Integrated CT</option>
+                        <option value="external-CT">External CT</option>
+                    </select>
+                </span>
+            </div>
+            <div>For external CT
+                <span>
+                    <input type="number" value="100" min="20" max="800" id="external-ct-current" class="ubz-number-input">
+                </span>
+            </div>
+            <div>Motor rated current
+                <span>
+                    <input type="number" value="0" min="0" max="630" id="motor-rated-current" class="ubz-number-input">
+                </span>
+            </div>
         </div>
         <div class="dashboard-item">
             <div>
@@ -207,7 +229,7 @@
                 <li>Status: <span id="connection-status-string">Unknown</span></li>
                 <li>Speed: <span id="speed-value">0</span> bps</li>
                 <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
-                <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+                <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz" class="ubz-number-input"></li>
             </ul>
         </div>
         <div class="dashboard-item">
@@ -995,6 +1017,24 @@
 
         return hoursStr + ":" + minutesStr + ":" + secondsStr;
     }
+
+    function activateExternalCTsettings() {
+        if (document.querySelector("#external-ct-current").disabled) {
+            document.querySelector("#external-ct-current").disabled = false;
+        }
+        if (document.querySelector("#motor-rated-current").disabled) {
+            document.querySelector("#motor-rated-current").disabled = false;
+        }
+    }
+
+    function deactivateExternalCTsettings() {
+        if (!(document.querySelector("#external-ct-current").disabled)) {
+            document.querySelector("#external-ct-current").disabled = true;
+        }
+        if (!(document.querySelector("#motor-rated-current").disabled)) {
+            document.querySelector("#motor-rated-current").disabled = true;
+        }
+    }
 </script>
 
 <!-- Multicolor bar processing -->
@@ -1113,10 +1153,16 @@
                 }
             }
 
-            const reg153 = await rawReadRegs(153, 1);
-            if (reg153.ok) {
-                mapRegisters.set(153, reg153.ok[0]);
+            const regs150_153 = await rawReadRegs(150, 4);
+            if (regs150_153.ok) {
+                mapRegisters.set(150, regs150_153.ok[0]);
+                mapRegisters.set(151, regs150_153.ok[1]);
+                mapRegisters.set(152, regs150_153.ok[2]);
+                mapRegisters.set(153, regs150_153.ok[3]);
             } else {
+                mapRegisters.set(150, undefined);
+                mapRegisters.set(151, undefined);
+                mapRegisters.set(152, undefined);
                 mapRegisters.set(153, undefined);
             }
 
@@ -1446,7 +1492,7 @@
     }
 </script>
 
-<!-- For drop-down selectors -->
+<!-- Selection listeners -->
 <script type="text/javascript">
     async function stringPowerCharacteristicByKey(keystring) {
         var outstring = "Unknown";
@@ -1614,35 +1660,35 @@
     // TODO: affect only when changed
     document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
         await writeRegValues(205, [0]);
-    })
+    });
 
     document.querySelector("#radio-workmode-time").addEventListener("click", async function () {
         await writeRegValues(205, [1]);
-    })
+    });
 
     document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
         await writeRegValues(205, [2]);
-    })
+    });
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
         document.querySelector("#power-show-value-1").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#power-characteristic-value-2").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-2").value);
         document.querySelector("#power-show-value-2").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#power-characteristic-value-3").addEventListener("change", async function () {
         const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-3").value);
         document.querySelector("#power-show-value-3").innerHTML = characteristicString;
-    })
+    });
 
     document.querySelector("#modbus-address-ubz").addEventListener("change", async function() {
         const addr = document.querySelector("#modbus-address-ubz").value;
         await writeRegValues(212, [addr]);
-    })
+    });
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
         let now = new Date();
@@ -1653,7 +1699,23 @@
         hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
         hiddenEl.click();
         delete(hiddenEl);
-    })
+    });
+
+    document.querySelector("#CT-in-use").addEventListener("change", async function() {
+        if (document.querySelector("#CT-in-use").value == "integrated-CT") {
+            const res = await writeRegValues(150, [0]);
+        } else if (document.querySelector("#CT-in-use").value == "external-CT") {
+            const res = await writeRegValues(150, [1]);
+        }
+    });
+
+    document.querySelector("#external-ct-current").addEventListener("change", async function() {
+        await writeRegValues(151, [document.querySelector("#external-ct-current").value]);
+    });
+
+    document.querySelector("#motor-rated-current").addEventListener("change", async function() {
+        await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
+    });
 </script>
 
 <script type="text/javascript">
@@ -1665,6 +1727,23 @@
     var loopLock = false;
 
     async function initElements() {
+        {
+            const engineAndCT = await rawReadRegs(150, 3);
+            if (engineAndCT.ok) {
+                if (engineAndCT.ok[0] == 0) {
+                    document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                    deactivateExternalCTsettings();
+                }
+                if (engineAndCT.ok[0] == 1) {
+                    document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                    activateExternalCTsettings();
+                }
+
+                document.querySelector("#external-ct-current").value = engineAndCT.ok[1];
+                document.querySelector("#motor-rated-current").value = engineAndCT.ok[2];
+            }
+        }
+
         {
             const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
             document.querySelector("#power-show-value-1").innerHTML = characteristicString;
@@ -1837,6 +1916,25 @@
         } else {
             document.querySelector("#line-3-voltage-value").innerHTML = "Err";
             document.querySelector("#line-3-voltage-bar").value = 0;
+        }
+
+        if (mapRegisters.get(150) != undefined) {
+            if (mapRegisters.get(150) == 0) {
+                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                deactivateExternalCTsettings();
+            }
+            if (mapRegisters.get(150) == 1) {
+                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                activateExternalCTsettings();
+            }
+        }
+
+        if (mapRegisters.get(151) != undefined) {
+            document.querySelector("#external-ct-current").value = mapRegisters.get(151);
+        }
+
+        if (mapRegisters.get(152) != undefined) {
+            document.querySelector("#motor-rated-current").value = mapRegisters.get(152);
         }
 
         if (mapRegisters.get(153) != undefined) {
