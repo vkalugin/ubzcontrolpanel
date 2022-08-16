@@ -65,6 +65,10 @@
         float: left;
     }
 
+    .ubz-number-input {
+        width: 4em;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -166,22 +170,22 @@
                 <label for="radio-workmode-stardelta">Star / delta</label><br>
             </form>
             <div>CT in use
-                <div>
+                <span>
                     <select id="CT-in-use">
                         <option value="integrated-CT">Integrated CT</option>
                         <option value="external-CT">External CT</option>
                     </select>
-                </div>
+                </span>
             </div>
             <div>For external CT
-                <div>
-                    <input type="number" value="100" min="20" max="800" id="external-ct-current">
-                </div>
+                <span>
+                    <input type="number" value="100" min="20" max="800" id="external-ct-current" class="ubz-number-input">
+                </span>
             </div>
             <div>Motor rated current
-                <div>
-                    <input type="number" value="0" min="0" max="630" id="motor-rated-current">
-                </div>
+                <span>
+                    <input type="number" value="0" min="0" max="630" id="motor-rated-current" class="ubz-number-input">
+                </span>
             </div>
         </div>
         <div class="dashboard-item">
@@ -225,7 +229,7 @@
                 <li>Status: <span id="connection-status-string">Unknown</span></li>
                 <li>Speed: <span id="speed-value">0</span> bps</li>
                 <li>Connecting time: <span id="connecting-time-string">00:00:00</span></li>
-                <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz"></li>
+                <li>Address UBZ: <input type="number" min="1" max="247" value="1" id="modbus-address-ubz" name="modbus-address-ubz" class="ubz-number-input"></li>
             </ul>
         </div>
         <div class="dashboard-item">
