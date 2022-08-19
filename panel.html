@@ -217,9 +217,14 @@
             </div>
         </div>
         <div class="dashboard-item">
-            <header>Heating</header>
             <div>
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div>
+                <canvas id="voltage-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div>
+                <canvas id="current-graph">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -1302,22 +1307,20 @@
 
 <!-- Graph -->
 <script type="text/javascript">
-    var canvas = document.querySelector("#heating-graph");
-    var ctx = canvas.getContext("2d");
-    ctx.font = "16px Droid Sans";
+    var ctxTherm = document.querySelector("#heating-graph").getContext("2d");
+    ctxTherm.font = "16px Droid Sans";
     const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
-    const bgColors = new Array(GRAPH_BARS_NUMBER);
     const labels = new Array(GRAPH_BARS_NUMBER).fill("");
     var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
 
-    const tempGraph = new Chart(ctx, {
+    const tempGraph = new Chart(ctxTherm, {
         data: {
             labels: labels,
             datasets: [{
                 type: "bar",
                 label: "Temperature, % of max",
                 data: temperaturePercentages,
-                backgroundColor: bgColors,
+                backgroundColor: new Array(GRAPH_BARS_NUMBER),
             }, {
                 type: "line",
                 label: "66%",
@@ -1374,6 +1377,46 @@
             sequenceOnGraph = graphMaxIndex;
         }
     }
+
+    var ctxVoltage = document.querySelector("#voltage-graph").getContext("2d");
+    ctxTherm.font = "16px Droid Sans";
+
+    const voltGraph = new Chart(
+        ctxVoltage, {
+            data: {
+                labels: labels,
+                datasets: [{
+                    type: "bar",
+                    label: "Voltage",
+                    data: [],
+                    backgroundColor: new Array(GRAPH_BARS_NUMBER),
+                },]
+            },
+            options: {
+                animation: false,
+            },
+        }
+    );
+
+    var ctxCurrent = document.querySelector("#current-graph").getContext("2d");
+    ctxCurrent.font = "16px Droid Sans";
+
+    const currentGraph = new Chart(
+        ctxCurrent, {
+            data: {
+                labels: labels,
+                datasets: [{
+                    type: "bar",
+                    label: "Current",
+                    data: [],
+                    backgroundColor: new Array(GRAPH_BARS_NUMBER),
+                },]
+            },
+            options: {
+                animation: false,
+            },
+        }
+    );
 </script>
 
 <!-- Indicators -->
