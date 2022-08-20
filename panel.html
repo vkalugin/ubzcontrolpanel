@@ -1307,10 +1307,34 @@
 
 <!-- Graph -->
 <script type="text/javascript">
+    class GraphSequencing {
+        constructor() {
+            this.idx = GRAPH_BARS_NUMBER - 1;
+            this.queue = new Queue();
+        }
+
+        push(element, color) {
+            while (this.queue.length >= GRAPH_BARS_NUMBER) {
+                this.queue.dequeue();
+            }
+            this.queue.enqueue({element, color});
+        }
+
+        turn() {
+            if (this.idx >= 0) {
+                this.idx -= 1;
+            } else {
+                this.idx = GRAPH_MAX_INDEX;
+            }
+        }
+    }
+
+    const GRAPH_MAX_INDEX = GRAPH_BARS_NUMBER - 1;
+
     var ctxTherm = document.querySelector("#heating-graph").getContext("2d");
     ctxTherm.font = "16px Droid Sans";
-    var sequenceOnHeatGraph = GRAPH_BARS_NUMBER - 1;
-    var heatQueue = new Queue();
+    
+    var tempSequencing = new GraphSequencing();
 
     const tempGraph = new Chart(ctxTherm, {
         data: {
@@ -1352,35 +1376,26 @@
             color = "rgba(50, 50, 200, 1)";
         }
 
-        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
-            heatQueue.dequeue();
-        }
-        heatQueue.enqueue({tempPercentage, color});
+        tempSequencing.push(tempPercentage, color);
 
-        let heatData = heatQueue.asArrayFromTail;
+        let data = tempSequencing.queue.asArrayFromTail;
 
-        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
-        for (let i=0; i<heatData.length; i++) {
-            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
-            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
+        for (let i=0; i<data.length; i++) {
+            tempGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
+            tempGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
         }
 
         // TODO: get this label from proper timestamps
-        tempGraph.data.labels[sequenceOnHeatGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnHeatGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_LOW / 1000).toString() + 's');
-
+        tempGraph.data.labels[tempSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - tempSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_LOW / 1000).toString() + 's');
         tempGraph.update();
 
-        if (sequenceOnHeatGraph >= 0) {
-            sequenceOnHeatGraph -= 1;
-        } else {
-            sequenceOnHeatGraph = graphMaxIndex;
-        }
+        tempSequencing.turn();
     }
 
     var ctxVoltage = document.querySelector("#voltage-graph").getContext("2d");
     ctxTherm.font = "16px Droid Sans";
-    var sequenceOnVoltageGraph = GRAPH_BARS_NUMBER - 1;
-    var voltageQueue = new Queue();
+
+    var voltSequencing = new GraphSequencing();
 
     const voltGraph = new Chart(
         ctxVoltage, {
@@ -1402,34 +1417,25 @@
     function updateVoltGraph(voltage) {
         let color = "rgba(50, 200, 50, 1)";
 
-        while (voltageQueue.length >= GRAPH_BARS_NUMBER) {
-            voltageQueue.dequeue();
-        }
-        voltageQueue.enqueue({voltage, color});
+        voltSequencing.push(voltage, color);
 
-        let voltData = voltageQueue.asArrayFromTail;
+        let data = voltSequencing.queue.asArrayFromTail;
 
-        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
-        for (let i=0; i<voltData.length; i++) {
-            voltGraph.data.datasets[0].data[graphMaxIndex-i] = voltData[i].voltage;
-            voltGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = voltData[i].color;
+        for (let i=0; i<data.length; i++) {
+            voltGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
+            voltGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
         }
 
-        voltGraph.data.labels[sequenceOnVoltageGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnVoltageGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
-
+        voltGraph.data.labels[voltSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - voltSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
         voltGraph.update();
 
-        if (sequenceOnVoltageGraph >= 0) {
-            sequenceOnVoltageGraph -= 1;
-        } else {
-            sequenceOnVoltageGraph = graphMaxIndex;
-        }
+        voltSequencing.turn();
     }
 
     var ctxCurrent = document.querySelector("#current-graph").getContext("2d");
     ctxCurrent.font = "16px Droid Sans";
-    var sequenceOnCurrentGraph = GRAPH_BARS_NUMBER - 1;
-    var currentQueue = new Queue();
+    
+    var ampSequencing = new GraphSequencing();
 
     const currentGraph = new Chart(
         ctxCurrent, {
@@ -1451,28 +1457,20 @@
     function updateCurrentGraph(current) {
         let color = "rgba(50, 200, 50, 1)";
 
-        while (currentQueue.length >= GRAPH_BARS_NUMBER) {
-            currentQueue.dequeue();
-        }
-        currentQueue.enqueue({current, color});
+        ampSequencing.push(current, color);
 
-        let currentData = currentQueue.asArrayFromTail;
+        let data = ampSequencing.queue.asArrayFromTail;
 
-        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
-        for (let i=0; i<currentData.length; i++) {
-            currentGraph.data.datasets[0].data[graphMaxIndex-i] = currentData[i].current;
-            currentGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = currentData[i].color;
+        for (let i=0; i<data.length; i++) {
+            currentGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
+            currentGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
         }
 
-        currentGraph.data.labels[sequenceOnCurrentGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnCurrentGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
+        currentGraph.data.labels[ampSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - ampSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
 
         currentGraph.update();
 
-        if (sequenceOnCurrentGraph >= 0) {
-            sequenceOnCurrentGraph -= 1;
-        } else {
-            sequenceOnCurrentGraph = graphMaxIndex;
-        }
+        ampSequencing.turn();
     }
 </script>
 
