@@ -1037,6 +1037,20 @@
             document.querySelector("#motor-rated-current").disabled = true;
         }
     }
+
+    function determineHeatgraphColor(value) {
+        let color = "";
+
+        if (value >= 100) {
+            color = "rgba(200, 50, 50, 1)";
+        } else if (value >= 66) {
+            color = "rgba(150, 150, 50, 1)";
+        } else {
+            color = "rgba(50, 50, 200, 1)";
+        }
+
+        return color;
+    }
 </script>
 
 <!-- Multicolor bar processing -->
@@ -1365,16 +1379,8 @@
         }
     });
 
-    function updateTempGraph(tempPercentage) {
-        let color = "";
-
-        if (tempPercentage >= 100) {
-            color = "rgba(200, 50, 50, 1)";
-        } else if (tempPercentage >= 66) {
-            color = "rgba(150, 150, 50, 1)";
-        } else {
-            color = "rgba(50, 50, 200, 1)";
-        }
+    function updateTempGraph(tempPercentage, color) {
+        
 
         tempSequencing.push(tempPercentage, color);
 
@@ -1414,9 +1420,7 @@
         }
     );
 
-    function updateVoltGraph(voltage) {
-        let color = "rgba(50, 200, 50, 1)";
-
+    function updateVoltGraph(voltage ,color) {
         voltSequencing.push(voltage, color);
 
         let data = voltSequencing.queue.asArrayFromTail;
@@ -1454,9 +1458,7 @@
         }
     );
 
-    function updateCurrentGraph(current) {
-        let color = "rgba(50, 200, 50, 1)";
-
+    function updateCurrentGraph(current, color) {
         ampSequencing.push(current, color);
 
         let data = ampSequencing.queue.asArrayFromTail;
@@ -1892,7 +1894,7 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        updateCurrentGraph(mapRegisters.get(100));
+        updateCurrentGraph(mapRegisters.get(100), "orange");
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
@@ -1961,7 +1963,7 @@
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
-        updateVoltGraph(mapRegisters.get(114));
+        updateVoltGraph(mapRegisters.get(114), "rgba(50, 200, 50, 1)");
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
         if (mapRegisters.get(115) != undefined) {
             document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
@@ -2151,14 +2153,17 @@
 
         if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
             if (TEST_HEAT_GRAPH) {
-                updateTempGraph(Math.floor(Math.random() * 125));
+                let heatValue = Math.floor(Math.random() * 125);
+                let color = determineHeatgraphColor(heatValue);
+                updateTempGraph(heatValue, color);
             } else {
                 let heatValue = mapRegisters.get(133);
                 if (heatValue != undefined) {
                     const heatPercentage = (heatValue / 1100000) * 100;
-                    updateTempGraph(heatPercentage);
+                    let color = determineHeatgraphColor(heatPercentage);
+                    updateTempGraph(heatPercentage, color);
                 } else {
-                    updateTempGraph(undefined);
+                    updateTempGraph(undefined, "rgba(0, 0, 0, 0)");
                 }
             }
         }
