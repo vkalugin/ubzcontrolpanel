@@ -1413,7 +1413,7 @@
 
         let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
         for (let i=0; i<voltData.length; i++) {
-            voltGraph.data.datasets[0].data[graphMaxIndex-i] = currentData[i].voltage;
+            voltGraph.data.datasets[0].data[graphMaxIndex-i] = voltData[i].voltage;
             voltGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = voltData[i].color;
         }
 
