@@ -1379,25 +1379,6 @@
         }
     });
 
-    function updateTempGraph(tempPercentage, color) {
-        
-
-        tempSequencing.push(tempPercentage, color);
-
-        let data = tempSequencing.queue.asArrayFromTail;
-
-        for (let i=0; i<data.length; i++) {
-            tempGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
-            tempGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
-        }
-
-        // TODO: get this label from proper timestamps
-        tempGraph.data.labels[tempSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - tempSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_LOW / 1000).toString() + 's');
-        tempGraph.update();
-
-        tempSequencing.turn();
-    }
-
     var ctxVoltage = document.querySelector("#voltage-graph").getContext("2d");
     ctxTherm.font = "16px Droid Sans";
 
@@ -1420,28 +1401,12 @@
         }
     );
 
-    function updateVoltGraph(voltage ,color) {
-        voltSequencing.push(voltage, color);
-
-        let data = voltSequencing.queue.asArrayFromTail;
-
-        for (let i=0; i<data.length; i++) {
-            voltGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
-            voltGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
-        }
-
-        voltGraph.data.labels[voltSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - voltSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
-        voltGraph.update();
-
-        voltSequencing.turn();
-    }
-
     var ctxCurrent = document.querySelector("#current-graph").getContext("2d");
     ctxCurrent.font = "16px Droid Sans";
     
     var ampSequencing = new GraphSequencing();
 
-    const currentGraph = new Chart(
+    const ampGraph = new Chart(
         ctxCurrent, {
             data: {
                 labels: new Array(GRAPH_BARS_NUMBER).fill(""),
@@ -1458,21 +1423,21 @@
         }
     );
 
-    function updateCurrentGraph(current, color) {
-        ampSequencing.push(current, color);
+    function addToGraph(sequencing, chart, value, color, priorityDivisor) {
+        sequencing.push(value, color);
 
-        let data = ampSequencing.queue.asArrayFromTail;
+        let data = sequencing.queue.asArrayFromTail;
 
         for (let i=0; i<data.length; i++) {
-            currentGraph.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
-            currentGraph.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
+            chart.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
+            chart.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
         }
 
-        currentGraph.data.labels[ampSequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - ampSequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_HIGH / 1000).toString() + 's');
+        // TODO: get this label from proper timestamps
+        chart.data.labels[sequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - sequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * priorityDivisor / 1000).toString() + 's');
+        chart.update();
 
-        currentGraph.update();
-
-        ampSequencing.turn();
+        sequencing.turn();
     }
 </script>
 
@@ -1894,7 +1859,7 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        updateCurrentGraph(mapRegisters.get(100), "orange");
+        addToGraph(ampSequencing, ampGraph, mapRegisters.get(100), "orange", PRIORITY_DIVISOR_HIGH);
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
@@ -1963,7 +1928,7 @@
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
-        updateVoltGraph(mapRegisters.get(114), "rgba(50, 200, 50, 1)");
+        addToGraph(voltSequencing, voltGraph, mapRegisters.get(114), "rgba(50, 200, 50, 1)", PRIORITY_DIVISOR_HIGH);
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
         if (mapRegisters.get(115) != undefined) {
             document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
@@ -2155,15 +2120,15 @@
             if (TEST_HEAT_GRAPH) {
                 let heatValue = Math.floor(Math.random() * 125);
                 let color = determineHeatgraphColor(heatValue);
-                updateTempGraph(heatValue, color);
+                addToGraph(tempSequencing, tempGraph, heatValue, color, PRIORITY_DIVISOR_LOW);
             } else {
                 let heatValue = mapRegisters.get(133);
                 if (heatValue != undefined) {
                     const heatPercentage = (heatValue / 1100000) * 100;
                     let color = determineHeatgraphColor(heatPercentage);
-                    updateTempGraph(heatPercentage, color);
+                    addToGraph(tempSequencing, tempGraph, heatPercentage, color, PRIORITY_DIVISOR_LOW);
                 } else {
-                    updateTempGraph(undefined, "rgba(0, 0, 0, 0)");
+                    addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)", PRIORITY_DIVISOR_LOW);
                 }
             }
         }
