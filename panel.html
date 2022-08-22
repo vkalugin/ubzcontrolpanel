@@ -1436,7 +1436,7 @@
         }
     );
 
-    function addToGraph(sequencing, chart, value, color, priorityDivisor) {
+    function addToGraph(sequencing, chart, value, color) {
         sequencing.push(value, color);
 
         let data = sequencing.queue.asArrayFromTail;
@@ -1872,7 +1872,7 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        addToGraph(ampSequencing, ampGraph, mapRegisters.get(100), "orange", PRIORITY_DIVISOR_HIGH);
+        addToGraph(ampSequencing, ampGraph, mapRegisters.get(100), "orange");
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
@@ -1941,7 +1941,7 @@
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
-        addToGraph(voltSequencing, voltGraph, mapRegisters.get(114), "rgba(50, 200, 50, 1)", PRIORITY_DIVISOR_HIGH);
+        addToGraph(voltSequencing, voltGraph, mapRegisters.get(114), "rgba(50, 200, 50, 1)");
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
         if (mapRegisters.get(115) != undefined) {
             document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
@@ -2133,15 +2133,15 @@
             if (TEST_HEAT_GRAPH) {
                 let heatValue = Math.floor(Math.random() * 125);
                 let color = determineHeatgraphColor(heatValue);
-                addToGraph(tempSequencing, tempGraph, heatValue, color, PRIORITY_DIVISOR_LOW);
+                addToGraph(tempSequencing, tempGraph, heatValue, color);
             } else {
                 let heatValue = mapRegisters.get(133);
                 if (heatValue != undefined) {
                     const heatPercentage = (heatValue / 1100000) * 100;
                     let color = determineHeatgraphColor(heatPercentage);
-                    addToGraph(tempSequencing, tempGraph, heatPercentage, color, PRIORITY_DIVISOR_LOW);
+                    addToGraph(tempSequencing, tempGraph, heatPercentage, color);
                 } else {
-                    addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)", PRIORITY_DIVISOR_LOW);
+                    addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
                 }
             }
         }
