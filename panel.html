@@ -223,7 +223,13 @@
                 <canvas id="voltage-graph">Your browser does not support the canvas element.</canvas>
             </div>
             <div>
+                <canvas id="voltage-graph-m">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div>
                 <canvas id="current-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div>
+                <canvas id="current-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -1019,6 +1025,14 @@
         return hoursStr + ":" + minutesStr + ":" + secondsStr;
     }
 
+    function secondsDiffString(milliseconds2, milliseconds1) {
+        return ((milliseconds2 - milliseconds1) / 1000).toFixed(0) + 's';
+    }
+
+    function minutesDiffString(milliseconds2, milliseconds1) {
+        return ((milliseconds2 - milliseconds1) / 60000).toFixed(0) + 'm';
+    }
+
     function activateExternalCTsettings() {
         if (document.querySelector("#external-ct-current").disabled) {
             document.querySelector("#external-ct-current").disabled = false;
@@ -1383,8 +1397,7 @@
     });
 
     var ctxVoltage = document.querySelector("#voltage-graph").getContext("2d");
-    ctxTherm.font = "16px Droid Sans";
-
+    ctxVoltage.font = "16px Droid Sans";
     var voltSequencing = new GraphSequencing(20);
 
     const voltGraph = new Chart(
@@ -1410,9 +1423,35 @@
         }
     );
 
+    var ctxVoltageM = document.querySelector("#voltage-graph-m").getContext("2d");
+    ctxVoltageM.font = "16px Droid Sans";
+    var voltSequencingM = new GraphSequencing(1000);
+
+    const voltGraphM = new Chart(
+        ctxVoltageM, {
+            data: {
+                labels: new Array(voltSequencingM.capacity).fill(""),
+                datasets: [{
+                    type: "bar",
+                    label: "Voltage",
+                    data: new Array(voltSequencingM.capacity).fill(0),
+                    backgroundColor: new Array(voltSequencingM.capacity),
+                },]
+            },
+            options: {
+                animation: false,
+                scales: {
+                    yAxes: {
+                        min: 200,
+                        max: 250,
+                    },
+                },
+            },
+        }
+    );
+
     var ctxCurrent = document.querySelector("#current-graph").getContext("2d");
     ctxCurrent.font = "16px Droid Sans";
-    
     var ampSequencing = new GraphSequencing(20);
 
     const ampGraph = new Chart(
@@ -1432,7 +1471,28 @@
         }
     );
 
-    function addToGraph(sequencing, chart, value, color) {
+    var ctxCurrentM = document.querySelector("#current-graph-m").getContext("2d");
+    ctxCurrentM.font = "16px Droid Sans";
+    var ampSequencingM = new GraphSequencing(1000);
+
+    const ampGraphM = new Chart(
+        ctxCurrentM, {
+            data: {
+                labels: new Array(ampSequencing.capacity).fill(""),
+                datasets: [{
+                    type: "bar",
+                    label: "Current",
+                    data: new Array(ampSequencing.capacity).fill(0),
+                    backgroundColor: new Array(ampSequencing.capacity),
+                },]
+            },
+            options: {
+                animation: false,
+            },
+        }
+    );
+
+    function addToGraph(sequencing, chart, value, color, timedisplay) {
         sequencing.push(value, color);
 
         let data = sequencing.queue.asArrayFromTail;
@@ -1441,7 +1501,11 @@
         for (let i=0; i<data.length; i++) {
             chart.data.datasets[0].data[sequencing.maxIndex-i] = data[i].element;
             chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
-            chart.data.labels[sequencing.maxIndex-i] = ((now - data[i].timestamp) / 1000).toFixed(0) + 's';
+            if (timedisplay == "m") {
+                chart.data.labels[sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
+            } else {
+                chart.data.labels[sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+            }
         }
 
         chart.update();
@@ -1869,6 +1933,7 @@
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
         addToGraph(ampSequencing, ampGraph, mapRegisters.get(100), "orange");
+        addToGraph(ampSequencingM, ampGraphM, mapRegisters.get(100), "orange", "m");
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
@@ -1938,6 +2003,7 @@
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
         addToGraph(voltSequencing, voltGraph, mapRegisters.get(114), "rgba(50, 200, 50, 1)");
+        addToGraph(voltSequencingM, voltGraphM, mapRegisters.get(114), "rgba(50, 200, 50, 1)", "m");
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
         if (mapRegisters.get(115) != undefined) {
             document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
