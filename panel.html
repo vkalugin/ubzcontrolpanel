@@ -1324,7 +1324,6 @@
         constructor(graphCapacity) {
             this.idx = graphCapacity - 1;
             this.queue = new Queue();
-            this.startTime = undefined;
             this.capacity = graphCapacity;
         }
 
@@ -1333,13 +1332,11 @@
         }
 
         push(element, color) {
-            if (this.startTime == undefined) {
-                this.startTime = new Date().valueOf();
-            }
             while (this.queue.length >= this.capacity) {
                 this.queue.dequeue();
             }
-            this.queue.enqueue({element, color});
+            const timestamp = new Date().valueOf();
+            this.queue.enqueue({element, color, timestamp});
         }
 
         turn() {
@@ -1347,7 +1344,6 @@
                 this.idx -= 1;
             } else {
                 this.idx = this.capacity;
-                this.startTime = new Date().valueOf();
             }
         }
     }
@@ -1440,14 +1436,14 @@
         sequencing.push(value, color);
 
         let data = sequencing.queue.asArrayFromTail;
+        const now = new Date().valueOf();
 
         for (let i=0; i<data.length; i++) {
             chart.data.datasets[0].data[sequencing.maxIndex-i] = data[i].element;
             chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
+            chart.data.labels[sequencing.maxIndex-i] = ((now - data[i].timestamp) / 1000).toFixed(0) + 's';
         }
 
-        let now = new Date().valueOf();
-        chart.data.labels[sequencing.idx] = ((now - sequencing.startTime) / 1000).toFixed(0) + 's';
         chart.update();
 
         sequencing.turn();
