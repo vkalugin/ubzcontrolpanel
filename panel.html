@@ -799,6 +799,16 @@
             }
             return arr;
         }
+
+        extractArray(from, to) {
+            let arr = []
+            let arrIndex = 0;
+            for (let i=from; i<to; i++) {
+                arr[arrIndex] = this.elements[i];
+                arrIndex++;
+            }
+            return arr;
+        }
     }
 </script>
 
