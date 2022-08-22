@@ -1325,9 +1325,13 @@
         constructor() {
             this.idx = GRAPH_BARS_NUMBER - 1;
             this.queue = new Queue();
+            this.startTime = undefined;
         }
 
         push(element, color) {
+            if (this.startTime == undefined) {
+                this.startTime = new Date().valueOf();
+            }
             while (this.queue.length >= GRAPH_BARS_NUMBER) {
                 this.queue.dequeue();
             }
@@ -1339,6 +1343,7 @@
                 this.idx -= 1;
             } else {
                 this.idx = GRAPH_MAX_INDEX;
+                this.startTime = new Date().valueOf();
             }
         }
     }
@@ -1439,8 +1444,8 @@
             chart.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
         }
 
-        // TODO: get this label from proper timestamps
-        chart.data.labels[sequencing.idx] = ((((GRAPH_BARS_NUMBER - 1) - sequencing.idx) * UPDATE_VISUALIZATION_INTERVAL_MS * priorityDivisor / 1000).toString() + 's');
+        let now = new Date().valueOf();
+        chart.data.labels[sequencing.idx] = ((now - sequencing.startTime) / 1000).toFixed(0) + 's';
         chart.update();
 
         sequencing.turn();
