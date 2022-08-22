@@ -2,7 +2,6 @@
     const PHASE_VOLTAGE_THRESHOLD = 220;
     const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
     const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
-    const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
 </script>
 
@@ -1322,17 +1321,22 @@
 <!-- Graph -->
 <script type="text/javascript">
     class GraphSequencing {
-        constructor() {
-            this.idx = GRAPH_BARS_NUMBER - 1;
+        constructor(graphCapacity) {
+            this.idx = graphCapacity - 1;
             this.queue = new Queue();
             this.startTime = undefined;
+            this.capacity = graphCapacity;
+        }
+
+        get maxIndex() {
+            return this.capacity - 1;
         }
 
         push(element, color) {
             if (this.startTime == undefined) {
                 this.startTime = new Date().valueOf();
             }
-            while (this.queue.length >= GRAPH_BARS_NUMBER) {
+            while (this.queue.length >= this.capacity) {
                 this.queue.dequeue();
             }
             this.queue.enqueue({element, color});
@@ -1342,38 +1346,36 @@
             if (this.idx >= 0) {
                 this.idx -= 1;
             } else {
-                this.idx = GRAPH_MAX_INDEX;
+                this.idx = this.capacity;
                 this.startTime = new Date().valueOf();
             }
         }
     }
 
-    const GRAPH_MAX_INDEX = GRAPH_BARS_NUMBER - 1;
-
     var ctxTherm = document.querySelector("#heating-graph").getContext("2d");
     ctxTherm.font = "16px Droid Sans";
     
-    var tempSequencing = new GraphSequencing();
+    var tempSequencing = new GraphSequencing(30);
 
     const tempGraph = new Chart(ctxTherm, {
         data: {
-            labels: new Array(GRAPH_BARS_NUMBER).fill(""),
+            labels: new Array(tempSequencing.capacity).fill(""),
             datasets: [{
                 type: "bar",
                 label: "Temperature, % of max",
-                data: new Array(GRAPH_BARS_NUMBER).fill(0),
-                backgroundColor: new Array(GRAPH_BARS_NUMBER),
+                data: new Array(tempSequencing.capacity).fill(0),
+                backgroundColor: new Array(tempSequencing.capacity),
             }, {
                 type: "line",
                 label: "66%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(66),
+                data: new Array(tempSequencing.capacity).fill(66),
                 backgroundColor: "rgba(50, 50, 200, 1)",
                 borderColor: "rgba(50, 50, 200, 1)",
                 radius: 0,
             }, {
                 type: "line",
                 label: "100%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(100),
+                data: new Array(tempSequencing.capacity).fill(100),
                 backgroundColor: "rgba(200, 50, 50, 1)",
                 borderColor: "rgba(200, 50, 50, 1)",
                 radius: 0,
@@ -1387,17 +1389,17 @@
     var ctxVoltage = document.querySelector("#voltage-graph").getContext("2d");
     ctxTherm.font = "16px Droid Sans";
 
-    var voltSequencing = new GraphSequencing();
+    var voltSequencing = new GraphSequencing(20);
 
     const voltGraph = new Chart(
         ctxVoltage, {
             data: {
-                labels: new Array(GRAPH_BARS_NUMBER).fill(""),
+                labels: new Array(voltSequencing.capacity).fill(""),
                 datasets: [{
                     type: "bar",
                     label: "Voltage",
-                    data: new Array(GRAPH_BARS_NUMBER).fill(0),
-                    backgroundColor: new Array(GRAPH_BARS_NUMBER),
+                    data: new Array(voltSequencing.capacity).fill(0),
+                    backgroundColor: new Array(voltSequencing.capacity),
                 },]
             },
             options: {
@@ -1415,17 +1417,17 @@
     var ctxCurrent = document.querySelector("#current-graph").getContext("2d");
     ctxCurrent.font = "16px Droid Sans";
     
-    var ampSequencing = new GraphSequencing();
+    var ampSequencing = new GraphSequencing(20);
 
     const ampGraph = new Chart(
         ctxCurrent, {
             data: {
-                labels: new Array(GRAPH_BARS_NUMBER).fill(""),
+                labels: new Array(ampSequencing.capacity).fill(""),
                 datasets: [{
                     type: "bar",
                     label: "Current",
-                    data: new Array(GRAPH_BARS_NUMBER).fill(0),
-                    backgroundColor: new Array(GRAPH_BARS_NUMBER),
+                    data: new Array(ampSequencing.capacity).fill(0),
+                    backgroundColor: new Array(ampSequencing.capacity),
                 },]
             },
             options: {
@@ -1440,8 +1442,8 @@
         let data = sequencing.queue.asArrayFromTail;
 
         for (let i=0; i<data.length; i++) {
-            chart.data.datasets[0].data[GRAPH_MAX_INDEX-i] = data[i].element;
-            chart.data.datasets[0].backgroundColor[GRAPH_MAX_INDEX-i] = data[i].color;
+            chart.data.datasets[0].data[sequencing.maxIndex-i] = data[i].element;
+            chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
         }
 
         let now = new Date().valueOf();
