@@ -219,16 +219,16 @@
             <div>
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div>
+            <div id="div-voltage-graph">
                 <canvas id="voltage-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div>
+            <div id="div-voltage-graph-m" style="display: none;">
                 <canvas id="voltage-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
-            <div>
+            <div id="div-current-graph">
                 <canvas id="current-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div>
+            <div id="div-current-graph-m" style="display: none;">
                 <canvas id="current-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
@@ -1838,11 +1838,31 @@
     document.querySelector("#motor-rated-current").addEventListener("change", async function() {
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
+
+    document.querySelector("#div-voltage-graph").addEventListener("click", function() {
+        document.querySelector("#div-voltage-graph").style.display = 'none';
+        document.querySelector("#div-voltage-graph-m").style.display = 'block';
+    });
+
+    document.querySelector("#div-voltage-graph-m").addEventListener("click", function() {
+        document.querySelector("#div-voltage-graph").style.display = 'block';
+        document.querySelector("#div-voltage-graph-m").style.display = 'none';
+    });
+
+    document.querySelector("#div-current-graph").addEventListener("click", function() {
+        console.log(document.querySelector("#div-current-graph"));
+        document.querySelector("#div-current-graph").style.display = 'none';
+        document.querySelector("#div-current-graph-m").style.display = 'block';
+    });
+
+    document.querySelector("#div-current-graph-m").addEventListener("click", function() {
+        document.querySelector("#div-current-graph").style.display = 'block';
+        document.querySelector("#div-current-graph-m").style.display = 'none';
+    });
 </script>
 
 <script type="text/javascript">
     const dateTimeStart = new Date();
-
     var deviceConnected = false;
     var faultIndicatorSet = false;
     var loopLock = false;
