@@ -1106,6 +1106,20 @@
 
         return color;
     }
+
+    function switchableElementsWithIds(id1str, id2str) {
+        const selector1 = "#" + id1str;
+        const selector2 = "#" + id2str;
+            document.querySelector(selector1).addEventListener("click", function() {
+            document.querySelector(selector1).style.display = 'none';
+            document.querySelector(selector2).style.display = 'block';
+        });
+
+        document.querySelector(selector2).addEventListener("click", function() {
+            document.querySelector(selector1).style.display = 'block';
+            document.querySelector(selector2).style.display = 'none';
+        });
+    }
 </script>
 
 <!-- Multicolor bar processing -->
@@ -2088,65 +2102,13 @@
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
 
-    document.querySelector("#div-voltage-1-graph").addEventListener("click", function() {
-        document.querySelector("#div-voltage-1-graph").style.display = 'none';
-        document.querySelector("#div-voltage-1-graph-m").style.display = 'block';
-    });
+    switchableElementsWithIds("div-voltage-1-graph", "div-voltage-1-graph-m");
+    switchableElementsWithIds("div-voltage-2-graph", "div-voltage-2-graph-m");
+    switchableElementsWithIds("div-voltage-3-graph", "div-voltage-3-graph-m");
 
-    document.querySelector("#div-voltage-1-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-voltage-1-graph").style.display = 'block';
-        document.querySelector("#div-voltage-1-graph-m").style.display = 'none';
-    });
-
-    document.querySelector("#div-voltage-2-graph").addEventListener("click", function() {
-        document.querySelector("#div-voltage-2-graph").style.display = 'none';
-        document.querySelector("#div-voltage-2-graph-m").style.display = 'block';
-    });
-
-    document.querySelector("#div-voltage-2-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-voltage-2-graph").style.display = 'block';
-        document.querySelector("#div-voltage-2-graph-m").style.display = 'none';
-    });
-
-    document.querySelector("#div-voltage-3-graph").addEventListener("click", function() {
-        document.querySelector("#div-voltage-3-graph").style.display = 'none';
-        document.querySelector("#div-voltage-3-graph-m").style.display = 'block';
-    });
-
-    document.querySelector("#div-voltage-3-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-voltage-3-graph").style.display = 'block';
-        document.querySelector("#div-voltage-3-graph-m").style.display = 'none';
-    });
-
-    document.querySelector("#div-current-1-graph").addEventListener("click", function() {
-        document.querySelector("#div-current-1-graph").style.display = 'none';
-        document.querySelector("#div-current-1-graph-m").style.display = 'block';
-    });
-
-    document.querySelector("#div-current-1-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-current-1-graph").style.display = 'block';
-        document.querySelector("#div-current-1-graph-m").style.display = 'none';
-    });
-
-    document.querySelector("#div-current-2-graph").addEventListener("click", function() {
-        document.querySelector("#div-current-2-graph").style.display = 'none';
-        document.querySelector("#div-current-2-graph-m").style.display = 'block';
-    });
-
-    document.querySelector("#div-current-2-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-current-2-graph").style.display = 'block';
-        document.querySelector("#div-current-2-graph-m").style.display = 'none';
-    });
-
-    document.querySelector("#div-current-3-graph").addEventListener("click", function() {
-        document.querySelector("#div-current-3-graph").style.display = 'none';
-        document.querySelector("#div-current-3-graph-m").style.display = 'block';
-    });
-
-    document.querySelector("#div-current-3-graph-m").addEventListener("click", function() {
-        document.querySelector("#div-current-3-graph").style.display = 'block';
-        document.querySelector("#div-current-3-graph-m").style.display = 'none';
-    });
+    switchableElementsWithIds("div-current-1-graph", "div-current-1-graph-m");
+    switchableElementsWithIds("div-current-2-graph", "div-current-2-graph-m");
+    switchableElementsWithIds("div-current-3-graph", "div-current-3-graph-m");
 
     document.querySelector("#show-voltage-graph").addEventListener("change", function() {
         switch (document.querySelector("#show-voltage-graph").value) {
@@ -2183,28 +2145,28 @@
     document.querySelector("#show-amperage-graph").addEventListener("change", function() {
         switch (document.querySelector("#show-amperage-graph").value) {
             case "Phase 1 current RMS":
-                document.querySelector("#div-amperage-1-graph").style.display = 'block';
-                document.querySelector("#div-amperage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-2-graph").style.display = 'none';
-                document.querySelector("#div-amperage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-3-graph").style.display = 'none';
-                document.querySelector("#div-amperage-3-graph-m").style.display = 'none';
+                document.querySelector("#div-current-1-graph").style.display = 'block';
+                document.querySelector("#div-current-1-graph-m").style.display = 'none';
+                document.querySelector("#div-current-2-graph").style.display = 'none';
+                document.querySelector("#div-current-2-graph-m").style.display = 'none';
+                document.querySelector("#div-current-3-graph").style.display = 'none';
+                document.querySelector("#div-current-3-graph-m").style.display = 'none';
                 break;
             case "Phase 2 current RMS":
-                document.querySelector("#div-amperage-1-graph").style.display = 'none';
-                document.querySelector("#div-amperage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-2-graph").style.display = 'block';
-                document.querySelector("#div-amperage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-3-graph").style.display = 'none';
-                document.querySelector("#div-amperage-3-graph-m").style.display = 'none';
+                document.querySelector("#div-current-1-graph").style.display = 'none';
+                document.querySelector("#div-current-1-graph-m").style.display = 'none';
+                document.querySelector("#div-current-2-graph").style.display = 'block';
+                document.querySelector("#div-current-2-graph-m").style.display = 'none';
+                document.querySelector("#div-current-3-graph").style.display = 'none';
+                document.querySelector("#div-current-3-graph-m").style.display = 'none';
                 break;
             case "Phase 3 current RMS":
-                document.querySelector("#div-amperage-1-graph").style.display = 'none';
-                document.querySelector("#div-amperage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-2-graph").style.display = 'none';
-                document.querySelector("#div-amperage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-amperage-3-graph").style.display = 'block';
-                document.querySelector("#div-amperage-3-graph-m").style.display = 'none';
+                document.querySelector("#div-current-1-graph").style.display = 'none';
+                document.querySelector("#div-current-1-graph-m").style.display = 'none';
+                document.querySelector("#div-current-2-graph").style.display = 'none';
+                document.querySelector("#div-current-2-graph-m").style.display = 'none';
+                document.querySelector("#div-current-3-graph").style.display = 'block';
+                document.querySelector("#div-current-3-graph-m").style.display = 'none';
                 break;
         
             default:
