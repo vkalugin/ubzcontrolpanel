@@ -215,7 +215,7 @@
             </div>
         </div>
         <div class="dashboard-item">
-            <div>
+            <div id="div-heating-graph" style="display: none;">
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
 
@@ -2541,10 +2541,15 @@
         if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
             let heatValue = mapRegisters.get(133);
             if (heatValue != undefined) {
-                const heatPercentage = (heatValue / 1100000) * 100;
-                let color = determineHeatgraphColor(heatPercentage);
-                addToGraph(tempSequencing, tempGraph, heatPercentage, color);
-            } else {
+                if (heatValue > 0) {
+                    document.querySelector("#div-heating-graph").style.display = "block";
+                }
+                if (document.querySelector("#div-heating-graph").style.display != "none") {
+                    const heatPercentage = (heatValue / 1100000) * 100;
+                    let color = determineHeatgraphColor(heatPercentage);
+                    addToGraph(tempSequencing, tempGraph, heatPercentage, color);
+                }
+            } else if (document.querySelector("#div-heating-graph").style.display != "none") {
                 addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
             }
         }
