@@ -1,6 +1,5 @@
 <script type="text/javascript">
     const PHASE_VOLTAGE_THRESHOLD = 220;
-    const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
     const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
 </script>
@@ -2540,19 +2539,13 @@
         }
 
         if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
-            if (TEST_HEAT_GRAPH) {
-                let heatValue = Math.floor(Math.random() * 125);
-                let color = determineHeatgraphColor(heatValue);
-                addToGraph(tempSequencing, tempGraph, heatValue, color);
+            let heatValue = mapRegisters.get(133);
+            if (heatValue != undefined) {
+                const heatPercentage = (heatValue / 1100000) * 100;
+                let color = determineHeatgraphColor(heatPercentage);
+                addToGraph(tempSequencing, tempGraph, heatPercentage, color);
             } else {
-                let heatValue = mapRegisters.get(133);
-                if (heatValue != undefined) {
-                    const heatPercentage = (heatValue / 1100000) * 100;
-                    let color = determineHeatgraphColor(heatPercentage);
-                    addToGraph(tempSequencing, tempGraph, heatPercentage, color);
-                } else {
-                    addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
-                }
+                addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
             }
         }
 
