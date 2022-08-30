@@ -811,43 +811,6 @@
     }
 </script>
 
-<!-- Queue -->
-<script type="text/javascript">
-    class Queue {
-        constructor() {
-            this.elements = {};
-            this.head = 0;
-            this.tail = 0;
-        }
-
-        enqueue(element) {
-            this.elements[this.tail] = element;
-            this.tail++;
-        }
-
-        dequeue() {
-            const item = this.elements[this.head];
-            delete this.elements[this.head];
-            this.head++;
-            return item;
-        }
-
-        get length() {
-            return this.tail - this.head;
-        }
-
-        get asArrayFromTail() {
-            let arr = []
-            let arrIndex = 0;
-            for (let i=this.tail - 1; i>=this.head; i--) {
-                arr[arrIndex] = this.elements[i];
-                arrIndex++;
-            }
-            return arr;
-        }
-    }
-</script>
-
 <!-- Event fault class -->
 <script type="text/javascript">
     class EventFault {
@@ -1391,8 +1354,8 @@
 <script type="text/javascript">
     class GraphSequencing {
         constructor(graphCapacity) {
-            this.idx = graphCapacity - 1;
-            this.queue = new Queue();
+            this.idx = 0;
+            this.queue = new Array();
             this.capacity = graphCapacity;
         }
 
@@ -1402,17 +1365,17 @@
 
         push(element, color) {
             while (this.queue.length >= this.capacity) {
-                this.queue.dequeue();
+                this.queue.pop();
             }
             const timestamp = new Date().valueOf();
-            this.queue.enqueue({element, color, timestamp});
+            this.queue.push({element, color, timestamp});
         }
 
         turn() {
-            if (this.idx >= 0) {
-                this.idx -= 1;
+            if (this.idx < this.capacity) {
+                this.idx++;
             } else {
-                this.idx = this.capacity;
+                this.idx = 0;
             }
         }
     }
@@ -1429,9 +1392,9 @@
         data: {
             labels: new Array(tempSequencing.capacity).fill(""),
             datasets: [{
-                type: "bar",
+                type: "scatter",
                 label: "Temperature, % of max",
-                data: new Array(tempSequencing.capacity).fill(0),
+                data: new Array(tempSequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                 backgroundColor: new Array(tempSequencing.capacity),
             }, {
                 type: "line",
@@ -1467,18 +1430,24 @@
             data: {
                 labels: new Array(volt1Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 1 voltage",
-                    data: new Array(volt1Sequencing.capacity).fill(0),
+                    data: new Array(volt1Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt1Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1494,18 +1463,24 @@
             data: {
                 labels: new Array(volt1SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 1 voltage",
-                    data: new Array(volt1SequencingM.capacity).fill(0),
+                    data: new Array(volt1SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt1SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1521,18 +1496,24 @@
             data: {
                 labels: new Array(volt2Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 2 voltage",
-                    data: new Array(volt2Sequencing.capacity).fill(0),
+                    data: new Array(volt2Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt2Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1548,18 +1529,24 @@
             data: {
                 labels: new Array(volt2SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 2 voltage",
-                    data: new Array(volt2SequencingM.capacity).fill(0),
+                    data: new Array(volt2SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt2SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1575,18 +1562,24 @@
             data: {
                 labels: new Array(volt3Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 3 voltage",
-                    data: new Array(volt3Sequencing.capacity).fill(0),
+                    data: new Array(volt3Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt3Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1602,18 +1595,24 @@
             data: {
                 labels: new Array(volt3SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 3 voltage",
-                    data: new Array(volt3SequencingM.capacity).fill(0),
+                    data: new Array(volt3SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(volt3SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
                 scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
                     yAxes: {
-                        min: 200,
-                        max: 250,
+                        min: 190,
+                        max: 240,
                     },
                 },
             },
@@ -1633,14 +1632,22 @@
             data: {
                 labels: new Array(amp1Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 1 current RMS",
-                    data: new Array(amp1Sequencing.capacity).fill(0),
+                    data: new Array(amp1Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(amp1Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
+                },
             },
         }
     );
@@ -1652,16 +1659,24 @@
     const amp1GraphM = new Chart(
         ctxCurrent1M, {
             data: {
-                labels: new Array(amp1Sequencing.capacity).fill(""),
+                labels: new Array(amp1SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 1 current RMS",
-                    data: new Array(amp1Sequencing.capacity).fill(0),
-                    backgroundColor: new Array(amp1Sequencing.capacity),
+                    data: new Array(amp1SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
+                    backgroundColor: new Array(amp1SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
+                },
             },
         }
     );
@@ -1675,14 +1690,22 @@
             data: {
                 labels: new Array(amp2Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 2 current RMS",
-                    data: new Array(amp2Sequencing.capacity).fill(0),
+                    data: new Array(amp2Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(amp2Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
+                },
             },
         }
     );
@@ -1694,16 +1717,24 @@
     const amp2GraphM = new Chart(
         ctxCurrent2M, {
             data: {
-                labels: new Array(amp2Sequencing.capacity).fill(""),
+                labels: new Array(amp2SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 2 current RMS",
-                    data: new Array(amp2Sequencing.capacity).fill(0),
-                    backgroundColor: new Array(amp2Sequencing.capacity),
+                    data: new Array(amp2SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
+                    backgroundColor: new Array(amp2SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
+                },
             },
         }
     );
@@ -1717,14 +1748,22 @@
             data: {
                 labels: new Array(amp3Sequencing.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 3 current RMS",
-                    data: new Array(amp3Sequencing.capacity).fill(0),
+                    data: new Array(amp3Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(amp3Sequencing.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                    },
+                },
             },
         }
     );
@@ -1736,16 +1775,24 @@
     const amp3GraphM = new Chart(
         ctxCurrent3M, {
             data: {
-                labels: new Array(amp3Sequencing.capacity).fill(""),
+                labels: new Array(amp3SequencingM.capacity).fill(""),
                 datasets: [{
-                    type: "line",
+                    type: "scatter",
                     label: "Phase 3 current RMS",
-                    data: new Array(amp3Sequencing.capacity).fill(0),
-                    backgroundColor: new Array(amp3Sequencing.capacity),
+                    data: new Array(amp3SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
+                    backgroundColor: new Array(amp3SequencingM.capacity),
                 },]
             },
             options: {
                 animation: false,
+                showLine: true,
+                scales: {
+                    xAxes: {
+                        reverse: true,
+                        min: 0,
+                        max: 20,
+                    },
+                },
             },
         }
     );
@@ -1755,24 +1802,34 @@
     /*****************/
 
     function addToGraph(sequencing, chart, value, color, timedisplay) {
-        sequencing.push(value, color);
+        if (chart.data.datasets[0].type == "scatter") {
+            sequencing.push(value, color);
 
-        let data = sequencing.queue.asArrayFromTail;
-        const now = new Date().valueOf();
+            let data = sequencing.queue;
+            const now = new Date().valueOf();
 
-        for (let i=0; i<data.length; i++) {
-            chart.data.datasets[0].data[sequencing.maxIndex-i] = data[i].element;
-            chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
-            if (timedisplay == "m") {
-                chart.data.labels[sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
-            } else {
-                chart.data.labels[sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+            for (let i=0; i<data.length; i++) {
+                chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
+                if (timedisplay == "m") {
+                        chart.data.datasets[0].data[sequencing.maxIndex-i] = {
+                        x: (now - data[i].timestamp) / 60000,
+                        y: data[i].element,
+                    };
+                    chart.data.labels[sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
+                } else {
+                        chart.data.datasets[0].data[sequencing.maxIndex-i] = {
+                        x: (now - data[i].timestamp) / 1000,
+                        y: data[i].element,
+                    };
+                    chart.data.labels[sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+                }
             }
+
+            chart.update();
+            sequencing.turn();
+        } else {
+            console.warn("unimplemented");
         }
-
-        chart.update();
-
-        sequencing.turn();
     }
 </script>
 
