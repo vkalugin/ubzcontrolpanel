@@ -1313,10 +1313,10 @@
 <!-- Graph -->
 <script type="text/javascript">
     class GraphSequencing {
-        constructor(graphCapacity) {
+        constructor(capacity) {
             this.idx = 0;
             this.queue = new Array();
-            this.capacity = graphCapacity;
+            this.capacity = capacity;
         }
 
         get maxIndex() {
@@ -1340,12 +1340,72 @@
         }
     }
 
+    class Graph {
+        constructor(capacity, selector, label) {
+            this.sequencing = new GraphSequencing(capacity);
+
+            this.chart = new Chart(
+                document.querySelector(selector).getContext("2d"), {
+                    data: {
+                        labels: new Array(capacity).fill(""),
+                        datasets: [{
+                            type: "scatter",
+                            label: label,
+                            data: new Array(capacity).fill({x: undefined, y: undefined}), //.fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
+                            backgroundColor: new Array(capacity).fill("grey"),
+                        },]
+                    },
+                    options: {
+                        animation: false,
+                        showLine: true,
+                        scales: {
+                            xAxes: {
+                                reverse: true,
+                                min: 0,
+                            },
+                        }
+                    }
+                }
+            );
+        }
+
+        setMaxX(value) {
+            this.chart.options.scales.xAxes.max = value;
+        }
+
+        addPoint(value, color, timeoption) {
+            this.sequencing.push(value, color);
+
+            let data = this.sequencing.queue;
+            const now = new Date().valueOf();
+
+            for (let i=0; i<data.length; i++) {
+                this.chart.data.datasets[0].backgroundColor[this.sequencing.maxIndex-i] = data[i].color;
+                if (timeoption == "m") {
+                        this.chart.data.datasets[0].data[this.sequencing.maxIndex-i] = {
+                        x: (now - data[i].timestamp) / 60000,
+                        y: data[i].element,
+                    };
+                    this.chart.data.labels[this.sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
+                } else {
+                        this.chart.data.datasets[0].data[this.sequencing.maxIndex-i] = {
+                        x: (now - data[i].timestamp) / 1000,
+                        y: data[i].element,
+                    };
+                    this.chart.data.labels[this.sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+                }
+            }
+
+            this.chart.update();
+            this.sequencing.turn();
+        }
+    }
+
     /***********/
     /* Thermal */
     /***********/
 
     var ctxTherm = document.querySelector("#heating-graph").getContext("2d");
-    ctxTherm.font = "16px Droid Sans";
     var tempSequencing = new GraphSequencing(30);
 
     const tempGraph = new Chart(ctxTherm, {
@@ -1381,126 +1441,21 @@
     /* Voltages */
     /************/
 
-    var ctxVoltage1 = document.querySelector("#voltage-phases-graph").getContext("2d");
-    ctxVoltage1.font = "16px Droid Sans";
-    var volt1Sequencing = new GraphSequencing(20);
+    var voltGraph = new Graph(30, "#voltage-phases-graph", "Phase 1 voltage");
+    voltGraph.setMaxX(100);
 
-    const volt1Graph = new Chart(
-        ctxVoltage1, {
-            data: {
-                labels: new Array(volt1Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 1 voltage",
-                    data: new Array(volt1Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt1Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxVoltage1M = document.querySelector("#voltage-phases-graph-m").getContext("2d");
-    ctxVoltage1M.font = "16px Droid Sans";
-    var volt1SequencingM = new GraphSequencing(1000);
-
-    const volt1GraphM = new Chart(
-        ctxVoltage1M, {
-            data: {
-                labels: new Array(volt1SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 1 voltage",
-                    data: new Array(volt1SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt1SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                },
-            },
-        }
-    );
-
+    var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", "Phase 1 voltage");
+    voltGraphM.setMaxX(20);
 
     /****************/
     /* Currents RMS */
     /****************/
 
-    var ctxCurrent1 = document.querySelector("#amperage-phases-graph").getContext("2d");
-    ctxCurrent1.font = "16px Droid Sans";
-    var amp1Sequencing = new GraphSequencing(20);
+    var ampGraph = new Graph(20, "#amperage-phases-graph", "Phase 1 current RMS");
+    ampGraph.setMaxX(100);
 
-    const amp1Graph = new Chart(
-        ctxCurrent1, {
-            data: {
-                labels: new Array(amp1Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 1 current RMS",
-                    data: new Array(amp1Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp1Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxCurrent1M = document.querySelector("#amperage-phases-graph-m").getContext("2d");
-    ctxCurrent1M.font = "16px Droid Sans";
-    var amp1SequencingM = new GraphSequencing(1000);
-
-    const amp1GraphM = new Chart(
-        ctxCurrent1M, {
-            data: {
-                labels: new Array(amp1SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 1 current RMS",
-                    data: new Array(amp1SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp1SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                },
-            },
-        }
-    );
+    var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", "Phase 1 current RMS");
+    ampGraphM.setMaxX(20);
 
     /*****************/
     /* Graph drawing */
@@ -1958,8 +1913,8 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        addToGraph(amp1Sequencing, amp1Graph, mapRegisters.get(100), "orange");
-        addToGraph(amp1SequencingM, amp1GraphM, mapRegisters.get(100), "orange", "m");
+        ampGraph.addPoint(mapRegisters.get(100), "orange");
+        ampGraphM.addPoint(mapRegisters.get(100), "orange", "m");
 
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
@@ -2031,8 +1986,8 @@
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
-        addToGraph(volt1Sequencing, volt1Graph, mapRegisters.get(114), "rgba(50, 200, 50, 1)");
-        addToGraph(volt1SequencingM, volt1GraphM, mapRegisters.get(114), "rgba(50, 200, 50, 1)", "m");
+        voltGraph.addPoint(mapRegisters.get(114), "rgba(50, 200, 50, 1)");
+        voltGraphM.addPoint(mapRegisters.get(114), "rgba(50, 200, 50, 1)", "m");
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         if (mapRegisters.get(115) != undefined) {
