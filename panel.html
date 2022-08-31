@@ -1414,7 +1414,7 @@
             datasets: [{
                 type: "scatter",
                 label: "Temperature, % of max",
-                data: new Array(tempSequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
+                data: new Array(tempSequencing.capacity).fill({x: undefined, y: undefined}),
                 backgroundColor: new Array(tempSequencing.capacity),
             }, {
                 type: "line",
