@@ -219,58 +219,18 @@
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
 
-            <select id="show-voltage-graph">
-                <option id="show-voltage-graph-phase-1">Phase 1 voltage</option>
-                <option id="show-voltage-graph-phase-2">Phase 2 voltage</option>
-                <option id="show-voltage-graph-phase-3">Phase 3 voltage</option>
-            </select>
-
-            <div id="div-voltage-1-graph">
-                <canvas id="voltage-1-graph">Your browser does not support the canvas element.</canvas>
+            <div id="div-voltage-phases-graph">
+                <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div id="div-voltage-1-graph-m" style="display: none;">
-                <canvas id="voltage-1-graph-m">Your browser does not support the canvas element.</canvas>
+            <div id="div-voltage-phases-graph-m" style="display: none;">
+                <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
 
-            <div id="div-voltage-2-graph" style="display: none;">
-                <canvas id="voltage-2-graph">Your browser does not support the canvas element.</canvas>
+            <div id="div-amperage-phases-graph">
+                <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div id="div-voltage-2-graph-m" style="display: none;">
-                <canvas id="voltage-2-graph-m">Your browser does not support the canvas element.</canvas>
-            </div>
-
-            <div id="div-voltage-3-graph" style="display: none;">
-                <canvas id="voltage-3-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-voltage-3-graph-m" style="display: none;">
-                <canvas id="voltage-3-graph-m">Your browser does not support the canvas element.</canvas>
-            </div>
-
-            <select id="show-amperage-graph">
-                <option id="show-amperage-graph-phase-1">Phase 1 current RMS</option>
-                <option id="show-amperage-graph-phase-2">Phase 2 current RMS</option>
-                <option id="show-amperage-graph-phase-3">Phase 3 current RMS</option>
-            </select>
-
-            <div id="div-current-1-graph">
-                <canvas id="current-1-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-current-1-graph-m" style="display: none;">
-                <canvas id="current-1-graph-m">Your browser does not support the canvas element.</canvas>
-            </div>
-
-            <div id="div-current-2-graph" style="display: none;">
-                <canvas id="current-2-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-current-2-graph-m" style="display: none;">
-                <canvas id="current-2-graph-m">Your browser does not support the canvas element.</canvas>
-            </div>
-
-            <div id="div-current-3-graph" style="display: none;">
-                <canvas id="current-3-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-current-3-graph-m" style="display: none;">
-                <canvas id="current-3-graph-m">Your browser does not support the canvas element.</canvas>
+            <div id="div-amperage-phases-graph-m" style="display: none;">
+                <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -1421,7 +1381,7 @@
     /* Voltages */
     /************/
 
-    var ctxVoltage1 = document.querySelector("#voltage-1-graph").getContext("2d");
+    var ctxVoltage1 = document.querySelector("#voltage-phases-graph").getContext("2d");
     ctxVoltage1.font = "16px Droid Sans";
     var volt1Sequencing = new GraphSequencing(20);
 
@@ -1454,7 +1414,7 @@
         }
     );
 
-    var ctxVoltage1M = document.querySelector("#voltage-1-graph-m").getContext("2d");
+    var ctxVoltage1M = document.querySelector("#voltage-phases-graph-m").getContext("2d");
     ctxVoltage1M.font = "16px Droid Sans";
     var volt1SequencingM = new GraphSequencing(1000);
 
@@ -1487,143 +1447,12 @@
         }
     );
 
-    var ctxVoltage2 = document.querySelector("#voltage-2-graph").getContext("2d");
-    ctxVoltage2.font = "16px Droid Sans";
-    var volt2Sequencing = new GraphSequencing(20);
-
-    const volt2Graph = new Chart(
-        ctxVoltage2, {
-            data: {
-                labels: new Array(volt2Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 2 voltage",
-                    data: new Array(volt2Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt2Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                    yAxes: {
-                        min: 190,
-                        max: 240,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxVoltage2M = document.querySelector("#voltage-2-graph-m").getContext("2d");
-    ctxVoltage2M.font = "16px Droid Sans";
-    var volt2SequencingM = new GraphSequencing(1000);
-
-    const volt2GraphM = new Chart(
-        ctxVoltage2M, {
-            data: {
-                labels: new Array(volt2SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 2 voltage",
-                    data: new Array(volt2SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt2SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                    yAxes: {
-                        min: 190,
-                        max: 240,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxVoltage3 = document.querySelector("#voltage-3-graph").getContext("2d");
-    ctxVoltage3.font = "16px Droid Sans";
-    var volt3Sequencing = new GraphSequencing(20);
-
-    const volt3Graph = new Chart(
-        ctxVoltage3, {
-            data: {
-                labels: new Array(volt3Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 3 voltage",
-                    data: new Array(volt3Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt3Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                    yAxes: {
-                        min: 190,
-                        max: 240,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxVoltage3M = document.querySelector("#voltage-3-graph-m").getContext("2d");
-    ctxVoltage3M.font = "16px Droid Sans";
-    var volt3SequencingM = new GraphSequencing(1000);
-
-    const volt3GraphM = new Chart(
-        ctxVoltage3M, {
-            data: {
-                labels: new Array(volt3SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 3 voltage",
-                    data: new Array(volt3SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(volt3SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                    yAxes: {
-                        min: 190,
-                        max: 240,
-                    },
-                },
-            },
-        }
-    );
 
     /****************/
     /* Currents RMS */
     /****************/
 
-    var ctxCurrent1 = document.querySelector("#current-1-graph").getContext("2d");
+    var ctxCurrent1 = document.querySelector("#amperage-phases-graph").getContext("2d");
     ctxCurrent1.font = "16px Droid Sans";
     var amp1Sequencing = new GraphSequencing(20);
 
@@ -1652,7 +1481,7 @@
         }
     );
 
-    var ctxCurrent1M = document.querySelector("#current-1-graph-m").getContext("2d");
+    var ctxCurrent1M = document.querySelector("#amperage-phases-graph-m").getContext("2d");
     ctxCurrent1M.font = "16px Droid Sans";
     var amp1SequencingM = new GraphSequencing(1000);
 
@@ -1665,122 +1494,6 @@
                     label: "Phase 1 current RMS",
                     data: new Array(amp1SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
                     backgroundColor: new Array(amp1SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxCurrent2 = document.querySelector("#current-2-graph").getContext("2d");
-    ctxCurrent2.font = "16px Droid Sans";
-    var amp2Sequencing = new GraphSequencing(20);
-
-    const amp2Graph = new Chart(
-        ctxCurrent2, {
-            data: {
-                labels: new Array(amp2Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 2 current RMS",
-                    data: new Array(amp2Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp2Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxCurrent2M = document.querySelector("#current-2-graph-m").getContext("2d");
-    ctxCurrent2M.font = "16px Droid Sans";
-    var amp2SequencingM = new GraphSequencing(1000);
-
-    const amp2GraphM = new Chart(
-        ctxCurrent2M, {
-            data: {
-                labels: new Array(amp2SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 2 current RMS",
-                    data: new Array(amp2SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp2SequencingM.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 20,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxCurrent3 = document.querySelector("#current-3-graph").getContext("2d");
-    ctxCurrent3.font = "16px Droid Sans";
-    var amp3Sequencing = new GraphSequencing(20);
-
-    const amp3Graph = new Chart(
-        ctxCurrent3, {
-            data: {
-                labels: new Array(amp3Sequencing.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 3 current RMS",
-                    data: new Array(amp3Sequencing.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp3Sequencing.capacity),
-                },]
-            },
-            options: {
-                animation: false,
-                showLine: true,
-                scales: {
-                    xAxes: {
-                        reverse: true,
-                        min: 0,
-                        max: 100,
-                    },
-                },
-            },
-        }
-    );
-
-    var ctxCurrent3M = document.querySelector("#current-3-graph-m").getContext("2d");
-    ctxCurrent3M.font = "16px Droid Sans";
-    var amp3SequencingM = new GraphSequencing(1000);
-
-    const amp3GraphM = new Chart(
-        ctxCurrent3M, {
-            data: {
-                labels: new Array(amp3SequencingM.capacity).fill(""),
-                datasets: [{
-                    type: "scatter",
-                    label: "Phase 3 current RMS",
-                    data: new Array(amp3SequencingM.capacity).fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                    backgroundColor: new Array(amp3SequencingM.capacity),
                 },]
             },
             options: {
@@ -2158,77 +1871,8 @@
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
 
-    switchableElementsWithIds("div-voltage-1-graph", "div-voltage-1-graph-m");
-    switchableElementsWithIds("div-voltage-2-graph", "div-voltage-2-graph-m");
-    switchableElementsWithIds("div-voltage-3-graph", "div-voltage-3-graph-m");
-
-    switchableElementsWithIds("div-current-1-graph", "div-current-1-graph-m");
-    switchableElementsWithIds("div-current-2-graph", "div-current-2-graph-m");
-    switchableElementsWithIds("div-current-3-graph", "div-current-3-graph-m");
-
-    document.querySelector("#show-voltage-graph").addEventListener("change", function() {
-        switch (document.querySelector("#show-voltage-graph").value) {
-            case "Phase 1 voltage":
-                document.querySelector("#div-voltage-1-graph").style.display = 'block';
-                document.querySelector("#div-voltage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-2-graph").style.display = 'none';
-                document.querySelector("#div-voltage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-3-graph").style.display = 'none';
-                document.querySelector("#div-voltage-3-graph-m").style.display = 'none';
-                break;
-            case "Phase 2 voltage":
-                document.querySelector("#div-voltage-1-graph").style.display = 'none';
-                document.querySelector("#div-voltage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-2-graph").style.display = 'block';
-                document.querySelector("#div-voltage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-3-graph").style.display = 'none';
-                document.querySelector("#div-voltage-3-graph-m").style.display = 'none';
-                break;
-            case "Phase 3 voltage":
-                document.querySelector("#div-voltage-1-graph").style.display = 'none';
-                document.querySelector("#div-voltage-1-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-2-graph").style.display = 'none';
-                document.querySelector("#div-voltage-2-graph-m").style.display = 'none';
-                document.querySelector("#div-voltage-3-graph").style.display = 'block';
-                document.querySelector("#div-voltage-3-graph-m").style.display = 'none';
-                break;
-        
-            default:
-                break;
-        }
-    });
-
-    document.querySelector("#show-amperage-graph").addEventListener("change", function() {
-        switch (document.querySelector("#show-amperage-graph").value) {
-            case "Phase 1 current RMS":
-                document.querySelector("#div-current-1-graph").style.display = 'block';
-                document.querySelector("#div-current-1-graph-m").style.display = 'none';
-                document.querySelector("#div-current-2-graph").style.display = 'none';
-                document.querySelector("#div-current-2-graph-m").style.display = 'none';
-                document.querySelector("#div-current-3-graph").style.display = 'none';
-                document.querySelector("#div-current-3-graph-m").style.display = 'none';
-                break;
-            case "Phase 2 current RMS":
-                document.querySelector("#div-current-1-graph").style.display = 'none';
-                document.querySelector("#div-current-1-graph-m").style.display = 'none';
-                document.querySelector("#div-current-2-graph").style.display = 'block';
-                document.querySelector("#div-current-2-graph-m").style.display = 'none';
-                document.querySelector("#div-current-3-graph").style.display = 'none';
-                document.querySelector("#div-current-3-graph-m").style.display = 'none';
-                break;
-            case "Phase 3 current RMS":
-                document.querySelector("#div-current-1-graph").style.display = 'none';
-                document.querySelector("#div-current-1-graph-m").style.display = 'none';
-                document.querySelector("#div-current-2-graph").style.display = 'none';
-                document.querySelector("#div-current-2-graph-m").style.display = 'none';
-                document.querySelector("#div-current-3-graph").style.display = 'block';
-                document.querySelector("#div-current-3-graph-m").style.display = 'none';
-                break;
-        
-            default:
-                break;
-        }
-    });
+    switchableElementsWithIds("div-voltage-phases-graph", "div-voltage-phases-graph-m");
+    switchableElementsWithIds("div-amperage-phases-graph", "div-amperage-phases-graph-m");
 </script>
 
 <script type="text/javascript">
@@ -2332,8 +1976,6 @@
             document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-bar").value = 0;
         }
-        addToGraph(amp2Sequencing, amp2Graph, mapRegisters.get(101), "orange");
-        addToGraph(amp2SequencingM, amp2GraphM, mapRegisters.get(101), "orange", "m");
 
         if (mapRegisters.get(102) != undefined) {
             document.querySelector("#phase-3-current-rms-value").innerHTML = (mapRegisters.get(102) * 0.1).toFixed(1);
@@ -2342,8 +1984,6 @@
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
-        addToGraph(amp3Sequencing, amp3Graph, mapRegisters.get(102), "orange");
-        addToGraph(amp3SequencingM, amp3GraphM, mapRegisters.get(102), "orange", "m");
 
         if (mapRegisters.get(103) != undefined) {
             document.querySelector("#zero-sequence-current-value").innerHTML = (mapRegisters.get(103) * 0.1).toFixed(1);
@@ -2410,8 +2050,6 @@
             document.querySelector("#phase-2-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-2-voltage-bar").value = 0;
         }
-        addToGraph(volt2Sequencing, volt2Graph, mapRegisters.get(115), "rgba(50, 200, 50, 1)");
-        addToGraph(volt2SequencingM, volt2GraphM, mapRegisters.get(115), "rgba(50, 200, 50, 1)", "m");
         barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         if (mapRegisters.get(116) != undefined) {
@@ -2421,8 +2059,6 @@
             document.querySelector("#phase-3-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
-        addToGraph(volt3Sequencing, volt3Graph, mapRegisters.get(116), "rgba(50, 200, 50, 1)");
-        addToGraph(volt3SequencingM, volt3GraphM, mapRegisters.get(116), "rgba(50, 200, 50, 1)", "m");
         barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         if (mapRegisters.get(117) != undefined) {
