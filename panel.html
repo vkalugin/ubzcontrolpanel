@@ -1325,7 +1325,7 @@
 
         push(element, color) {
             while (this.queue.length >= this.capacity) {
-                this.queue.pop();
+                this.queue.shift();
             }
             const timestamp = new Date().valueOf();
             this.queue.push({element, color, timestamp});
@@ -1441,7 +1441,7 @@
     /* Voltages */
     /************/
 
-    var voltGraph = new Graph(30, "#voltage-phases-graph", "Phase 1 voltage");
+    var voltGraph = new Graph(20, "#voltage-phases-graph", "Phase 1 voltage");
     voltGraph.setMaxX(100);
 
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", "Phase 1 voltage");
