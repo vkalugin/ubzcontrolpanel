@@ -1384,6 +1384,11 @@
             this.chart.update();
         }
 
+        setDatachartType(datasetIndex, typestr) {
+            this.chart.data.datasets[datasetIndex].type = typestr;
+            this.chart.update();
+        }
+
         setColors(colors) {
             for (let i=0; i<colors.length; i++) {
                 this.chart.data.datasets[i].backgroundColor = colors[i];
@@ -1430,36 +1435,11 @@
     /* Thermal */
     /***********/
 
-    var tempSequencing = new GraphSequencing(30);
-
-    const tempGraph = new Chart(document.querySelector("#heating-graph").getContext("2d"), {
-        data: {
-            labels: new Array(tempSequencing.capacity).fill(""),
-            datasets: [{
-                type: "scatter",
-                label: "Temperature, % of max",
-                data: new Array(tempSequencing.capacity).fill({x: undefined, y: undefined}),
-                backgroundColor: new Array(tempSequencing.capacity),
-            }, {
-                type: "line",
-                label: "66%",
-                data: new Array(tempSequencing.capacity).fill(66),
-                backgroundColor: "rgba(50, 50, 200, 1)",
-                borderColor: "rgba(50, 50, 200, 1)",
-                radius: 0,
-            }, {
-                type: "line",
-                label: "100%",
-                data: new Array(tempSequencing.capacity).fill(100),
-                backgroundColor: "rgba(200, 50, 50, 1)",
-                borderColor: "rgba(200, 50, 50, 1)",
-                radius: 0,
-            }]
-        },
-        options: {
-            animation: false,
-        }
-    });
+    var tempGraph = new Graph(30, "#heating-graph", 3);
+    tempGraph.setLabels(["Temperature, % of max", "66%", "100%"]);
+    tempGraph.setColors(["grey", "rgba(50, 50, 200, 1)", "rgba(200, 50, 50, 1)"]);
+    tempGraph.setDatachartType(1, "line");
+    tempGraph.setDatachartType(2, "line");
 
     /************/
     /* Voltages */
@@ -1469,8 +1449,6 @@
     voltGraph.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     voltGraph.setMaxX(100);
     voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
-    // console.log(voltGraph);
-    // voltGraph.debug = true;
 
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
     voltGraphM.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
@@ -2216,20 +2194,18 @@
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
 
-        if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
-            let heatValue = mapRegisters.get(133);
-            if (heatValue != undefined) {
-                if (heatValue > 0) {
-                    document.querySelector("#div-heating-graph").style.display = "block";
-                }
-                if (document.querySelector("#div-heating-graph").style.display != "none") {
-                    const heatPercentage = (heatValue / 1100000) * 100;
-                    let color = determineHeatgraphColor(heatPercentage);
-                    addToGraph(tempSequencing, tempGraph, heatPercentage, color);
-                }
-            } else if (document.querySelector("#div-heating-graph").style.display != "none") {
-                addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
+        let heatValue = mapRegisters.get(133);
+        if (heatValue != undefined) {
+            if (heatValue > 0) {
+                document.querySelector("#div-heating-graph").style.display = "block";
             }
+            if (document.querySelector("#div-heating-graph").style.display != "none") {
+                const heatPercentage = (heatValue / 1100000) * 100;
+                let _color = determineHeatgraphColor(heatPercentage);
+                tempGraph.addPoint([heatPercentage, 66, 100]);
+            }
+        } else if (document.querySelector("#div-heating-graph").style.display != "none") {
+            addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
         }
 
         if (mapRegisters.get(135) != undefined) {
