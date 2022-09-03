@@ -17,7 +17,7 @@
         background-color:lightblue;
         margin: 8px;
         padding: 10px;
-        max-width: 320px;
+        max-width: 400px;
         min-width: 260px;
     }
 
@@ -1323,12 +1323,12 @@
             return this.capacity - 1;
         }
 
-        push(element, color) {
+        push(element, colors) {
             while (this.queue.length >= this.capacity) {
                 this.queue.shift();
             }
             const timestamp = new Date().valueOf();
-            this.queue.push({element, color, timestamp});
+            this.queue.push({element, colors, timestamp});
         }
 
         turn() {
@@ -1341,59 +1341,84 @@
     }
 
     class Graph {
-        constructor(capacity, selector, label) {
+        constructor(capacity, selector, graphsNumber) {
             this.sequencing = new GraphSequencing(capacity);
 
-            this.chart = new Chart(
-                document.querySelector(selector).getContext("2d"), {
-                    data: {
-                        labels: new Array(capacity).fill(""),
-                        datasets: [{
-                            type: "scatter",
-                            label: label,
-                            data: new Array(capacity).fill({x: undefined, y: undefined}), //.fill({element: {x: 0, y: 0}, color: "grey", timestamp: 0}),
-                            backgroundColor: new Array(capacity).fill("grey"),
-                        },]
-                    },
-                    options: {
-                        animation: false,
-                        showLine: true,
-                        scales: {
-                            xAxes: {
-                                reverse: true,
-                                min: 0,
-                            },
+            this.chart = new Chart(document.querySelector(selector).getContext("2d"), {
+                data: {
+                    labels: new Array(capacity).fill(""),
+                    datasets: new Array(graphsNumber).fill().map(function() { return {
+                        type: "scatter",
+                        data: new Array(capacity).fill({x: undefined, y: undefined}),
+                        backgroundColor: "grey",
+                        borderColor: "rgba(128, 128, 128, 0.5)"
+                    }}),
+                },
+                options: {
+                    animation: false,
+                    showLine: true,
+                    scales: {
+                        xAxes: {
+                            reverse: true,
+                            min: 0,
+                            max: 0,
                         }
                     }
                 }
-            );
+            });
+
+            this.minutesScale = false;
+
+            this.debug = false;
         }
 
         setMaxX(value) {
             this.chart.options.scales.xAxes.max = value;
+            this.chart.update();
         }
 
-        addPoint(value, color, timeoption) {
-            this.sequencing.push(value, color);
+        setLabels(labels) {
+            for (let i=0; i<labels.length; i++) {
+                this.chart.data.datasets[i].label = labels[i];
+            }
+            this.chart.update();
+        }
+
+        setColors(colors) {
+            for (let i=0; i<colors.length; i++) {
+                this.chart.data.datasets[i].backgroundColor = colors[i];
+                this.chart.data.datasets[i].borderColor = colors[i];
+            }
+            this.chart.update();
+        }
+
+        addPoint(values) {
+            this.sequencing.push(values, undefined);
 
             let data = this.sequencing.queue;
+            const datasetsNumber = values.length;
             const now = new Date().valueOf();
 
             for (let i=0; i<data.length; i++) {
-                this.chart.data.datasets[0].backgroundColor[this.sequencing.maxIndex-i] = data[i].color;
-                if (timeoption == "m") {
-                        this.chart.data.datasets[0].data[this.sequencing.maxIndex-i] = {
-                        x: (now - data[i].timestamp) / 60000,
-                        y: data[i].element,
-                    };
-                    this.chart.data.labels[this.sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
-                } else {
-                        this.chart.data.datasets[0].data[this.sequencing.maxIndex-i] = {
-                        x: (now - data[i].timestamp) / 1000,
-                        y: data[i].element,
-                    };
-                    this.chart.data.labels[this.sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+                for (let ds=0; ds<datasetsNumber; ds++) {
+                    if (this.minutesScale == true) {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp) / 60000,
+                            y: data[i].element[ds],
+                        };
+                        this.chart.data.labels[this.sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
+                    } else {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp) / 1000,
+                            y: data[i].element[ds],
+                        };
+                        this.chart.data.labels[this.sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
+                    }
                 }
+            }
+
+            if (this.debug) {
+                console.log(this.chart.data.datasets);
             }
 
             this.chart.update();
@@ -1405,10 +1430,9 @@
     /* Thermal */
     /***********/
 
-    var ctxTherm = document.querySelector("#heating-graph").getContext("2d");
     var tempSequencing = new GraphSequencing(30);
 
-    const tempGraph = new Chart(ctxTherm, {
+    const tempGraph = new Chart(document.querySelector("#heating-graph").getContext("2d"), {
         data: {
             labels: new Array(tempSequencing.capacity).fill(""),
             datasets: [{
@@ -1441,21 +1465,33 @@
     /* Voltages */
     /************/
 
-    var voltGraph = new Graph(20, "#voltage-phases-graph", "Phase 1 voltage");
+    var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
+    voltGraph.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     voltGraph.setMaxX(100);
+    voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
+    // console.log(voltGraph);
+    // voltGraph.debug = true;
 
-    var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", "Phase 1 voltage");
+    var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
+    voltGraphM.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     voltGraphM.setMaxX(20);
+    voltGraphM.setColors(["yellowgreen", "limegreen", "forestgreen"]);
+    voltGraphM.minutesScale = true;
 
     /****************/
     /* Currents RMS */
     /****************/
 
-    var ampGraph = new Graph(20, "#amperage-phases-graph", "Phase 1 current RMS");
+    var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
+    ampGraph.setLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     ampGraph.setMaxX(100);
+    ampGraph.setColors(["orange", "gold", "goldenrod"]);
 
-    var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", "Phase 1 current RMS");
+    var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
+    ampGraphM.setLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     ampGraphM.setMaxX(20);
+    ampGraphM.setColors(["orange", "gold", "goldenrod"]);
+    ampGraphM.minutesScale = true;
 
     /*****************/
     /* Graph drawing */
@@ -1913,8 +1949,6 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
-        ampGraph.addPoint(mapRegisters.get(100), "orange");
-        ampGraphM.addPoint(mapRegisters.get(100), "orange", "m");
 
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
@@ -1931,6 +1965,9 @@
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
+
+        ampGraph.addPoint([mapRegisters.get(100), mapRegisters.get(101), mapRegisters.get(102)]);
+        ampGraphM.addPoint([mapRegisters.get(100), mapRegisters.get(101), mapRegisters.get(102)]);
 
         if (mapRegisters.get(103) != undefined) {
             document.querySelector("#zero-sequence-current-value").innerHTML = (mapRegisters.get(103) * 0.1).toFixed(1);
@@ -1986,8 +2023,6 @@
             document.querySelector("#phase-1-voltage-value").innerHTML = "Err";
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
-        voltGraph.addPoint(mapRegisters.get(114), "rgba(50, 200, 50, 1)");
-        voltGraphM.addPoint(mapRegisters.get(114), "rgba(50, 200, 50, 1)", "m");
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
 
         if (mapRegisters.get(115) != undefined) {
@@ -2007,6 +2042,9 @@
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
         barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+
+        voltGraph.addPoint([mapRegisters.get(114), mapRegisters.get(115), mapRegisters.get(116)]);
+        voltGraphM.addPoint([mapRegisters.get(114), mapRegisters.get(115), mapRegisters.get(116)]);
 
         if (mapRegisters.get(117) != undefined) {
             document.querySelector("#line-1-voltage-value").innerHTML = mapRegisters.get(117);
