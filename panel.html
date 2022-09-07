@@ -219,17 +219,21 @@
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
             </div>
 
-            <div id="div-voltage-phases-graph">
+            <input type="checkbox" id="minutes-voltage-graph" checked>Minutes voltages graph scale
+
+            <div id="div-voltage-phases-graph" style="display: none;">
                 <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div id="div-voltage-phases-graph-m" style="display: none;">
+            <div id="div-voltage-phases-graph-m">
                 <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
 
-            <div id="div-amperage-phases-graph">
+            <input type="checkbox" id="minutes-amperage-graph" checked>Minutes currents graph scale
+
+            <div id="div-amperage-phases-graph" style="display: none;">
                 <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
             </div>
-            <div id="div-amperage-phases-graph-m" style="display: none;">
+            <div id="div-amperage-phases-graph-m">
                 <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
@@ -728,7 +732,7 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
         return res;
@@ -746,10 +750,25 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body, `${API_BASE_URL}/v1/raw/write-register-group/`);
         return res;
+    }
+
+    async function _readRegFromDb() {
+        let from = "";
+        let to = "";
+
+        const body = {
+            paramId: undefined,
+            from: undefined,
+            to: undefined,
+            pointsLimit: undefined
+        };
+
+        const res = await postResponse(body, `${API_BASE_URL}/v1/readings/get/`);
+        console.log(res);
     }
 
     async function readBit(address, bitPosition) {
@@ -1029,18 +1048,17 @@
         return color;
     }
 
-    function switchableElementsWithIds(id1str, id2str) {
-        const selector1 = "#" + id1str;
-        const selector2 = "#" + id2str;
-            document.querySelector(selector1).addEventListener("click", function() {
-            document.querySelector(selector1).style.display = 'none';
-            document.querySelector(selector2).style.display = 'block';
-        });
-
-        document.querySelector(selector2).addEventListener("click", function() {
-            document.querySelector(selector1).style.display = 'block';
-            document.querySelector(selector2).style.display = 'none';
-        });
+    function switchableGraphsByCheckbox(checkboxSelector, id1Selector, id2Selector) {
+        let checkbox = document.querySelector(checkboxSelector);
+        checkbox.addEventListener("change", function() {
+            if (checkbox.checked) {
+                document.querySelector(id1Selector).style.display = 'none';
+                document.querySelector(id2Selector).style.display = 'block';
+            } else {
+                document.querySelector(id1Selector).style.display = 'block';
+                document.querySelector(id2Selector).style.display = 'none';
+            }
+        })
     }
 </script>
 
@@ -1833,8 +1851,8 @@
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
 
-    switchableElementsWithIds("div-voltage-phases-graph", "div-voltage-phases-graph-m");
-    switchableElementsWithIds("div-amperage-phases-graph", "div-amperage-phases-graph-m");
+    switchableGraphsByCheckbox("#minutes-voltage-graph", "#div-voltage-phases-graph", "#div-voltage-phases-graph-m");
+    switchableGraphsByCheckbox("#minutes-amperage-graph", "#div-amperage-phases-graph", "#div-amperage-phases-graph-m");
 </script>
 
 <script type="text/javascript">
