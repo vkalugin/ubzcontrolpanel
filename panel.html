@@ -1,8 +1,6 @@
 <script type="text/javascript">
     const PHASE_VOLTAGE_THRESHOLD = 220;
-    const TEST_HEAT_GRAPH = false; // feed the heat graph with pseudodata
     const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
-    const GRAPH_BARS_NUMBER = 30; // 30 * 10s = 300s (time period by default)
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
 </script>
 
@@ -19,7 +17,7 @@
         background-color:lightblue;
         margin: 8px;
         padding: 10px;
-        max-width: 320px;
+        max-width: 400px;
         min-width: 260px;
     }
 
@@ -217,9 +215,26 @@
             </div>
         </div>
         <div class="dashboard-item">
-            <header>Heating</header>
-            <div>
+            <div id="div-heating-graph" style="display: none;">
                 <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+
+            <input type="checkbox" id="minutes-voltage-graph" checked>Minutes voltages graph scale
+
+            <div id="div-voltage-phases-graph" style="display: none;">
+                <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div id="div-voltage-phases-graph-m">
+                <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+            </div>
+
+            <input type="checkbox" id="minutes-amperage-graph" checked>Minutes currents graph scale
+
+            <div id="div-amperage-phases-graph" style="display: none;">
+                <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
+            </div>
+            <div id="div-amperage-phases-graph-m">
+                <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
             </div>
         </div>
         <div class="dashboard-item">
@@ -718,7 +733,7 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
         return res;
@@ -736,10 +751,25 @@
                 kind: "net-id",
                 networkId: deviceInfo.netId,
             }
-        }
+        };
 
         const res = await postResponse(body, `${API_BASE_URL}/v1/raw/write-register-group/`);
         return res;
+    }
+
+    async function _readRegFromDb() {
+        let from = "";
+        let to = "";
+
+        const body = {
+            paramId: undefined,
+            from: undefined,
+            to: undefined,
+            pointsLimit: undefined
+        };
+
+        const res = await postResponse(body, `${API_BASE_URL}/v1/readings/get/`);
+        console.log(res);
     }
 
     async function readBit(address, bitPosition) {
@@ -758,43 +788,6 @@
     function extractBitValue(value, bitPosition) {
         const bitValue = (value >>> bitPosition) & 1;
         return bitValue;
-    }
-</script>
-
-<!-- Queue -->
-<script type="text/javascript">
-    class Queue {
-        constructor() {
-            this.elements = {};
-            this.head = 0;
-            this.tail = 0;
-        }
-
-        enqueue(element) {
-            this.elements[this.tail] = element;
-            this.tail++;
-        }
-
-        dequeue() {
-            const item = this.elements[this.head];
-            delete this.elements[this.head];
-            this.head++;
-            return item;
-        }
-
-        get length() {
-            return this.tail - this.head;
-        }
-
-        get asArrayFromTail() {
-            let arr = []
-            let arrIndex = 0;
-            for (let i=this.tail - 1; i>=this.head; i--) {
-                arr[arrIndex] = this.elements[i];
-                arrIndex++;
-            }
-            return arr;
-        }
     }
 </script>
 
@@ -1032,6 +1025,33 @@
         if (!(document.querySelector("#motor-rated-current").disabled)) {
             document.querySelector("#motor-rated-current").disabled = true;
         }
+    }
+
+    function determineHeatgraphColor(value) {
+        let color = "";
+
+        if (value >= 100) {
+            color = "rgba(200, 50, 50, 1)";
+        } else if (value >= 66) {
+            color = "rgba(150, 150, 50, 1)";
+        } else {
+            color = "rgba(50, 50, 200, 1)";
+        }
+
+        return color;
+    }
+
+    function switchableGraphsByCheckbox(checkboxSelector, id1Selector, id2Selector) {
+        let checkbox = document.querySelector(checkboxSelector);
+        checkbox.addEventListener("change", function() {
+            if (checkbox.checked) {
+                document.querySelector(id1Selector).style.display = 'none';
+                document.querySelector(id2Selector).style.display = 'block';
+            } else {
+                document.querySelector(id1Selector).style.display = 'block';
+                document.querySelector(id2Selector).style.display = 'none';
+            }
+        })
     }
 </script>
 
@@ -1303,78 +1323,171 @@
 
 <!-- Graph -->
 <script type="text/javascript">
-    var canvas = document.querySelector("#heating-graph");
-    var ctx = canvas.getContext("2d");
-    ctx.font = "16px Droid Sans";
-    const temperaturePercentages = new Array(GRAPH_BARS_NUMBER).fill(0);
-    const bgColors = new Array(GRAPH_BARS_NUMBER);
-    const labels = new Array(GRAPH_BARS_NUMBER).fill("");
-    var sequenceOnGraph = GRAPH_BARS_NUMBER - 1;
-
-    const tempGraph = new Chart(ctx, {
-        data: {
-            labels: labels,
-            datasets: [{
-                type: "bar",
-                label: "Temperature, % of max",
-                data: temperaturePercentages,
-                backgroundColor: bgColors,
-            }, {
-                type: "line",
-                label: "66%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(66),
-                backgroundColor: "rgba(50, 50, 200, 1)",
-                borderColor: "rgba(50, 50, 200, 1)",
-                radius: 0,
-            }, {
-                type: "line",
-                label: "100%",
-                data: new Array(GRAPH_BARS_NUMBER).fill(100),
-                backgroundColor: "rgba(200, 50, 50, 1)",
-                borderColor: "rgba(200, 50, 50, 1)",
-                radius: 0,
-            }]
-        },
-        options: {
-            animation: false,
-        }
-    });
-
-    function drawGraph(tempPercentage) {
-        let color = "";
-
-        if (tempPercentage >= 100) {
-            color = "rgba(200, 50, 50, 1)";
-        } else if (tempPercentage >= 66) {
-            color = "rgba(150, 150, 50, 1)";
-        } else {
-            color = "rgba(50, 50, 200, 1)";
+    class GraphSequencing {
+        constructor(capacity) {
+            this.idx = 0;
+            this.queue = new Array();
+            this.capacity = capacity;
         }
 
-        while (heatQueue.length >= GRAPH_BARS_NUMBER) {
-            heatQueue.dequeue();
-        }
-        heatQueue.enqueue({tempPercentage, color});
-
-        let heatData = heatQueue.asArrayFromTail;
-
-        let graphMaxIndex = GRAPH_BARS_NUMBER - 1;
-        for (let i=0; i<heatData.length; i++) {
-            tempGraph.data.datasets[0].data[graphMaxIndex-i] = heatData[i].tempPercentage;
-            tempGraph.data.datasets[0].backgroundColor[graphMaxIndex-i] = heatData[i].color;
+        get maxIndex() {
+            return this.capacity - 1;
         }
 
-        // TODO: get this label from proper timestamps
-        tempGraph.data.labels[sequenceOnGraph] = ((((GRAPH_BARS_NUMBER - 1) - sequenceOnGraph) * UPDATE_VISUALIZATION_INTERVAL_MS * PRIORITY_DIVISOR_LOW / 1000).toString() + 's');
+        push(element, colors) {
+            while (this.queue.length >= this.capacity) {
+                this.queue.shift();
+            }
+            const timestamp = new Date().valueOf();
+            this.queue.push({element, colors, timestamp});
+        }
 
-        tempGraph.update();
-
-        if (sequenceOnGraph >= 0) {
-            sequenceOnGraph -= 1;
-        } else {
-            sequenceOnGraph = graphMaxIndex;
+        turn() {
+            if (this.idx < this.capacity) {
+                this.idx++;
+            } else {
+                this.idx = 0;
+            }
         }
     }
+
+    class Graph {
+        constructor(capacity, selector, graphsNumber) {
+            this.sequencing = new GraphSequencing(capacity);
+
+            this.chart = new Chart(document.querySelector(selector).getContext("2d"), {
+                data: {
+                    datasets: new Array(graphsNumber).fill().map(function() { return {
+                        type: "scatter",
+                        data: new Array(capacity).fill({x: undefined, y: undefined}),
+                        backgroundColor: "grey",
+                        borderColor: "rgba(128, 128, 128, 0.5)",
+                        tension: 0.5,
+                    }}),
+                },
+                options: {
+                    animation: false,
+                    showLine: true,
+                    scales: {
+                        xAxes: {
+                            ticks: {
+                                callback: function(value, index, ticks) {
+                                    return value + 's';
+                                },
+                            },
+                            reverse: true,
+                            min: 0,
+                            max: 0,
+                        }
+                    }
+                }
+            });
+
+            this.minutesScale = false;
+
+            this.debug = false;
+        }
+
+        setMaxX(value) {
+            this.chart.options.scales.xAxes.max = value;
+            this.chart.update();
+        }
+
+        setDataLabels(labels) {
+            for (let i=0; i<labels.length; i++) {
+                this.chart.data.datasets[i].label = labels[i];
+            }
+            this.chart.update();
+        }
+
+        setDatachartType(datasetIndex, typestr) {
+            this.chart.data.datasets[datasetIndex].type = typestr;
+            this.chart.update();
+        }
+
+        setColors(colors) {
+            for (let i=0; i<colors.length; i++) {
+                this.chart.data.datasets[i].backgroundColor = colors[i];
+                this.chart.data.datasets[i].borderColor = colors[i];
+            }
+            this.chart.update();
+        }
+
+        setMinutesScale() {
+            this.minutesScale = true;
+            this.chart.options.scales.xAxes.ticks.callback = function(value, index, ticks) {
+                                    return value + 'm';
+                                };
+            this.chart.update();
+        }
+
+        addPoint(values) {
+            this.sequencing.push(values, undefined);
+
+            let data = this.sequencing.queue;
+            const datasetsNumber = values.length;
+            const now = new Date().valueOf();
+
+            for (let i=0; i<data.length; i++) {
+                for (let ds=0; ds<datasetsNumber; ds++) {
+                    if (this.minutesScale == true) {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp) / 60000,
+                            y: data[i].element[ds],
+                        };
+                    } else {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp) / 1000,
+                            y: data[i].element[ds],
+                        };
+                    }
+                }
+            }
+
+            this.chart.update();
+            this.sequencing.turn();
+        }
+    }
+
+    /***********/
+    /* Thermal */
+    /***********/
+
+    var tempGraph = new Graph(30, "#heating-graph", 3);
+    tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
+    tempGraph.setColors(["grey", "rgba(50, 50, 200, 1)", "rgba(200, 50, 50, 1)"]);
+    tempGraph.setDatachartType(1, "line");
+    tempGraph.setDatachartType(2, "line");
+
+    /************/
+    /* Voltages */
+    /************/
+
+    var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
+    voltGraph.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
+    voltGraph.setMaxX(100);
+    voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
+
+    var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
+    voltGraphM.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
+    voltGraphM.setMaxX(20);
+    voltGraphM.setColors(["yellowgreen", "limegreen", "forestgreen"]);
+    voltGraphM.setMinutesScale();
+
+    /****************/
+    /* Currents RMS */
+    /****************/
+
+    var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
+    ampGraph.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
+    ampGraph.setMaxX(100);
+    ampGraph.setColors(["orange", "gold", "goldenrod"]);
+
+    var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
+    ampGraphM.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
+    ampGraphM.setMaxX(20);
+    ampGraphM.setColors(["orange", "gold", "goldenrod"]);
+    ampGraphM.setMinutesScale();
 </script>
 
 <!-- Indicators -->
@@ -1701,14 +1814,15 @@
     document.querySelector("#motor-rated-current").addEventListener("change", async function() {
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
+
+    switchableGraphsByCheckbox("#minutes-voltage-graph", "#div-voltage-phases-graph", "#div-voltage-phases-graph-m");
+    switchableGraphsByCheckbox("#minutes-amperage-graph", "#div-amperage-phases-graph", "#div-amperage-phases-graph-m");
 </script>
 
 <script type="text/javascript">
     const dateTimeStart = new Date();
-
     var deviceConnected = false;
     var faultIndicatorSet = false;
-    var heatQueue = new Queue();
     var loopLock = false;
 
     async function initElements() {
@@ -1796,6 +1910,7 @@
             document.querySelector("#phase-1-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-1-current-rms-bar").value = 0;
         }
+
         if (mapRegisters.get(101) != undefined) {
             document.querySelector("#phase-2-current-rms-value").innerHTML = (mapRegisters.get(101) * 0.1).toFixed(1);
             document.querySelector("#phase-2-current-rms-bar").value = mapRegisters.get(101);
@@ -1803,6 +1918,7 @@
             document.querySelector("#phase-2-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-2-current-rms-bar").value = 0;
         }
+
         if (mapRegisters.get(102) != undefined) {
             document.querySelector("#phase-3-current-rms-value").innerHTML = (mapRegisters.get(102) * 0.1).toFixed(1);
             document.querySelector("#phase-3-current-rms-bar").value = mapRegisters.get(102);
@@ -1810,6 +1926,10 @@
             document.querySelector("#phase-3-current-rms-value").innerHTML = "Err";
             document.querySelector("#phase-3-current-rms-bar").value = 0;
         }
+
+        ampGraph.addPoint([mapRegisters.get(100), mapRegisters.get(101), mapRegisters.get(102)]);
+        ampGraphM.addPoint([mapRegisters.get(100), mapRegisters.get(101), mapRegisters.get(102)]);
+
         if (mapRegisters.get(103) != undefined) {
             document.querySelector("#zero-sequence-current-value").innerHTML = (mapRegisters.get(103) * 0.1).toFixed(1);
             document.querySelector("#zero-sequence-current-bar").value = mapRegisters.get(103);
@@ -1865,6 +1985,7 @@
             document.querySelector("#phase-1-voltage-bar").value = 0;
         }
         barValue("#phase-1-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+
         if (mapRegisters.get(115) != undefined) {
             document.querySelector("#phase-2-voltage-value").innerHTML = mapRegisters.get(115);
             document.querySelector("#phase-2-voltage-bar").value = mapRegisters.get(115);
@@ -1873,6 +1994,7 @@
             document.querySelector("#phase-2-voltage-bar").value = 0;
         }
         barValue("#phase-2-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+
         if (mapRegisters.get(116) != undefined) {
             document.querySelector("#phase-3-voltage-value").innerHTML = mapRegisters.get(116);
             document.querySelector("#phase-3-voltage-bar").value = mapRegisters.get(116);
@@ -1881,6 +2003,10 @@
             document.querySelector("#phase-3-voltage-bar").value = 0;
         }
         barValue("#phase-3-voltage-bar", 300, PHASE_VOLTAGE_THRESHOLD);
+
+        voltGraph.addPoint([mapRegisters.get(114), mapRegisters.get(115), mapRegisters.get(116)]);
+        voltGraphM.addPoint([mapRegisters.get(114), mapRegisters.get(115), mapRegisters.get(116)]);
+
         if (mapRegisters.get(117) != undefined) {
             document.querySelector("#line-1-voltage-value").innerHTML = mapRegisters.get(117);
             document.querySelector("#line-1-voltage-bar").value = mapRegisters.get(117);
@@ -2051,18 +2177,18 @@
             document.querySelector("#connection-status-string").innerHTML = "Disonnected";
         }
 
-        if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) { // remove redundant graph redraws caused by low rate of value update
-            if (TEST_HEAT_GRAPH) {
-                drawGraph(Math.floor(Math.random() * 125));
-            } else {
-                let heatValue = mapRegisters.get(133);
-                if (heatValue != undefined) {
-                    const heatPercentage = (heatValue / 1100000) * 100;
-                    drawGraph(heatPercentage);
-                } else {
-                    drawGraph(undefined);
-                }
+        let heatValue = mapRegisters.get(133);
+        if (heatValue != undefined) {
+            if (heatValue > 0) {
+                document.querySelector("#div-heating-graph").style.display = "block";
             }
+            if (document.querySelector("#div-heating-graph").style.display != "none") {
+                const heatPercentage = (heatValue / 1100000) * 100;
+                let _color = determineHeatgraphColor(heatPercentage);
+                tempGraph.addPoint([heatPercentage, 66, 100]);
+            }
+        } else if (document.querySelector("#div-heating-graph").style.display != "none") {
+            tempGraph.addPoint([undefined, 66, 100]);
         }
 
         if (mapRegisters.get(135) != undefined) {
