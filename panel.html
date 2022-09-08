@@ -67,6 +67,16 @@
         width: 4em;
     }
 
+    .popup-menu {
+        position: absolute;
+        left: 200px;
+        top: 200px;
+        min-width: 600px;
+        z-index: 100;
+        background-color: lightblue;
+        display: none;
+    }
+
     #heating-graph {
         border: 1px solid lightslategrey;
         background-color: white;
@@ -464,6 +474,7 @@
                 <button id="save-file-button">Log event UBZ</button>
                 <button id="ubz-parameters-button">UBZ Parameters</button>
         </div>
+        <div class="popup-menu" id="ubz-parameters-menu">UBZ parameters menu</div>
     </div>
 </div>
 
@@ -1817,6 +1828,14 @@
 
     switchableGraphsByCheckbox("#minutes-voltage-graph", "#div-voltage-phases-graph", "#div-voltage-phases-graph-m");
     switchableGraphsByCheckbox("#minutes-amperage-graph", "#div-amperage-phases-graph", "#div-amperage-phases-graph-m");
+
+    document.querySelector("#ubz-parameters-button").addEventListener("click", function() {
+        if (document.querySelector("#ubz-parameters-menu").style.display == 'none') {
+            document.querySelector("#ubz-parameters-menu").style.display = 'block';
+        } else {
+            document.querySelector("#ubz-parameters-menu").style.display = 'none';
+        }
+    })
 </script>
 
 <script type="text/javascript">
