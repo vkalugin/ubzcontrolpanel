@@ -1008,14 +1008,6 @@
         return hoursStr + ":" + minutesStr + ":" + secondsStr;
     }
 
-    function secondsDiffString(milliseconds2, milliseconds1) {
-        return ((milliseconds2 - milliseconds1) / 1000).toFixed(0) + 's';
-    }
-
-    function minutesDiffString(milliseconds2, milliseconds1) {
-        return ((milliseconds2 - milliseconds1) / 60000).toFixed(0) + 'm';
-    }
-
     function activateExternalCTsettings() {
         if (document.querySelector("#external-ct-current").disabled) {
             document.querySelector("#external-ct-current").disabled = false;
@@ -1364,7 +1356,6 @@
 
             this.chart = new Chart(document.querySelector(selector).getContext("2d"), {
                 data: {
-                    labels: new Array(capacity).fill(""),
                     datasets: new Array(graphsNumber).fill().map(function() { return {
                         type: "scatter",
                         data: new Array(capacity).fill({x: undefined, y: undefined}),
@@ -1378,6 +1369,11 @@
                     showLine: true,
                     scales: {
                         xAxes: {
+                            ticks: {
+                                callback: function(value, index, ticks) {
+                                    return value + 's';
+                                },
+                            },
                             reverse: true,
                             min: 0,
                             max: 0,
@@ -1396,7 +1392,7 @@
             this.chart.update();
         }
 
-        setLabels(labels) {
+        setDataLabels(labels) {
             for (let i=0; i<labels.length; i++) {
                 this.chart.data.datasets[i].label = labels[i];
             }
@@ -1416,6 +1412,14 @@
             this.chart.update();
         }
 
+        setMinutesScale() {
+            this.minutesScale = true;
+            this.chart.options.scales.xAxes.ticks.callback = function(value, index, ticks) {
+                                    return value + 'm';
+                                };
+            this.chart.update();
+        }
+
         addPoint(values) {
             this.sequencing.push(values, undefined);
 
@@ -1430,19 +1434,13 @@
                             x: (now - data[i].timestamp) / 60000,
                             y: data[i].element[ds],
                         };
-                        this.chart.data.labels[this.sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
                     } else {
                             this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
                             x: (now - data[i].timestamp) / 1000,
                             y: data[i].element[ds],
                         };
-                        this.chart.data.labels[this.sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
                     }
                 }
-            }
-
-            if (this.debug) {
-                console.log(this.chart.data.datasets);
             }
 
             this.chart.update();
@@ -1455,7 +1453,7 @@
     /***********/
 
     var tempGraph = new Graph(30, "#heating-graph", 3);
-    tempGraph.setLabels(["Temperature, % of max", "66%", "100%"]);
+    tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
     tempGraph.setColors(["grey", "rgba(50, 50, 200, 1)", "rgba(200, 50, 50, 1)"]);
     tempGraph.setDatachartType(1, "line");
     tempGraph.setDatachartType(2, "line");
@@ -1465,65 +1463,30 @@
     /************/
 
     var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
-    voltGraph.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
+    voltGraph.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     voltGraph.setMaxX(100);
     voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
 
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
-    voltGraphM.setLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
+    voltGraphM.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     voltGraphM.setMaxX(20);
     voltGraphM.setColors(["yellowgreen", "limegreen", "forestgreen"]);
-    voltGraphM.minutesScale = true;
+    voltGraphM.setMinutesScale();
 
     /****************/
     /* Currents RMS */
     /****************/
 
     var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
-    ampGraph.setLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
+    ampGraph.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     ampGraph.setMaxX(100);
     ampGraph.setColors(["orange", "gold", "goldenrod"]);
 
     var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
-    ampGraphM.setLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
+    ampGraphM.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     ampGraphM.setMaxX(20);
     ampGraphM.setColors(["orange", "gold", "goldenrod"]);
-    ampGraphM.minutesScale = true;
-
-    /*****************/
-    /* Graph drawing */
-    /*****************/
-
-    function addToGraph(sequencing, chart, value, color, timedisplay) {
-        if (chart.data.datasets[0].type == "scatter") {
-            sequencing.push(value, color);
-
-            let data = sequencing.queue;
-            const now = new Date().valueOf();
-
-            for (let i=0; i<data.length; i++) {
-                chart.data.datasets[0].backgroundColor[sequencing.maxIndex-i] = data[i].color;
-                if (timedisplay == "m") {
-                        chart.data.datasets[0].data[sequencing.maxIndex-i] = {
-                        x: (now - data[i].timestamp) / 60000,
-                        y: data[i].element,
-                    };
-                    chart.data.labels[sequencing.maxIndex-i] = minutesDiffString(now, data[i].timestamp);
-                } else {
-                        chart.data.datasets[0].data[sequencing.maxIndex-i] = {
-                        x: (now - data[i].timestamp) / 1000,
-                        y: data[i].element,
-                    };
-                    chart.data.labels[sequencing.maxIndex-i] = secondsDiffString(now, data[i].timestamp);
-                }
-            }
-
-            chart.update();
-            sequencing.turn();
-        } else {
-            console.warn("unimplemented");
-        }
-    }
+    ampGraphM.setMinutesScale();
 </script>
 
 <!-- Indicators -->
@@ -2224,7 +2187,7 @@
                 tempGraph.addPoint([heatPercentage, 66, 100]);
             }
         } else if (document.querySelector("#div-heating-graph").style.display != "none") {
-            addToGraph(tempSequencing, tempGraph, undefined, "rgba(0, 0, 0, 0)");
+            tempGraph.addPoint([undefined, 66, 100]);
         }
 
         if (mapRegisters.get(135) != undefined) {
