@@ -83,7 +83,8 @@
         left: 200px;
         top: 200px;
         min-width: 600px;
-        min-height: 600px;
+        max-height: 600px;
+        overflow: auto;
         z-index: 100;
         background-color: lightblue;
         display: none;
@@ -551,16 +552,16 @@
             </details>
             <details>
                 <summary>Voltage protection</summary>
-                <p>[177] Minimum line voltage, V <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[178] Minimum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[179] Minimum voltage protection permission <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[180] Maximum line voltage, V <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[181] Maximum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[182] Maximum voltage protection permission <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[183] Line voltage imbalance, V <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[184] Line voltage imbalance tripping delay, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[185] Line voltage imbalance protection permission <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[186] Phase sequence order protection permission <input type="number" class="ubz-params-input" min="" max="" value=""></p>
+                <p>[177] Minimum line voltage, V <input type="number" class="ubz-params-input" min="270" max="415" value="320"></p>
+                <p>[178] Minimum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="5" max="30" value="10"></p>
+                <p>[179] Minimum voltage protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2"></p>
+                <p>[180] Maximum line voltage, V <input type="number" class="ubz-params-input" min="330" max="475" value="415"></p>
+                <p>[181] Maximum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="10" value="2"></p>
+                <p>[182] Maximum voltage protection permission <input type="number" class="ubz-params-input" min="0" max="1" value="2"></p>
+                <p>[183] Line voltage imbalance, V <input type="number" class="ubz-params-input" min="15" max="120" value="35"></p>
+                <p>[184] Line voltage imbalance tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="30" value="5"></p>
+                <p>[185] Line voltage imbalance protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2"></p>
+                <p>[186] Phase sequence order protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="1"></p>
             </details>
             <details>
                 <summary>Motor operation and automatic reclosing</summary>
@@ -588,25 +589,25 @@
             </details>
             <details>
                 <summary>Miscellaneous</summary>
-                <p>[202] Minimal number of set parameters mode <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[203] Indication on UBZ display before motor power on <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[204] Parameter indication mode <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[205] Functional relay operation mode <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[206] Timer, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[207] Equipment uptime, days <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[208] Motor uptime, days <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[209] User access code <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[210] Engineer access code <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[211] Reset to factory settings <input type="text" class="ubz-params-input" min="" max="" value=""></p>
+                <p>[202] Minimal number of set parameters mode <input type="number" class="ubz-params-input" min="0" max="1" value="1"></p>
+                <p>[203] Indication on UBZ display before motor power on <input type="number" class="ubz-params-input" min="0" max="2" value="1"></p>
+                <p>[204] Parameter indication mode <input type="number" class="ubz-params-input" min="0" max="1" value="1"></p>
+                <p>[205] Functional relay operation mode <input type="number" class="ubz-params-input" min="0" max="2" value="0"></p>
+                <p>[206] Timer, seconds <input type="number" class="ubz-params-input" min="0" max="300" value="30"></p>
+                <p>[207] Equipment uptime, days <input type="number" class="ubz-params-input" min="0" max="999" value="0"></p>
+                <p>[208] Motor uptime, days <input type="number" class="ubz-params-input" min="0" max="999" value="0"></p>
+                <p>[209] User access code <input type="number" class="ubz-params-input" min="0" max="9" value="0"></p>
+                <p>[210] Engineer access code <input type="number" class="ubz-params-input" min="0" max="999" value="123"></p>
+                <p>[211] Reset to factory settings <input type="text" class="ubz-params-input" min="0" max="1" value="0"></p>
             </details>
             <details>
                 <summary>Serial interface parameters (RS-485/ RS-232)</summary>
-                <p>[212] UBZ communication address <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[213] Transfer rate <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[214] Adapter reaction to lossof link <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[215] Response timeout detection, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[216] UBZ communication via serial channel <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[217] Device version <input type="number" class="ubz-params-input" min="" max="" value=""></p>
+                <p>[212] UBZ communication address <input type="number" class="ubz-params-input" min="1" max="247" value="1"></p>
+                <p>[213] Transfer rate <input type="number" class="ubz-params-input" min="0" max="1" value="0"></p>
+                <p>[214] Adapter reaction to lossof link <input type="number" class="ubz-params-input" min="0" max="3" value="0"></p>
+                <p>[215] Response timeout detection, seconds <input type="number" class="ubz-params-input" min="0" max="120" value="0"></p>
+                <p>[216] UBZ communication via serial channel <input type="number" class="ubz-params-input" min="0" max="2" value="0"></p>
+                <p>[217] Device version <input type="number" class="ubz-params-input" min="21" max="21" value="21"></p>
             </details>
             <details>
                 <summary>Functional relay mode parameters. Star-delta mode.</summary>
@@ -614,9 +615,9 @@
             </details>
             <details>
                 <summary>Motor phase (phases) loss, with current control</summary>
-                <p>[219] Phase loss protection tripping delay, seconds <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[220] Protection permission <input type="number" class="ubz-params-input" min="" max="" value=""></p>
-                <p>[221] Remote motor start andstop using the RS-232/RS485 interfaces<input type="number" class="ubz-params-input" min="" max="" value=""></p>
+                <p>[219] Phase loss protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="10" value="0.5" step="0.1"></p>
+                <p>[220] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="1"></p>
+                <p>[221] Remote motor start andstop using the RS-232/RS485 interfaces<input type="number" class="ubz-params-input" min="0" max="2" value="0"></p>
             </details>
             <details>
                 <summary>0-20 mA analog input operation</summary>
