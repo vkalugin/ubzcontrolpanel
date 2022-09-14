@@ -80,10 +80,9 @@
 
     .popup-menu {
         position: absolute;
-        left: 200px;
-        top: 200px;
+        left: 25%;
+        top: 25%;
         min-width: 600px;
-
         z-index: 100;
         background-color: lightblue;
         display: none;
@@ -645,6 +644,13 @@
                     <summary>Control of external MS</summary>
                     <div class="ubz-parameter">[230] Control of external MS working order <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230"></div>
                 </details>
+            </div>
+            <div>
+                <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified parameters
+            </div>
+            <div>
+                <button id="button-write-ubz-params">Write parameters to device</button>
+                <button id="button-read-ubz-params">Read parameters from device</button>
             </div>
         </div>
     </div>
@@ -2004,12 +2010,49 @@
     document.querySelector("#ubz-parameters-button").addEventListener("click", function() {
         document.querySelector("#substarat-popup-menu").style.display = 'block'
         document.querySelector("#ubz-parameters-menu").style.display = 'block';
-    })
+    });
 
     document.querySelector("#ubz-parameters-close").addEventListener("click", function() {
         document.querySelector("#substarat-popup-menu").style.display = 'none'
         document.querySelector("#ubz-parameters-menu").style.display = 'none';
-    })
+    });
+
+    var ubzParamsChanged = new Array(81).fill(false);
+
+    for (let i=150; i<=230; i++) {
+        document.querySelector("#ubz-param-input-" + i.toString()).addEventListener("change", function() {
+            ubzParamsChanged[i-150] = true;
+        });
+    }
+
+    document.querySelector("#button-write-ubz-params").addEventListener("click", async function() {
+        let values = new Array();
+        if (document.querySelector("#checkbox-write-only-modified-ubz-params").checked) {
+            for (let i=150; i<=230; i++) {
+                if (ubzParamsChanged[i-150]) {
+                    await writeRegValues(i, [document.querySelector("#ubz-param-input-" + i.toString()).value]);
+                }
+                values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
+            }
+        } else {
+            for (let i=150; i<=230; i++) {
+                values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
+            }
+            await writeRegValues(150, values);
+        }
+
+        ubzParamsChanged.fill(false);
+    });
+
+    document.querySelector("#button-read-ubz-params").addEventListener("click", async function() {
+        const ubzParams = await rawReadRegs(150, 81); // registers 150-230
+
+        if (ubzParams.ok) {
+            for (let i=150; i<=230; i++) {
+                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i-150];
+            }
+        }
+    });
 </script>
 
 <script type="text/javascript">
