@@ -2026,15 +2026,14 @@
     }
 
     document.querySelector("#button-write-ubz-params").addEventListener("click", async function() {
-        let values = new Array();
         if (document.querySelector("#checkbox-write-only-modified-ubz-params").checked) {
             for (let i=150; i<=230; i++) {
                 if (ubzParamsChanged[i-150]) {
                     await writeRegValues(i, [document.querySelector("#ubz-param-input-" + i.toString()).value]);
                 }
-                values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
             }
         } else {
+            let values = new Array();
             for (let i=150; i<=230; i++) {
                 values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
             }
