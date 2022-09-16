@@ -36,52 +36,122 @@ addr |bit pos|name                                                              
   141|       |Phase А voltage/current angle cos*1000                                          |                -|>>
   143|       |Phase B voltage/current angle cos*1000                                          |                -|>>
   145|       |Phase C voltage/current angle cos*1000                                          |                -|>>
+  150|       |                                                                                |                 |
+  151|       |                                                                                |                 |
+  152|       |                                                                                |                 |
   153|       |Average current measurement time                                                |                1|
+  154|       |                                                                                |                 |
+  155|       |                                                                                |                 |
+  156|       |                                                                                |                 |
+  157|       |                                                                                |                 |
+  158|       |                                                                                |                 |
+  159|       |                                                                                |                 |
+  160|       |                                                                                |                 |
+  161|       |                                                                                |                 |
+  162|       |                                                                                |                 |
+  163|       |                                                                                |                 |
+  164|       |                                                                                |                 |
+  165|       |                                                                                |                 |
+  166|       |                                                                                |                 |
+  167|       |                                                                                |                 |
+  168|       |                                                                                |                 |
+  169|       |                                                                                |                 |
+  170|       |                                                                                |                 |
+  171|       |                                                                                |                 |
+  172|       |                                                                                |                 |
+  173|       |                                                                                |                 |
+  174|       |                                                                                |                 |
+  175|       |                                                                                |                 |
+  176|       |                                                                                |                 |
   177|       |Minimum line voltage                                                            |                1|
+  178|       |                                                                                |                 |
+  179|       |                                                                                |                 |
   180|       |Maximum line voltage                                                            |                1|
+  181|       |                                                                                |                 |
+  182|       |                                                                                |                 |
+  183|       |                                                                                |                 |
+  184|       |                                                                                |                 |
+  185|       |                                                                                |                 |
+  186|       |                                                                                |                 |
+  187|       |                                                                                |                 |
+  188|       |                                                                                |                 |
+  189|       |                                                                                |                 |
+  190|       |                                                                                |                 |
+  191|       |                                                                                |                 |
+  192|       |                                                                                |                 |
+  193|       |                                                                                |                 |
+  194|       |                                                                                |                 |
+  195|       |                                                                                |                 |
+  196|       |                                                                                |                 |
+  197|       |                                                                                |                 |
+  198|       |                                                                                |                 |
+  199|       |                                                                                |                 |
+  200|       |                                                                                |                 |
+  201|       |                                                                                |                 |
+  202|       |                                                                                |                 |
   203|       |Indication on UBZ display before motor power on                                 |               10|
+  204|       |                                                                                |                 |
   205|       |Functional relay operation mode                                                 |               10|
+  206|       |                                                                                |                 |
+  207|       |                                                                                |                 |
+  208|       |                                                                                |                 |
+  209|       |                                                                                |                 |
+  210|       |                                                                                |                 |
   211|       |Reset to factory settings                                                       |               10|
   212|       |UBZ communication address                                                       |               10|
   213|       |Transfer rate                                                                   |               10|
+  214|       |                                                                                |                 |
+  215|       |                                                                                |                 |
+  216|       |                                                                                |                 |
+  217|       |                                                                                |                 |
+  218|       |                                                                                |                 |
+  219|       |                                                                                |                 |
+  220|       |                                                                                |                 |
   221|       |Remote motor start and stop using the RS-232/RS485 interfaces                   |               10|
+  222|       |                                                                                |                 |
+  223|       |                                                                                |                 |
   224|       |Control algorithm 0-20 mA                                                       |               10|
+  225|       |                                                                                |                 |
+  226|       |                                                                                |                 |
+  227|       |                                                                                |                 |
   228|       |Control algorithm 0-10 V                                                        |               10|
+  229|       |                                                                                |                 |
+  230|       |                                                                                |                 |
   237|       |Command                                                                         |                 |Only used for write
-  240|      0|Alarm                                                                           |               5|
-  240|      1|Relay of load                                                                   |               5|
-  240|      2|Functional relay                                                                |               5|
-  240|      3|Restart                                                                         |               5|
-  240|      4|Functional relay operating mode                                                 |               5|
-  240|      6|Mode                                                                            |               5|
-  240|      7|Mode of operation                                                               |               5|
-  241|      0|Alarm: maximum phase voltage                                                    |               5|
-  241|      1|Alarm: thermal overload                                                         |               5|
-  241|      2|Alarm: ground fault (zero sequence current)                                     |               5|
-  241|      3|Alarm: exceeded value of negative sequence current ratio divided by negative seq|               5|
-  241|      4|Alarm: negative sequence current                                                |               5|
-  241|      5|Alarm: phase undercurrent                                                       |               5|
-  241|      6|Alarm: delayed start                                                            |               5|
-  241|      7|Alarm: rotor blocking                                                           |               5|
-  241|      8|Alarm: temperature threshold at sensor 1                                        |               5|
-  241|      9|Alarm: temperature threshold at sensor 2                                        |               5|
-  241|     10|Alarm: phase sequence                                                           |               5|
-  241|     11|Alarm: currents present with open load relay (contactor fault)                  |               5|
-  241|     12|Alarm: line undervoltage                                                        |               5|
-  241|     13|Alarm: line overvoltage                                                         |               5|
-  241|     14|Alarm: phase imbalance                                                          |               5|
-  241|     15|Alarm: motor coil insulation resistance                                         |               5|
-  242|      0|Alarm: remote control channel fault                                             |               5|
-  242|      1|Alarm: emergency motor stop without ARC                                         |               5|
-  242|      2|Alarm:emergency motor stop with ARC                                             |               5|
-  242|      3|Alarm: short circuit of temperature sensor 1                                    |               5|
-  242|      4|Alarm: breakout of temperature sensor 1                                         |               5|
-  242|      5|Alarm: short circuit of temperature sensor 2                                    |               5|
-  242|      6|Alarm: breakout of temperature sensor 2                                         |               5|
-  242|      7|Alarm: phase loss                                                               |               5|
-  242|      8|Alarm: EEPROM destruction                                                       |               5|
-  242|      9|Alarm: 0-20 mА analog input                                                     |               5|
-  242|     10|Alarm: 0-10 V analog input                                                      |               5|
+  240|      0|Alarm                                                                           |                5|
+  240|      1|Relay of load                                                                   |                5|
+  240|      2|Functional relay                                                                |                5|
+  240|      3|Restart                                                                         |                5|
+  240|      4|Functional relay operating mode                                                 |                5|
+  240|      6|Mode                                                                            |                5|
+  240|      7|Mode of operation                                                               |                5|
+  241|      0|Alarm: maximum phase voltage                                                    |                5|
+  241|      1|Alarm: thermal overload                                                         |                5|
+  241|      2|Alarm: ground fault (zero sequence current)                                     |                5|
+  241|      3|Alarm: exceeded value of negative sequence current ratio divided by negative seq|                5|
+  241|      4|Alarm: negative sequence current                                                |                5|
+  241|      5|Alarm: phase undercurrent                                                       |                5|
+  241|      6|Alarm: delayed start                                                            |                5|
+  241|      7|Alarm: rotor blocking                                                           |                5|
+  241|      8|Alarm: temperature threshold at sensor 1                                        |                5|
+  241|      9|Alarm: temperature threshold at sensor 2                                        |                5|
+  241|     10|Alarm: phase sequence                                                           |                5|
+  241|     11|Alarm: currents present with open load relay (contactor fault)                  |                5|
+  241|     12|Alarm: line undervoltage                                                        |                5|
+  241|     13|Alarm: line overvoltage                                                         |                5|
+  241|     14|Alarm: phase imbalance                                                          |                5|
+  241|     15|Alarm: motor coil insulation resistance                                         |                5|
+  242|      0|Alarm: remote control channel fault                                             |                5|
+  242|      1|Alarm: emergency motor stop without ARC                                         |                5|
+  242|      2|Alarm:emergency motor stop with ARC                                             |                5|
+  242|      3|Alarm: short circuit of temperature sensor 1                                    |                5|
+  242|      4|Alarm: breakout of temperature sensor 1                                         |                5|
+  242|      5|Alarm: short circuit of temperature sensor 2                                    |                5|
+  242|      6|Alarm: breakout of temperature sensor 2                                         |                5|
+  242|      7|Alarm: phase loss                                                               |                5|
+  242|      8|Alarm: EEPROM destruction                                                       |                5|
+  242|      9|Alarm: 0-20 mА analog input                                                     |                5|
+  242|     10|Alarm: 0-10 V analog input                                                      |                5|
   300|       |Alarm: maximum phase voltage                                                    |        irregular|Reading is used for altering the table
   301|       |Alarm: thermal overload value                                                   |        irregular|>>
   302|       |Alarm: ground fault (zero sequence current)                                     |        irregular|>>
