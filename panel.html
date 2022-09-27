@@ -941,19 +941,21 @@
         return res;
     }
 
-    async function _readRegFromDb() {
-        let from = "";
-        let to = "";
+    async function readRegFromDb(reg) {
+        const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
-        const body = {
-            paramId: undefined,
-            from: undefined,
-            to: undefined,
-            pointsLimit: undefined
-        };
+        const netId = deviceInfo.netId;
+        const netInfo = await getResponse(`${API_BASE_URL}/v1/net/${netId}/`);
 
-        const res = await postResponse(body, `${API_BASE_URL}/v1/readings/get/`);
-        console.log(res);
+        const orgId = netInfo.orgId;
+
+        const bodyParam = CONTAINER.querySelector("alias").getAttribute("device") + ">" + reg.toString();
+
+        let paramId = await postResponse(bodyParam, `${API_BASE_URL}/v1/org/${orgId}/params/get-id-by-reference/`);
+
+        const pointsLimit = 20;
+
+        return await getResponse(`${API_BASE_URL}/v1/readings/get/?paramId=${paramId}&pointsLimit=${pointsLimit}`);
     }
 
     async function readBit(address, bitPosition) {
@@ -1522,7 +1524,14 @@
             while (this.queue.length >= this.capacity) {
                 this.queue.shift();
             }
-            const timestamp = new Date().valueOf();
+            const timestamp = [new Date().valueOf()];
+            this.queue.push({element, colors, timestamp});
+        }
+
+        pushFromHistory(element, timestamp, colors) {
+            while (this.queue.length >= this.capacity) {
+                this.queue.shift();
+            }
             this.queue.push({element, colors, timestamp});
         }
 
@@ -1615,12 +1624,39 @@
                 for (let ds=0; ds<datasetsNumber; ds++) {
                     if (this.minutesScale == true) {
                             this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
-                            x: (now - data[i].timestamp) / 60000,
+                            x: (now - data[i].timestamp[0]) / 60000,
                             y: data[i].element[ds],
                         };
                     } else {
                             this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
-                            x: (now - data[i].timestamp) / 1000,
+                            x: (now - data[i].timestamp[0]) / 1000,
+                            y: data[i].element[ds],
+                        };
+                    }
+                }
+            }
+
+            this.chart.update();
+            this.sequencing.turn();
+        }
+
+        addFromHistory(values, timestamp) {
+            this.sequencing.pushFromHistory(values, timestamp, undefined);
+
+            let data = this.sequencing.queue;
+            const datasetsNumber = values.length;
+            const now = new Date().valueOf();
+
+            for (let i=0; i<data.length; i++) {
+                for (let ds=0; ds<datasetsNumber; ds++) {
+                    if (this.minutesScale == true) {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp[ds]) / 60000,
+                            y: data[i].element[ds],
+                        };
+                    } else {
+                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                            x: (now - data[i].timestamp[ds]) / 1000,
                             y: data[i].element[ds],
                         };
                     }
@@ -2051,6 +2087,36 @@
 
     async function initElements() {
         const ubzParams = await rawReadRegs(150, 81); // registers 150-230
+
+        const volt1History = await readRegFromDb(114);
+        const volt2History = await readRegFromDb(115);
+        const volt3History = await readRegFromDb(116);
+        const voltHistoryLength = Math.max(volt1History.length, volt2History.length, volt3History.length);
+
+        const amp1History = await readRegFromDb(100);
+        const amp2History = await readRegFromDb(101);
+        const amp3History = await readRegFromDb(102);
+        const ampHistoryLength = Math.max(amp1History.length, amp2History.length, amp3History.length);
+
+        for (let i=voltHistoryLength-1; i>=0; i--) {
+            const volt1 = volt1History[i][1];
+            const volt2 = volt2History[i][1];
+            const volt3 = volt3History[i][1];
+            const t1 = new Date(volt1History[i][0]).valueOf();
+            const t2 = new Date(volt2History[i][0]).valueOf();
+            const t3 = new Date(volt3History[i][0]).valueOf();
+            voltGraphM.addFromHistory([volt1, volt2, volt3], [t1, t2, t3]);
+        }
+
+        for (let i=ampHistoryLength-1; i>=0; i--) {
+            const amp1 = amp1History[i][1];
+            const amp2 = amp2History[i][1];
+            const amp3 = amp3History[i][1];
+            const t1 = new Date(amp1History[i][0]).valueOf();
+            const t2 = new Date(amp2History[i][0]).valueOf();
+            const t3 = new Date(amp3History[i][0]).valueOf();
+            ampGraphM.addFromHistory([amp1, amp2, amp3], [t1, t2, t3]);
+        }
 
         while (true) {
             if (ubzParams.ok) {
