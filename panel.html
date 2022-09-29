@@ -1,9 +1,3 @@
-<script type="text/javascript">
-    const PHASE_VOLTAGE_THRESHOLD = 220;
-    const TEST_FAULT_TABLE = false; // flood the fault table with all alarms
-    const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
-</script>
-
 <style type="text/css">
     .dashboard-container {
         display: grid;
@@ -182,8 +176,8 @@
 </style>
 
 <div id="ubz-vis-container">
-    <!-- put actual device="#DEVICE_ID" number from database instead 16 here -->
-    <alias device="#16" name="ubz"></alias>
+    <!-- put actual device="#DEVICE_ID" number from database instead of 0 here -->
+    <alias device="#0" name="ubz"></alias>
     <header>UBZ-302 Control Panel</header>
     <div style="text-align: left;" id="session-time">Session time: </div>
 
@@ -1730,15 +1724,15 @@
             document.querySelector("#mmsp-mode").style.backgroundColor = INDICATOR_DIM;
         }
 
-        const value240 = mapRegisters.get(240);
+        const bitsValue = mapRegisters.get(240);
 
-        if (extractBitValue(value240, FUNCTIONAL_RELAY_BIT) == CLOSED) {
+        if (extractBitValue(bitsValue, FUNCTIONAL_RELAY_BIT) == CLOSED) {
             document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_LIT;
         } else {
             document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_DIM;
         }
 
-        if (extractBitValue(value240, LOAD_RELAY_BIT) == CLOSED) {
+        if (extractBitValue(bitsValue, LOAD_RELAY_BIT) == CLOSED) {
             document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_LIT;
         } else {
             document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_DIM;
@@ -2080,6 +2074,8 @@
 </script>
 
 <script type="text/javascript">
+    const PHASE_VOLTAGE_THRESHOLD = 220;
+    const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
     const dateTimeStart = new Date();
     var deviceConnected = false;
     var faultIndicatorSet = false;
@@ -2182,9 +2178,7 @@
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
             for (let i=0; i<faultsCurr.length; i++) {
-                if (faultsToPrint[i] || TEST_FAULT_TABLE) {
-                    
-
+                if (faultsToPrint[i]) {
                     let time = timeString(currentDateTime);
 
                     const fault = alarms[i];
