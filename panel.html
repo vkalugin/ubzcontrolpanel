@@ -1741,17 +1741,18 @@
 
     var motorStartedManually = false;
 
-    async function startStopMotor() {
-        const COMMAND_REGISTER = 237;
-        const MOTOR_STOP_MANUALLY = [0];
-        const MOTOR_START_MANUALLY = [2];
+    const COMMAND_REGISTER = 237;
+    const MOTOR_STOP_MANUALLY = [0];
+    const MOTOR_START_MANUALLY = [2];
+    const RESET_FAULT = [55];
 
+    async function startStopMotor() {
         if (!motorStartedManually) {
-            writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
+            await writeRegValues(COMMAND_REGISTER, MOTOR_START_MANUALLY);
             document.querySelector("#motor-start-stop-button").innerHTML = "Stop";
             motorStartedManually = true;
         } else {
-            writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
+            await writeRegValues(COMMAND_REGISTER, MOTOR_STOP_MANUALLY);
             document.querySelector("#motor-start-stop-button").innerHTML = "Start";
             motorStartedManually = false;
         }
@@ -1979,6 +1980,10 @@
 
     document.querySelector("#radio-workmode-stardelta").addEventListener("click", async function () {
         await writeRegValues(205, [2]);
+    });
+
+    document.querySelector("#reset-fault-button").addEventListener("click", async function () {
+        await writeRegValues(COMMAND_REGISTER, RESET_FAULT);
     });
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
