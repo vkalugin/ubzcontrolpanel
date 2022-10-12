@@ -10,7 +10,7 @@
     }
 
     .dashboard-item {
-        background-color:lightblue;
+        background-color: transparent;
         margin: 8px;
         padding: 10px;
         max-width: 400px;
@@ -80,7 +80,7 @@
         top: 25%;
         min-width: 600px;
         z-index: 100;
-        background-color: lightblue;
+        background-color: white;
         display: none;
     }
 
@@ -114,7 +114,7 @@
     }
 
     .faults-table tbody {
-        background-color: lightblue;
+        background-color: transparent;
         height: 250px;
         overflow: auto;
     }
@@ -129,7 +129,7 @@
 
     .faults-table th {
         padding: 4px;
-        border: 3px solid lightblue;
+        border: 3px solid transparent;
         background-color: whitesmoke;
         font-size: smaller;
     }
@@ -217,7 +217,7 @@
     </div>
     <div class="substrat" id="substarat-popup-menu"></div>
     <div class="popup-menu" id="ubz-parameters-menu">
-        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button type="button" class="btn button-primary" id="ubz-parameters-close">X</button></span>
+        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button type="button" class="btn btn-danger" id="ubz-parameters-close">X</button></span>
         <div id="popup-menu-items">
             <details>
                 <summary>Transformers</summary>
@@ -365,8 +365,8 @@
             <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified parameters
         </div>
         <div>
-            <button type="button" class="btn btn-primary" id="button-write-ubz-params">Write parameters to device</button>
-            <button type="button" class="btn btn-primary" id="button-read-ubz-params">Read parameters from device</button>
+            <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to device</button>
+            <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from device</button>
         </div>
         </div>
         <div class="dashboard-item">
