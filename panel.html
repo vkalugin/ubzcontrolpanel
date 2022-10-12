@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
 <style type="text/css">
     .dashboard-container {
         display: grid;
@@ -102,28 +104,9 @@
         width: 240px;
     }
 
-    #fault-indicator {
-        background-color: crimson;
-        border-style: none;
-    }
-
-    #ext-in-indicator {
-        background-color: darkgoldenrod;
-        border-style: none;
-    }
-
-    #ar-indicator {
-        background-color: green;
-        border-style: none;
-    }
-
-    #rc-indicator {
-        background-color: dodgerblue;
-        border-style: none;
-    }
-
-    #reset-fault-button {
-        background-color: navajowhite;
+    .btn-vis {
+        background-color: #1e8bc3;
+        color: white;
     }
 
     #faults-table-container {
@@ -176,6 +159,9 @@
 </style>
 
 <div id="ubz-vis-container">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <!-- put actual device="#DEVICE_ID" number from database instead of 0 here -->
     <alias device="#0" name="ubz"></alias>
     <header>UBZ-302 Control Panel</header>
@@ -225,13 +211,13 @@
                     <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
                 </ul>
             </details>
-            <div><button id="motor-start-stop-button" disabled><img src = "https://cdn-icons-png.flaticon.com/512/2479/2479510.png" style="width: 100px;"></button></div>
-            <button id="save-file-button">Log event UBZ</button>
-            <button id="ubz-parameters-button">UBZ Parameters</button>
+            <div><button type="button" class="btn btn-vis" id="motor-start-stop-button" disabled>Automatic mode</button></div>
+            <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
+            <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
     </div>
     <div class="substrat" id="substarat-popup-menu"></div>
     <div class="popup-menu" id="ubz-parameters-menu">
-        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button id="ubz-parameters-close">X</button></span>
+        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button type="button" class="btn button-primary" id="ubz-parameters-close">X</button></span>
         <div id="popup-menu-items">
             <details>
                 <summary>Transformers</summary>
@@ -379,18 +365,18 @@
             <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified parameters
         </div>
         <div>
-            <button id="button-write-ubz-params">Write parameters to device</button>
-            <button id="button-read-ubz-params">Read parameters from device</button>
+            <button type="button" class="btn btn-primary" id="button-write-ubz-params">Write parameters to device</button>
+            <button type="button" class="btn btn-primary" id="button-read-ubz-params">Read parameters from device</button>
         </div>
         </div>
         <div class="dashboard-item">
             <div>
                 <header>UBZ Fault Status</header>
-                <button id="fault-indicator" disabled>Fault</button>
-                <button id="ext-in-indicator" disabled>Ext. in.</button>
-                <button id="ar-indicator" disabled>AR</button>
-                <button id="rc-indicator" disabled>RC</button>
-                <button id="reset-fault-button">Reset Fault</button>
+                <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
+                <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
+                <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
+                <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
+                <button type="button" class="btn btn-vis" id="reset-fault-button">Reset Fault</button>
             </div>
             <div class="faults-table-container">
                 <table class="faults-table">
