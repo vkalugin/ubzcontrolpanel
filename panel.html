@@ -109,6 +109,16 @@
         color: white;
     }
 
+    .btn-danger-active {
+        animation: danger-pulse 1s infinite;
+    }
+
+    @keyframes danger-pulse {
+        100% {
+            background-color: lightcoral;
+        };
+    }
+
     #faults-table-container {
         min-width: 240px;
     }
@@ -1786,30 +1796,10 @@
     }
 
     function processFaultIndicator(isFault) {
-        const INDICATOR_LIT = "lightsalmon";
-        const INDICATOR_DIM = "crimson";
-
-        const LED_SWITCH_INTERVAL_MS = 1000;
         if (isFault) {
-            if (!faultIndicatorSet) {
-                let lighten = false;
-
-                var faultIndicatorInterval = setInterval(function() {
-                    if (lighten) {
-                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_LIT;
-                    } else {
-                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_DIM;
-                    }
-                    lighten = !lighten;
-                }, LED_SWITCH_INTERVAL_MS);
-
-                faultIndicatorSet = true;
-            }
+            document.querySelector("#fault-indicator").classList.add("btn-danger-active");
         } else {
-            if (faultIndicatorSet) {
-                faultIndicatorSet = false;
-                clearInterval(faultIndicatorInterval);
-            }
+            document.querySelector("#fault-indicator").classList.remove("btn-danger-active");
         }
     }
 </script>
