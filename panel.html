@@ -10,11 +10,20 @@
     }
 
     .dashboard-item {
-        background-color: transparent;
+        background-color: whitesmoke;
         margin: 8px;
         padding: 10px;
         max-width: 400px;
         min-width: 260px;
+    }
+
+    .dashboard-header {
+        font-weight: bold;
+    }
+
+    .dashboard-group {
+        margin-top: 8px;
+        margin-bottom: 8px;
     }
 
     .power-characteristic {
@@ -34,19 +43,18 @@
     .valuebar {
         min-width: 100px;
         height: 8px;
-        background-color: rgb(192, 192, 192);
-        border: solid 1px black;
+        background-color: #9a9a9a;
     }
 
     .valuebar-inner {
-        background-color: green;
+        background-color: #2acd0f;
 		height: 100%;
         width: 0%;
         float: left;
     }
 
     .overvaluebar-inner {
-        background-color: orange;
+        background-color: #f79e10;
 		height: 100%;
         width: 0%;
         float: left;
@@ -119,25 +127,25 @@
         };
     }
 
-    #faults-table-container {
-        min-width: 240px;
+    .faults-table {
+        width: 100%;
     }
 
     .faults-table tbody {
         background-color: transparent;
-        height: 250px;
+        height: 27em;
         overflow: auto;
+        /* width: 100%; */
     }
 
-    .faults-table thead > tr, tbody { 
+    .faults-table thead > tr, tbody {
+        width: 100%;
         display: block;
+        height: 1.5em;
     }
 
     .faults-table th {
         text-align: center;
-    }
-
-    .faults-table th {
         padding: 4px;
         border: 3px solid transparent;
         background-color: whitesmoke;
@@ -153,7 +161,7 @@
         }
 
         .dashboard-item {
-            background-color:lightblue;
+            background-color: whitesmoke;
             margin: 5px;
             padding: 15px;
         }
@@ -179,51 +187,61 @@
 
     <div class="dashboard-container">
         <div class="dashboard-item">
-            <header>UBZ Status</header>
-            <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
-            <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
-            <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
-            <p>Functional relay work mode</p>
-            <form id="functional-relay-work-mode-radio">
-                <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-                <label for="radio-workmode-alarm">Alarm relay</label><br>
-                <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-                <label for="radio-workmode-time">Time relay</label><br>
-                <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-                <label for="radio-workmode-stardelta">Star / delta</label><br>
-            </form>
-            <div>CT in use
-                <span>
-                    <select id="CT-in-use">
-                        <option value="integrated-CT">Integrated CT</option>
-                        <option value="external-CT">External CT</option>
-                    </select>
-                </span>
+            <header class="dashboard-header">UBZ Status</header>
+            <div class="dashboard-group">
+                <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
+                <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
+                <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
             </div>
-            <div>For external CT
-                <span>
-                    <input type="number" value="100" min="20" max="800" id="external-ct-current" class="ubz-number-input">
-                </span>
+            <div class="dashboard-group">
+                <header class="dashboard-header">Functional relay work mode</header>
+                <form id="functional-relay-work-mode-radio">
+                    <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                    <label for="radio-workmode-alarm">Alarm relay</label><br>
+                    <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                    <label for="radio-workmode-time">Time relay</label><br>
+                    <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                    <label for="radio-workmode-stardelta">Star / delta</label><br>
+                </form>
+                <div>CT in use
+                    <span>
+                        <select id="CT-in-use">
+                            <option value="integrated-CT">Integrated CT</option>
+                            <option value="external-CT">External CT</option>
+                        </select>
+                    </span>
+                </div>
+                <div>For external CT
+                    <span>
+                        <input type="number" value="100" min="20" max="800" id="external-ct-current" class="ubz-number-input">
+                    </span>
+                </div>
+                <div>Motor rated current
+                    <span>
+                        <input type="number" value="0" min="0" max="630" id="motor-rated-current" class="ubz-number-input">
+                    </span>
+                </div>
             </div>
-            <div>Motor rated current
-                <span>
-                    <input type="number" value="0" min="0" max="630" id="motor-rated-current" class="ubz-number-input">
-                </span>
+            
+            <div class="dashboard-group">
+                <details>
+                    <summary>Additional</summary>
+                    <ul>
+                        <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
+                        <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
+                        <li>Current input: <span id="current-input-value">0.0</span> mA</li>
+                        <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
+                        <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
+                        <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
+                    </ul>
+                </details>
             </div>
-            <details>
-                <summary>Additional</summary>
-                <ul>
-                    <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
-                    <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
-                    <li>Current input: <span id="current-input-value">0.0</span> mA</li>
-                    <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
-                    <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
-                    <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
-                </ul>
-            </details>
-            <div><button type="button" class="btn btn-vis" id="motor-start-stop-button" disabled>Automatic mode</button></div>
-            <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
-            <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
+            
+            <div class="dashboard-group"><button type="button" class="btn btn-vis" id="motor-start-stop-button" disabled>Automatic mode</button></div>
+            <div class="dashboard-group">
+                <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
+                <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
+            </div>
     </div>
     <div class="substrat" id="substarat-popup-menu"></div>
     <div class="popup-menu" id="ubz-parameters-menu">
@@ -380,15 +398,15 @@
         </div>
         </div>
         <div class="dashboard-item">
-            <div>
-                <header>UBZ Fault Status</header>
+            <div class="dashboard-group">
+                <header class="dashboard-header">UBZ Fault Status</header>
                 <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
                 <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
                 <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
                 <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
                 <button type="button" class="btn btn-vis" id="reset-fault-button">Reset Fault</button>
             </div>
-            <div class="faults-table-container">
+            <div class="dashboard-group">
                 <table class="faults-table">
                     <tr>
                         <th>
@@ -408,44 +426,64 @@
             </div>
         </div>
         <div class="dashboard-item">
-            <div id="div-heating-graph" style="display: none;">
-                <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+            <header class="dashboard-header">Graphs</header>
+            <div class="dashboard-group">
+                <div id="div-heating-graph" style="display: none;">
+                    <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+                </div>
             </div>
 
-            <input type="checkbox" id="minutes-voltage-graph" checked>Minutes voltages graph scale
+            <div class="dashboard-group">
+                <div class="form-check">
+                    <input type="checkbox" id="minutes-voltage-graph" checked>
+                    <label class="form-check-label" for="minutes-voltage-graph">
+                        Minutes voltages graph scale
+                    </label>
+                </div>
+                
 
-            <div id="div-voltage-phases-graph" style="display: none;">
-                <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-voltage-phases-graph-m">
-                <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                <div id="div-voltage-phases-graph" style="display: none;">
+                    <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
+                </div>
+                <div id="div-voltage-phases-graph-m">
+                    <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                </div>
             </div>
 
-            <input type="checkbox" id="minutes-amperage-graph" checked>Minutes currents graph scale
+            <div class="dashboard-group">
+                <div class="form-check">
+                    <input type="checkbox" id="minutes-amperage-graph" checked>
+                    <label class="form-check-label" for="minutes-amperage-graph">
+                        Minutes currents graph scale
+                    </label>
+                </div>
+                
 
-            <div id="div-amperage-phases-graph" style="display: none;">
-                <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-amperage-phases-graph-m">
-                <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                <div id="div-amperage-phases-graph" style="display: none;">
+                    <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
+                </div>
+                <div id="div-amperage-phases-graph-m">
+                    <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                </div>
             </div>
         </div>
         <div class="dashboard-item">
-            <header>Current (Ampere)</header>
-                <div>
-                    <p>Phase currents active values:</p>
-                    <ul>
-                        <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
-                        </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
-                        <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
-                        </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
-                        <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
-                        </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
-                    </ul>
-                </div>
+            <header class="dashboard-header">Current (Ampere)</header>
+            <div class="dashboard-group">
+                <p>Phase currents active values:</p>
+                <ul>
+                    <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
+                        <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
+                    </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                    <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
+                        <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
+                    </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                    <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
+                        <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
+                    </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                </ul>
+            </div>
+            <div class="dashboard-group">
                 <details>
                     <summary>Additional</summary>
                     <div>
@@ -491,26 +529,28 @@
                         </ul>
                     </div>
                 </details>
+            </div>
         </div>
         <div class="dashboard-item">
-            <header>Voltage (Volt)</header>
-                <div>
-                    <p>Phase voltages active values:</p>
-                    <ul>
-                        <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-1-voltage-value">0.0</span> V</li>
-                        <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-2-voltage-value">0.0</span> V</li>
-                        <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-3-voltage-value">0.0</span> V</li>
-                    </ul>
-                </div>
+            <header class="dashboard-header">Voltage (Volt)</header>
+            <div class="dashboard-group">
+                <p>Phase voltages active values:</p>
+                <ul>
+                    <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
+                        <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
+                        <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
+                    </div> <span id="phase-1-voltage-value">0.0</span> V</li>
+                    <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
+                        <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
+                        <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
+                    </div> <span id="phase-2-voltage-value">0.0</span> V</li>
+                    <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
+                        <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
+                        <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
+                    </div> <span id="phase-3-voltage-value">0.0</span> V</li>
+                </ul>
+            </div>
+            <div class="dashboard-group">
                 <details>
                     <summary>Additional</summary>
                     <div>
@@ -554,16 +594,18 @@
                         Zero sequence voltage: <span id="zero-sequence-voltage-value">0</span> V
                     </p>
                 </details>
+            </div>
         </div>
         <div class="dashboard-item">
-            <header>Time (sec)</header>
-                <div>
-                    <p>Time before AR:</p>
-                    <div class="valuebar" id="time-before-ar-bar" value="0">
-                        <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
-                    </div>
-                    <span id="time-before-ar-string"> Off</span>
+            <header class="dashboard-header">Time (sec)</header>
+            <div class="dashboard-group">
+                <p>Time before AR:</p>
+                <div class="valuebar" id="time-before-ar-bar" value="0">
+                    <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
                 </div>
+                <span id="time-before-ar-string"> Off</span>
+            </div>
+            <div class="dashboard-group">
                 <details>
                     <summary>Additional</summary>
                     <ul>
@@ -572,8 +614,10 @@
                         <li>Wait time after overload deenergize: <span id="wait-time-after-overload-deenergize-string">No</span></li>
                     </ul>
                 </details>
-
-                <header>Power</header>
+            </div>
+            
+            <div class="dashboard-group">
+                <header class="dashboard-header">Power</header>
                 <ul>
                     <li>Full power: <span id="full-power-value">-</span></li>
                     <li>Active power: <span id="active-power-value">-</span></li>
@@ -637,6 +681,7 @@
                         <span id="power-show-value-3">-</span>
                     </li>
                 </ul>
+            </div>
         </div>
     </div>
 </div>
