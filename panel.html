@@ -9,12 +9,12 @@
         text-align: left;
     }
 
-    .dashboard-item {
+    .dashboard-section {
         background-color: whitesmoke;
         margin: 8px;
         padding: 10px;
         max-width: 400px;
-        min-width: 260px;
+        min-width: 300px;
     }
 
     .dashboard-header {
@@ -156,11 +156,11 @@
         .dashboard-container {
             display: grid;
             grid-template-columns: [col1] auto;
-            grid-template-rows: repeat(8, auto [row]);
+            grid-template-rows: repeat(6, auto [row]);
             padding: 10px;
         }
 
-        .dashboard-item {
+        .dashboard-section {
             background-color: whitesmoke;
             margin: 5px;
             padding: 15px;
@@ -186,7 +186,7 @@
     <div style="text-align: left;" id="session-time">Session time: </div>
 
     <div class="dashboard-container">
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <header class="dashboard-header">UBZ Status</header>
             <div class="dashboard-group">
                 <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
@@ -397,7 +397,7 @@
             <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from device</button>
         </div>
         </div>
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <div class="dashboard-group">
                 <header class="dashboard-header">UBZ Fault Status</header>
                 <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
@@ -425,7 +425,7 @@
                 </table>
             </div>
         </div>
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <header class="dashboard-header">Graphs</header>
             <div class="dashboard-group">
                 <div id="div-heating-graph" style="display: none;">
@@ -467,7 +467,7 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <header class="dashboard-header">Current (Ampere)</header>
             <div class="dashboard-group">
                 <p>Phase currents active values:</p>
@@ -531,7 +531,7 @@
                 </details>
             </div>
         </div>
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <header class="dashboard-header">Voltage (Volt)</header>
             <div class="dashboard-group">
                 <p>Phase voltages active values:</p>
@@ -596,7 +596,7 @@
                 </details>
             </div>
         </div>
-        <div class="dashboard-item">
+        <div class="dashboard-section">
             <header class="dashboard-header">Time (sec)</header>
             <div class="dashboard-group">
                 <p>Time before AR:</p>
