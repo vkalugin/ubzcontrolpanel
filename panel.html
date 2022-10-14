@@ -150,6 +150,16 @@
         .power-characteristic {
             padding: 10px;
         }
+
+        .popup-menu {
+            position: absolute;
+            left: 0%;
+            top: 25%;
+            z-index: 100;
+            background-color: white;
+            display: none;
+            text-align: left;
+        }
     }
 </style>
 
@@ -526,8 +536,9 @@
 
     <div class="substrat" id="substarat-popup-menu"></div>
     <div class="popup-menu" id="ubz-parameters-menu">
-        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button type="button"
-                class="btn btn-danger" id="ubz-parameters-close">X</button></span>
+        <span style="position: absolute; right: 0px;"><button type="button"
+            class="btn btn-danger" id="ubz-parameters-close">X</button></span>
+        <header class="dashboard-header">UBZ parameters menu</header>
         <div id="popup-menu-items">
             <details>
                 <summary>Transformers</summary>
