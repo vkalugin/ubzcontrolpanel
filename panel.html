@@ -3,19 +3,8 @@
 
 <style type="text/css">
     .dashboard-container {
-        display: grid;
-        grid-template-columns: [col1] auto [col2] auto [col3] auto;
-        grid-template-rows: [row1] auto [row2] auto;
-        padding: 10px;
         text-align: left;
-    }
-
-    .dashboard-section {
         background-color: whitesmoke;
-        margin: 8px;
-        padding: 10px;
-        max-width: 400px;
-        min-width: 300px;
     }
 
     .dashboard-header {
@@ -156,19 +145,6 @@
     }
 
     @media only screen and (max-device-width: 1100px) {
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: [col1] auto;
-            grid-template-rows: repeat(6, auto [row]);
-            padding: 10px;
-        }
-
-        .dashboard-section {
-            background-color: whitesmoke;
-            margin: 5px;
-            padding: 15px;
-        }
-
         .power-characteristic {
             padding: 10px;
         }
@@ -188,359 +164,364 @@
     <header>UBZ-302 Control Panel</header>
     <div style="text-align: left;" id="session-time">Session time: </div>
 
-    <div class="dashboard-container">
-        <div class="dashboard-section">
-            <header class="dashboard-header">UBZ Status</header>
-            <div class="dashboard-group">
-                <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
-                <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
-                <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
+    <div class="container dashboard-container">
+        <div class="row">
+            <div class="col-sm">
+                <header class="dashboard-header">UBZ Status</header>
+                <div class="dashboard-group">
+                    <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
+                    <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
+                    <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
+                </div>
+                <div class="dashboard-group">
+                    <header class="dashboard-header">Functional relay work mode</header>
+                    <form id="functional-relay-work-mode-radio">
+                        <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                        <label for="radio-workmode-alarm">Alarm relay</label><br>
+                        <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                        <label for="radio-workmode-time">Time relay</label><br>
+                        <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                        <label for="radio-workmode-stardelta">Star / delta</label><br>
+                    </form>
+                    <div>CT in use
+                        <span>
+                            <select id="CT-in-use">
+                                <option value="integrated-CT">Integrated CT</option>
+                                <option value="external-CT">External CT</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div>For external CT
+                        <span>
+                            <input type="number" value="100" min="20" max="800" id="external-ct-current"
+                                class="ubz-number-input">
+                        </span>
+                    </div>
+                    <div>Motor rated current
+                        <span>
+                            <input type="number" value="0" min="0" max="630" id="motor-rated-current"
+                                class="ubz-number-input">
+                        </span>
+                    </div>
+                </div>
+    
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <ul>
+                            <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
+                            <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
+                            <li>Current input: <span id="current-input-value">0.0</span> mA</li>
+                            <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
+                            <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
+                            <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
+                        </ul>
+                    </details>
+                </div>
+    
+                <div class="dashboard-group"><button type="button" class="btn btn-vis" id="motor-start-stop-button"
+                        disabled>Automatic mode</button></div>
+                <div class="dashboard-group">
+                    <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
+                    <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
+                </div>
             </div>
-            <div class="dashboard-group">
-                <header class="dashboard-header">Functional relay work mode</header>
-                <form id="functional-relay-work-mode-radio">
-                    <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-                    <label for="radio-workmode-alarm">Alarm relay</label><br>
-                    <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-                    <label for="radio-workmode-time">Time relay</label><br>
-                    <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-                    <label for="radio-workmode-stardelta">Star / delta</label><br>
-                </form>
-                <div>CT in use
-                    <span>
-                        <select id="CT-in-use">
-                            <option value="integrated-CT">Integrated CT</option>
-                            <option value="external-CT">External CT</option>
-                        </select>
-                    </span>
+            <div class="col-sm">
+                <div class="dashboard-group">
+                    <header class="dashboard-header">UBZ Fault Status</header>
+                    <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
+                    <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
+                    <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
+                    <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
+                    <button type="button" class="btn btn-vis" id="reset-fault-button">Reset Fault</button>
                 </div>
-                <div>For external CT
-                    <span>
-                        <input type="number" value="100" min="20" max="800" id="external-ct-current"
-                            class="ubz-number-input">
-                    </span>
-                </div>
-                <div>Motor rated current
-                    <span>
-                        <input type="number" value="0" min="0" max="630" id="motor-rated-current"
-                            class="ubz-number-input">
-                    </span>
+                <div class="dashboard-group">
+                    <table class="faults-table">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                ###
+                            </th>
+                            <th>
+                                Value
+                            </th>
+                            <th>
+                                Time
+                            </th>
+                        </tr>
+                    </table>
                 </div>
             </div>
-
-            <div class="dashboard-group">
-                <details>
-                    <summary>Additional</summary>
+            <div class="col-sm">
+                <header class="dashboard-header">Graphs</header>
+                <div class="dashboard-group">
+                    <div id="div-heating-graph" style="display: none;">
+                        <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
+    
+                <div class="dashboard-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="minutes-voltage-graph" checked>
+                        <label class="form-check-label" for="minutes-voltage-graph">
+                            Minutes voltages graph scale
+                        </label>
+                    </div>
+    
+    
+                    <div id="div-voltage-phases-graph" style="display: none;">
+                        <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                    <div id="div-voltage-phases-graph-m">
+                        <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
+    
+                <div class="dashboard-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="minutes-amperage-graph" checked>
+                        <label class="form-check-label" for="minutes-amperage-graph">
+                            Minutes currents graph scale
+                        </label>
+                    </div>
+    
+    
+                    <div id="div-amperage-phases-graph" style="display: none;">
+                        <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                    <div id="div-amperage-phases-graph-m">
+                        <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-sm">
+                <header class="dashboard-header">Current (Ampere)</header>
+                <div class="dashboard-group">
+                    <p>Phase currents active values:</p>
                     <ul>
-                        <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
-                        <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
-                        <li>Current input: <span id="current-input-value">0.0</span> mA</li>
-                        <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
-                        <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
-                        <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
+                        <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
+                                <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
+                            </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
+                                <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
+                            </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
+                                <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
+                            </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
-                </details>
-            </div>
-
-            <div class="dashboard-group"><button type="button" class="btn btn-vis" id="motor-start-stop-button"
-                    disabled>Automatic mode</button></div>
-            <div class="dashboard-group">
-                <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
-                <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dashboard-group">
-                <header class="dashboard-header">UBZ Fault Status</header>
-                <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
-                <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
-                <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
-                <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
-                <button type="button" class="btn btn-vis" id="reset-fault-button">Reset Fault</button>
-            </div>
-            <div class="dashboard-group">
-                <table class="faults-table">
-                    <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            ###
-                        </th>
-                        <th>
-                            Value
-                        </th>
-                        <th>
-                            Time
-                        </th>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <header class="dashboard-header">Graphs</header>
-            <div class="dashboard-group">
-                <div id="div-heating-graph" style="display: none;">
-                    <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+                </div>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <div>
+                            <p>Negative sequence current:</p>
+                            <div class="valuebar" id="negative-sequence-current-bar" value="0">
+                                <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
+                            </div> <span id="negative-sequence-current-value">0.0</span> A
+                        </div>
+                        <div>
+                            <p>Zero sequence current:</p>
+                            <div class="valuebar" id="zero-sequence-current-bar" value="0">
+                                <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
+                            </div> <span id="zero-sequence-current-value">0.0</span> A
+                        </div>
+                        <div>
+                            <table>
+                                <tr>
+                                    <th>Current average value:</th>
+                                    <th>For time</th>
+                                    <th>Max:</th>
+                                </tr>
+                                <tr>
+                                    <td>Phase 1:</td>
+                                    <td rowspan="3">
+                                        <span id="current-average-for-time-value">60.0</span> sec
+                                    </td>
+                                    <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                                </tr>
+                                <tr>
+                                    <td>Phase 2:</td>
+                                    <td><span id="avg-current-value-phase-2">0.0</span> A</td>
+                                </tr>
+                                <tr>
+                                    <td>Phase 3:</td>
+                                    <td><span id="avg-current-value-phase-3">0.0</span> A</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
+                                <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
+                            </ul>
+                        </div>
+                    </details>
                 </div>
             </div>
-
-            <div class="dashboard-group">
-                <div class="form-check">
-                    <input type="checkbox" id="minutes-voltage-graph" checked>
-                    <label class="form-check-label" for="minutes-voltage-graph">
-                        Minutes voltages graph scale
-                    </label>
-                </div>
-
-
-                <div id="div-voltage-phases-graph" style="display: none;">
-                    <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
-                </div>
-                <div id="div-voltage-phases-graph-m">
-                    <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
-                </div>
-            </div>
-
-            <div class="dashboard-group">
-                <div class="form-check">
-                    <input type="checkbox" id="minutes-amperage-graph" checked>
-                    <label class="form-check-label" for="minutes-amperage-graph">
-                        Minutes currents graph scale
-                    </label>
-                </div>
-
-
-                <div id="div-amperage-phases-graph" style="display: none;">
-                    <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
-                </div>
-                <div id="div-amperage-phases-graph-m">
-                    <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <header class="dashboard-header">Current (Ampere)</header>
-            <div class="dashboard-group">
-                <p>Phase currents active values:</p>
-                <ul>
-                    <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
-                        </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
-                    <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
-                        </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
-                    <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
-                        </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
-                </ul>
-            </div>
-            <div class="dashboard-group">
-                <details>
-                    <summary>Additional</summary>
-                    <div>
-                        <p>Negative sequence current:</p>
-                        <div class="valuebar" id="negative-sequence-current-bar" value="0">
-                            <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
-                        </div> <span id="negative-sequence-current-value">0.0</span> A
-                    </div>
-                    <div>
-                        <p>Zero sequence current:</p>
-                        <div class="valuebar" id="zero-sequence-current-bar" value="0">
-                            <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
-                        </div> <span id="zero-sequence-current-value">0.0</span> A
-                    </div>
-                    <div>
-                        <table>
-                            <tr>
-                                <th>Current average value:</th>
-                                <th>For time</th>
-                                <th>Max:</th>
-                            </tr>
-                            <tr>
-                                <td>Phase 1:</td>
-                                <td rowspan="3">
-                                    <span id="current-average-for-time-value">60.0</span> sec
-                                </td>
-                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 2:</td>
-                                <td><span id="avg-current-value-phase-2">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 3:</td>
-                                <td><span id="avg-current-value-phase-3">0.0</span> A</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <ul>
-                            <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
-                            <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
-                        </ul>
-                    </div>
-                </details>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <header class="dashboard-header">Voltage (Volt)</header>
-            <div class="dashboard-group">
-                <p>Phase voltages active values:</p>
-                <ul>
-                    <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-1-voltage-value">0.0</span> V</li>
-                    <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-2-voltage-value">0.0</span> V</li>
-                    <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-3-voltage-value">0.0</span> V</li>
-                </ul>
-            </div>
-            <div class="dashboard-group">
-                <details>
-                    <summary>Additional</summary>
-                    <div>
-                        <p>Line voltages active values:</p>
-                        <ul>
-                            <li>AB:
-                                <div class="valuebar" id="line-1-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-1-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-1-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-1-voltage-value">0.0</span> V
-                            </li>
-                            <li>BC:
-                                <div class="valuebar" id="line-2-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-2-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-2-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-2-voltage-value">0.0</span> V
-                            </li>
-                            <li>CA:
-                                <div class="valuebar" id="line-3-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-3-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-3-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-3-voltage-value">0.0</span> V
-                            </li>
-                        </ul>
-                    </div>
-                    <p>
-                        Negative sequence voltage:
-                    <div>
-                        <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="negative-sequence-voltage-bar-inner"></div>
-                        </div> <span id="negative-sequence-voltage-value">0.0</span> V
-                    </div>
-                    </p>
-                    <p>
-                        Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
-                    </p>
-                    <p>
-                        Zero sequence voltage: <span id="zero-sequence-voltage-value">0</span> V
-                    </p>
-                </details>
-            </div>
-        </div>
-        <div class="dashboard-section">
-            <header class="dashboard-header">Time (sec)</header>
-            <div class="dashboard-group">
-                <p>Time before AR:</p>
-                <div class="valuebar" id="time-before-ar-bar" value="0">
-                    <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
-                </div>
-                <span id="time-before-ar-string"> Off</span>
-            </div>
-            <div class="dashboard-group">
-                <details>
-                    <summary>Additional</summary>
+            <div class="col-sm">
+                <header class="dashboard-header">Voltage (Volt)</header>
+                <div class="dashboard-group">
+                    <p>Phase voltages active values:</p>
                     <ul>
-                        <li>Startup time: <span id="startup-time-value">0</span> sec</li>
-                        <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span>
+                        <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
+                            </div> <span id="phase-1-voltage-value">0.0</span> V</li>
+                        <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
+                            </div> <span id="phase-2-voltage-value">0.0</span> V</li>
+                        <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
+                            </div> <span id="phase-3-voltage-value">0.0</span> V</li>
+                    </ul>
+                </div>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <div>
+                            <p>Line voltages active values:</p>
+                            <ul>
+                                <li>AB:
+                                    <div class="valuebar" id="line-1-voltage-bar" value="0">
+                                        <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner" id="line-1-voltage-bar-over-inner"></div>
+                                        <div class="overvaluebar2-inner" id="line-1-voltage-bar-over2-inner"></div>
+                                    </div>
+                                    <span id="line-1-voltage-value">0.0</span> V
+                                </li>
+                                <li>BC:
+                                    <div class="valuebar" id="line-2-voltage-bar" value="0">
+                                        <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner" id="line-2-voltage-bar-over-inner"></div>
+                                        <div class="overvaluebar2-inner" id="line-2-voltage-bar-over2-inner"></div>
+                                    </div>
+                                    <span id="line-2-voltage-value">0.0</span> V
+                                </li>
+                                <li>CA:
+                                    <div class="valuebar" id="line-3-voltage-bar" value="0">
+                                        <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner" id="line-3-voltage-bar-over-inner"></div>
+                                        <div class="overvaluebar2-inner" id="line-3-voltage-bar-over2-inner"></div>
+                                    </div>
+                                    <span id="line-3-voltage-value">0.0</span> V
+                                </li>
+                            </ul>
+                        </div>
+                        <p>
+                            Negative sequence voltage:
+                        <div>
+                            <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
+                                <div class="valuebar-inner" id="negative-sequence-voltage-bar-inner"></div>
+                            </div> <span id="negative-sequence-voltage-value">0.0</span> V
+                        </div>
+                        </p>
+                        <p>
+                            Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
+                        </p>
+                        <p>
+                            Zero sequence voltage: <span id="zero-sequence-voltage-value">0</span> V
+                        </p>
+                    </details>
+                </div>
+            </div>
+            <div class="col-sm">
+                <header class="dashboard-header">Time (sec)</header>
+                <div class="dashboard-group">
+                    <p>Time before AR:</p>
+                    <div class="valuebar" id="time-before-ar-bar" value="0">
+                        <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
+                    </div>
+                    <span id="time-before-ar-string"> Off</span>
+                </div>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <ul>
+                            <li>Startup time: <span id="startup-time-value">0</span> sec</li>
+                            <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span>
+                            </li>
+                            <li>Wait time after overload deenergize: <span
+                                    id="wait-time-after-overload-deenergize-string">No</span></li>
+                        </ul>
+                    </details>
+                </div>
+    
+                <div class="dashboard-group">
+                    <header class="dashboard-header">Power</header>
+                    <ul>
+                        <li>Full power: <span id="full-power-value">-</span></li>
+                        <li>Active power: <span id="active-power-value">-</span></li>
+                        <li>Reactive power: <span id="reactive-power-value">-</span></li>
+                        <li>
+                            <select id="power-characteristic-value-1" class="power-characteristic"
+                                name="power-characteristic-value-1">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-1">
+                                -
+                            </span>
                         </li>
-                        <li>Wait time after overload deenergize: <span
-                                id="wait-time-after-overload-deenergize-string">No</span></li>
+                        <li>
+                            <select id="power-characteristic-value-2" class="power-characteristic"
+                                name="power-characteristic-value-2">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-2">
+                                -
+                            </span>
+                        </li>
+                        <li>
+                            <select id="power-characteristic-value-3" class="power-characteristic"
+                                name="power-characteristic-value-3">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-3">-</span>
+                        </li>
                     </ul>
-                </details>
-            </div>
-
-            <div class="dashboard-group">
-                <header class="dashboard-header">Power</header>
-                <ul>
-                    <li>Full power: <span id="full-power-value">-</span></li>
-                    <li>Active power: <span id="active-power-value">-</span></li>
-                    <li>Reactive power: <span id="reactive-power-value">-</span></li>
-                    <li>
-                        <select id="power-characteristic-value-1" class="power-characteristic"
-                            name="power-characteristic-value-1">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-1">
-                            -
-                        </span>
-                    </li>
-                    <li>
-                        <select id="power-characteristic-value-2" class="power-characteristic"
-                            name="power-characteristic-value-2">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-2">
-                            -
-                        </span>
-                    </li>
-                    <li>
-                        <select id="power-characteristic-value-3" class="power-characteristic"
-                            name="power-characteristic-value-3">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-3">-</span>
-                    </li>
-                </ul>
+                </div>
             </div>
         </div>
     </div>
