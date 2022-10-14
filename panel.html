@@ -8,7 +8,9 @@
     }
 
     .dashboard-header {
+        margin-top: 1em;
         font-weight: bold;
+        text-align: center;
     }
 
     .dashboard-group {
@@ -149,10 +151,6 @@
             padding: 10px;
         }
     }
-
-    .dashboard-container header {
-        text-align: center;
-    }
 </style>
 
 <div id="ubz-vis-container">
@@ -161,7 +159,7 @@
 
     <!-- put actual device="#DEVICE_ID" number from database instead of 0 here -->
     <alias device="#0" name="ubz"></alias>
-    <header>UBZ-302 Control Panel</header>
+    <h2>UBZ-302 Control Panel</h2>
     <div style="text-align: left;" id="session-time">Session time: </div>
 
     <div class="container dashboard-container">
@@ -227,8 +225,8 @@
                 </div>
             </div>
             <div class="col-sm">
+                <header class="dashboard-header">UBZ Fault Status</header>
                 <div class="dashboard-group">
-                    <header class="dashboard-header">UBZ Fault Status</header>
                     <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
                     <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
                     <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
