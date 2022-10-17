@@ -85,9 +85,27 @@
         text-align: left;
     }
 
+    .popup-header-background {
+        background-color: whitesmoke;
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
+
+    .popup-footer-background {
+        background-color: whitesmoke;
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 1px;
+        top: 5px;
+    }
+
     #popup-menu-items {
         overflow: auto;
-        max-height: 600px;
+        max-height: 400px;
     }
 
     .ubz-parameter {
@@ -96,7 +114,7 @@
 
     .ubz-params-input {
         float: right;
-        width: 6em;
+        width: 8em;
     }
 
     #heating-graph {
@@ -128,7 +146,6 @@
         background-color: transparent;
         height: 27em;
         overflow: auto;
-        /* width: 100%; */
     }
 
     .faults-table thead>tr,
@@ -191,24 +208,24 @@
                         <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
                         <label for="radio-workmode-stardelta">Star / delta</label><br>
                     </form>
-                    <div>CT in use
+                    <div class="ubz-parameter">CT in use
                         <span>
-                            <select id="CT-in-use">
+                            <select class="ubz-params-input" id="CT-in-use">
                                 <option value="integrated-CT">Integrated CT</option>
                                 <option value="external-CT">External CT</option>
                             </select>
                         </span>
                     </div>
-                    <div>For external CT
+                    <div class="ubz-parameter">For external CT
                         <span>
                             <input type="number" value="100" min="20" max="800" id="external-ct-current"
-                                class="ubz-number-input">
+                                class="ubz-params-input">
                         </span>
                     </div>
-                    <div>Motor rated current
+                    <div class="ubz-parameter">Motor rated current
                         <span>
                             <input type="number" value="0" min="0" max="630" id="motor-rated-current"
-                                class="ubz-number-input">
+                                class="ubz-params-input">
                         </span>
                     </div>
                 </div>
@@ -277,8 +294,7 @@
                             Minutes voltages graph scale
                         </label>
                     </div>
-    
-    
+
                     <div id="div-voltage-phases-graph" style="display: none;">
                         <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
                     </div>
@@ -286,7 +302,7 @@
                         <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
                     </div>
                 </div>
-    
+
                 <div class="dashboard-group">
                     <div class="form-check">
                         <input type="checkbox" id="minutes-amperage-graph" checked>
@@ -294,8 +310,7 @@
                             Minutes currents graph scale
                         </label>
                     </div>
-    
-    
+
                     <div id="div-amperage-phases-graph" style="display: none;">
                         <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
                     </div>
@@ -326,19 +341,22 @@
                 <div class="dashboard-group">
                     <details>
                         <summary>Additional</summary>
-                        <div>
-                            <p>Negative sequence current:</p>
-                            <div class="valuebar" id="negative-sequence-current-bar" value="0">
-                                <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
-                            </div> <span id="negative-sequence-current-value">0.0</span> A
+                        <div class="dashboard-group">
+                            <div>
+                                <p>Negative sequence current:</p>
+                                <div class="valuebar" id="negative-sequence-current-bar" value="0">
+                                    <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
+                                </div> <span id="negative-sequence-current-value">0.0</span> A
+                            </div>
+                            <div>
+                                <p>Zero sequence current:</p>
+                                <div class="valuebar" id="zero-sequence-current-bar" value="0">
+                                    <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
+                                </div> <span id="zero-sequence-current-value">0.0</span> A
+                            </div>
                         </div>
-                        <div>
-                            <p>Zero sequence current:</p>
-                            <div class="valuebar" id="zero-sequence-current-bar" value="0">
-                                <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
-                            </div> <span id="zero-sequence-current-value">0.0</span> A
-                        </div>
-                        <div>
+                        
+                        <div class="dashboard-group">
                             <table>
                                 <tr>
                                     <th>Current average value:</th>
@@ -362,7 +380,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div>
+                        <div class="dashboard-group">
                             <ul>
                                 <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
                                 <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
@@ -536,9 +554,12 @@
 
     <div class="substrat" id="substarat-popup-menu"></div>
     <div class="popup-menu" id="ubz-parameters-menu">
-        <span style="position: absolute; right: 0px;"><button type="button"
-            class="btn btn-danger" id="ubz-parameters-close">X</button></span>
-        <header class="dashboard-header">UBZ parameters menu</header>
+        <div class="popup-header-background">
+            <button type="button"
+                class="btn btn-danger close-button" id="ubz-parameters-close">X</button>
+            <header class="dashboard-header">UBZ parameters menu</header>
+        </div>
+
         <div id="popup-menu-items">
             <details>
                 <summary>Transformers</summary>
@@ -786,15 +807,18 @@
                         class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230"></div>
             </details>
         </div>
-        <div>
-            <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
-            parameters
-        </div>
-        <div>
-            <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to
-                device</button>
-            <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from
-                device</button>
+
+        <div class="popup-footer-background">
+            <div>
+                <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
+                parameters
+            </div>
+            <div>
+                <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to
+                    device</button>
+                <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from
+                    device</button>
+            </div>
         </div>
     </div>
 </div>
