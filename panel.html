@@ -369,21 +369,21 @@
                                 </tr>
                                 <tr>
                                     <td>Phase 1:</td>
-                                    <td>0 A</td>
+                                    <td><span id="avg-current-value-phase-1">0.0</span> A</td>
                                     <td rowspan="3">
                                         <span id="current-average-for-time-value">60.0</span> sec
                                     </td>
-                                    <td><span id="avg-current-value-phase-1">0.0</span> A</td>
+                                    <td><span id="max-current-value-phase-1">0.0</span> A</td>
                                 </tr>
                                 <tr>
                                     <td>Phase 2:</td>
-                                    <td>0 A</td>
                                     <td><span id="avg-current-value-phase-2">0.0</span> A</td>
+                                    <td><span id="max-current-value-phase-2">0.0</span> A</td>
                                 </tr>
                                 <tr>
                                     <td>Phase 3:</td>
-                                    <td>0 A</td>
                                     <td><span id="avg-current-value-phase-3">0.0</span> A</td>
+                                    <td><span id="max-current-value-phase-3">0.0</span> A</td>
                                 </tr>
                             </table>
                         </div>
@@ -2414,6 +2414,21 @@
             document.querySelector("#avg-current-value-phase-3").innerHTML = (mapRegisters.get(106) * 0.1).toFixed(1);
         } else {
             document.querySelector("#avg-current-value-phase-3").innerHTML = "Err";
+        }
+        if (mapRegisters.get(107) != undefined) {
+            document.querySelector("#max-current-value-phase-1").innerHTML = (mapRegisters.get(107) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-1").innerHTML = "Err";
+        }
+        if (mapRegisters.get(108) != undefined) {
+            document.querySelector("#max-current-value-phase-2").innerHTML = (mapRegisters.get(108) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-2").innerHTML = "Err";
+        }
+        if (mapRegisters.get(109) != undefined) {
+            document.querySelector("#max-current-value-phase-3").innerHTML = (mapRegisters.get(109) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-3").innerHTML = "Err";
         }
 
         if (mapRegisters.get(110) != undefined && mapRegisters.get(100) != 0) {
