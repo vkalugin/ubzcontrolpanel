@@ -99,6 +99,17 @@
         top: 10px;
     }
 
+    .dashboard-spinner-overlay {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 60;
+    }
+
+    .spinner-invisible {
+        display: none;
+    }
+
     #popup-menu-items {
         overflow: auto;
         max-height: 400px;
@@ -130,7 +141,6 @@
 
     @keyframes pulse-anim {
         100% {
-            /* background-color: coral; */
             filter: brightness(150%);
         }
     }
@@ -201,6 +211,7 @@
                 </div>
                 <div class="dashboard-group">
                     <header class="dashboard-header">Functional relay work mode</header>
+                    
                     <form id="functional-relay-work-mode-radio">
                         <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
                         <label for="radio-workmode-alarm">Alarm relay</label><br>
@@ -248,18 +259,26 @@
                 <div class="dashboard-group"><button type="button" class="btn btn-vis" id="motor-start-stop-button"
                         disabled>Automatic mode</button></div>
                 <div class="dashboard-group">
-                    <button type="button" class="btn btn-vis" id="save-file-button">Log event UBZ</button>
+                    <button type="button" class="btn btn-vis" id="save-file-button">
+                        <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true" id="save-file-button-spinner"></span>
+                        Log event UBZ
+                    </button>
                     <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
                 </div>
             </div>
             <div class="col-sm">
                 <header class="dashboard-header">UBZ Fault Status</header>
+                
                 <div class="dashboard-group">
                     <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
                     <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
                     <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
                     <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
-                    <button type="button" class="btn btn-vis" id="reset-fault-button">Reset Fault</button>
+                    <button type="button" class="btn btn-vis" id="reset-fault-button">
+                        <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true" id="reset-fault-button-spinner"></span>
+                        Reset Fault
+                    </button>
+                    
                 </div>
                 <div class="dashboard-group">
                     <table class="faults-table">
@@ -1895,9 +1914,6 @@
         const FUNCTIONAL_RELAY_BIT = 2;
         const CLOSED = 1;
 
-        const INDICATOR_LIT = "lightgreen";
-        const INDICATOR_DIM = "darkgreen";
-
         if (mmspMode != undefined) {
             if (mmspMode == 1) {
                 document.querySelector("#mmsp-mode").classList.add("btn-pulse");
@@ -1942,8 +1958,6 @@
     }
 
     async function processArIndicator() {
-        const INDICATOR_LIT = "lightgreen";
-        const INDICATOR_DIM = "green";
         const ALLOW_REMOTE = 2;
 
         if (mapRegisters.get(203) == ALLOW_REMOTE) {
@@ -1954,11 +1968,7 @@
     }
 
     async function processRcIndicator() {
-        const INDICATOR_LIT = "lightcyan";
-        const INDICATOR_DIM = "dodgerblue";
         const PROHIBITED = 0;
-
-        console.log(document.querySelector("#rc-indicator").style.backgroundColor);
 
         if (mapRegisters.get(221) != PROHIBITED && mapRegisters.get(221) != undefined) {
             document.querySelector("#rc-indicator").classList.add("btn-pulse");
@@ -2148,7 +2158,9 @@
     });
 
     document.querySelector("#reset-fault-button").addEventListener("click", async function () {
+        document.querySelector("#reset-fault-button-spinner").classList.remove("spinner-invisible");
         await writeRegValues(COMMAND_REGISTER, RESET_FAULT);
+        document.querySelector("#reset-fault-button-spinner").classList.add("spinner-invisible");
     });
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
@@ -2167,14 +2179,16 @@
     });
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
+        document.querySelector("#save-file-button-spinner").classList.remove("spinner-invisible");
         let now = new Date();
         const url = await createReportURL();
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
-        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
+        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";
         hiddenEl.click();
         delete (hiddenEl);
+        document.querySelector("#save-file-button-spinner").classList.add("spinner-invisible");
     });
 
     document.querySelector("#CT-in-use").addEventListener("change", async function () {
