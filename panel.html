@@ -2298,26 +2298,22 @@
             ampGraphM.addFromHistory([amp1, amp2, amp3], [t1, t2, t3]);
         }
 
-        while (true) {
-            if (ubzParams.ok) {
-                for (let i = 150; i <= 230; i++) {
-                    document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
-                }
-
-                if (ubzParams.ok[0] == 0) {
-                    document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
-                    deactivateExternalCTsettings();
-                }
-                if (ubzParams.ok[0] == 1) {
-                    document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
-                    activateExternalCTsettings();
-                }
-
-                document.querySelector("#external-ct-current").value = ubzParams.ok[1];
-                document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
-
-                break;
+        if (ubzParams.ok) {
+            for (let i = 150; i <= 230; i++) {
+                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
             }
+
+            if (ubzParams.ok[0] == 0) {
+                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                deactivateExternalCTsettings();
+            }
+            if (ubzParams.ok[0] == 1) {
+                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                activateExternalCTsettings();
+            }
+
+            document.querySelector("#external-ct-current").value = ubzParams.ok[1];
+            document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
         }
 
         {
