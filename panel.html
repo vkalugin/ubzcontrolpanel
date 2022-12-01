@@ -1977,7 +1977,7 @@
             document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
         } else {
             document.querySelector("#rc-indicator").classList.remove("btn-pulse");
-            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = 'https://cdn-icons-png.flaticon.com/512/2479/2479510.png' style='width: 100px;'>";
+            document.querySelector("#motor-start-stop-button").innerHTML = "Automatic Mode";
             document.querySelector("#motor-start-stop-button").disabled = true;
             document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
         }
