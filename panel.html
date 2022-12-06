@@ -845,7 +845,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
 
 <!-- Alarms defined in device -->
 <script type="text/javascript">
@@ -1977,7 +1977,7 @@
             document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
         } else {
             document.querySelector("#rc-indicator").classList.remove("btn-pulse");
-            document.querySelector("#motor-start-stop-button").innerHTML = "Automatic Mode";
+            document.querySelector("#motor-start-stop-button").innerHTML = "Automatic mode";
             document.querySelector("#motor-start-stop-button").disabled = true;
             document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
         }
@@ -2181,7 +2181,11 @@
     document.querySelector("#save-file-button").addEventListener("click", async function () {
         document.querySelector("#save-file-button-spinner").classList.remove("spinner-invisible");
         let now = new Date();
-        const url = await createReportURL();
+        // const url = await createReportURL();
+        const promiseTimeout = new Promise((resolve, reject) => {
+            setTimeout(resolve, 10000, "Timeout");
+        });
+        const url = Promise.race([createReportURL(), promiseTimeout]).then((url) => {return url;});
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
