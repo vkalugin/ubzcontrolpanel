@@ -845,7 +845,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1"></script>
 
 <!-- Alarms defined in device -->
 <script type="text/javascript">
@@ -1757,7 +1757,7 @@
                     animation: false,
                     showLine: true,
                     scales: {
-                        xAxes: {
+                        x: {
                             ticks: {
                                 callback: function (value, index, ticks) {
                                     return value + 's';
@@ -1777,7 +1777,7 @@
         }
 
         setMaxX(value) {
-            this.chart.options.scales.xAxes.max = value;
+            this.chart.options.scales.x.max = value;
             this.chart.update();
         }
 
@@ -1803,7 +1803,7 @@
 
         setMinutesScale() {
             this.minutesScale = true;
-            this.chart.options.scales.xAxes.ticks.callback = function (value, index, ticks) {
+            this.chart.options.scales.x.ticks.callback = function (value, index, ticks) {
                 return value + 'm';
             };
             this.chart.update();
