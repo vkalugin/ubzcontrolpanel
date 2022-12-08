@@ -2181,11 +2181,10 @@
     document.querySelector("#save-file-button").addEventListener("click", async function () {
         document.querySelector("#save-file-button-spinner").classList.remove("spinner-invisible");
         let now = new Date();
-        // const url = await createReportURL();
         const promiseTimeout = new Promise((resolve, reject) => {
-            setTimeout(resolve, 10000, "Timeout");
+            setTimeout(function() {return "";}, 10000);
         });
-        const url = Promise.race([createReportURL(), promiseTimeout]).then((url) => {return url;});
+        const url = await Promise.race([createReportURL(), promiseTimeout]).then((url) => {return url;});
         const hiddenEl = document.createElement("a");
         hiddenEl.href = url;
         hiddenEl.target = "_blank";
