@@ -1183,6 +1183,10 @@
         toString() {
             return "code: " + this.code.toString() + "\nvalue: " + this.value.toString() + "\ntime: " + this.time.toString() + "\n";
         }
+
+        isUndefined() {
+            return this.code == undefined && this.value == undefined && this.time == undefined;
+        }
     }
 
     async function processEventLog() {
@@ -1246,6 +1250,9 @@
 
     async function createReportURL() {
         let eventlog = await processEventLog();
+        if (eventlog[0].isUndefined() && eventlog[1].isUndefined() && eventlog[2].isUndefined() && eventlog[3].isUndefined() && eventlog[4].isUndefined()) {
+            return "";
+        }
         const now = new Date();
 
         let eventLogString =
@@ -2180,17 +2187,22 @@
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
         document.querySelector("#save-file-button-spinner").classList.remove("spinner-invisible");
-        let now = new Date();
+        const now = new Date();
         const promiseTimeout = new Promise((resolve, reject) => {
-            setTimeout(function() {return "";}, 10000);
+            setTimeout(() => "", 10000);
         });
-        const url = await Promise.race([createReportURL(), promiseTimeout]).then((url) => {return url;});
-        const hiddenEl = document.createElement("a");
-        hiddenEl.href = url;
-        hiddenEl.target = "_blank";
-        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";
-        hiddenEl.click();
-        delete (hiddenEl);
+        const url = await createReportURL();
+        if (url.length == 0) {
+            console.log("No response for report");
+        } else {
+            const hiddenEl = document.createElement("a");
+            hiddenEl.href = url;
+            hiddenEl.target = "_blank";
+            hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";
+            hiddenEl.click();
+            delete(hiddenEl);
+        }
+
         document.querySelector("#save-file-button-spinner").classList.add("spinner-invisible");
     });
 
