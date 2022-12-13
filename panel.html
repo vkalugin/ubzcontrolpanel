@@ -1994,7 +1994,9 @@
         const INDICATOR_LIT = "orange";
         const INDICATOR_DIM = "darkgoldenrod";
 
-        if (mapRegisters.get(224) != 0 && mapRegisters.get(228) != 0) {
+        if (mapRegisters.get(224) == undefined || mapRegisters.get(228) == undefined) {
+            document.querySelector("#ext-in-indicator").classList.remove("btn-pulse");
+        } else if (mapRegisters.get(224) != 0 && mapRegisters.get(228) != 0) {
             document.querySelector("#ext-in-indicator").classList.add("btn-pulse");
         } else {
             document.querySelector("#ext-in-indicator").classList.remove("btn-pulse");
