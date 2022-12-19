@@ -1,18 +1,21 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
 <style type="text/css">
     .dashboard-container {
-        display: grid;
-        grid-template-columns: [col1] auto [col2] auto [col3] auto;
-        grid-template-rows: [row1] auto [row2] auto;
-        padding: 10px;
         text-align: left;
+        background-color: whitesmoke;
     }
 
-    .dashboard-item {
-        background-color:lightblue;
-        margin: 8px;
-        padding: 10px;
-        max-width: 400px;
-        min-width: 260px;
+    .dashboard-header {
+        margin-top: 1em;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .dashboard-group {
+        margin-top: 8px;
+        margin-bottom: 8px;
     }
 
     .power-characteristic {
@@ -21,7 +24,6 @@
 
     .status-indicator {
         display: inline-block;
-        background-color: darkgreen;
         height: 1em;
         width: 1em;
         border-radius: 50%;
@@ -32,27 +34,23 @@
     .valuebar {
         min-width: 100px;
         height: 8px;
-        background-color: rgb(192, 192, 192);
-        border: solid 1px black;
+        background-color: #9a9a9a;
     }
 
     .valuebar-inner {
-        background-color: green;
-		height: 100%;
+        height: 100%;
         width: 0%;
         float: left;
     }
 
     .overvaluebar-inner {
-        background-color: orange;
-		height: 100%;
+        height: 100%;
         width: 0%;
         float: left;
     }
 
     .overvaluebar2-inner {
-        background-color: crimson;
-		height: 100%;
+        height: 100%;
         width: 0%;
         float: left;
     }
@@ -66,7 +64,7 @@
         left: 0;
         top: 0;
         width: 100%;
-        height:100%;
+        height: 100%;
         z-index: 50;
         background-color: #f0f0f0f0;
         display: none;
@@ -78,13 +76,43 @@
         top: 25%;
         min-width: 600px;
         z-index: 100;
-        background-color: lightblue;
+        background-color: white;
+        display: none;
+        text-align: left;
+    }
+
+    .popup-header-background {
+        background-color: whitesmoke;
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
+
+    .popup-footer-background {
+        background-color: whitesmoke;
+        padding-top: 10px;
+        padding-bottom: 5px;
+    }
+
+    .close-button {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+    }
+
+    .dashboard-spinner-overlay {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 60;
+    }
+
+    .spinner-invisible {
         display: none;
     }
 
     #popup-menu-items {
         overflow: auto;
-        max-height: 600px;
+        max-height: 400px;
     }
 
     .ubz-parameter {
@@ -93,7 +121,7 @@
 
     .ubz-params-input {
         float: right;
-        width: 6em;
+        width: 8em;
     }
 
     #heating-graph {
@@ -102,550 +130,732 @@
         width: 240px;
     }
 
-    #fault-indicator {
-        background-color: crimson;
-        border-style: none;
+    .btn-vis {
+        background-color: #1e8bc3;
+        color: white;
     }
 
-    #ext-in-indicator {
-        background-color: darkgoldenrod;
-        border-style: none;
+    .btn-pulse {
+        animation: pulse-anim 1s infinite alternate ease-in-out;
     }
 
-    #ar-indicator {
-        background-color: green;
-        border-style: none;
+    @keyframes pulse-anim {
+        100% {
+            filter: brightness(150%);
+        }
     }
 
-    #rc-indicator {
-        background-color: dodgerblue;
-        border-style: none;
-    }
-
-    #reset-fault-button {
-        background-color: navajowhite;
-    }
-
-    #faults-table-container {
-        min-width: 240px;
+    .faults-table {
+        width: 100%;
     }
 
     .faults-table tbody {
-        background-color: lightblue;
-        height: 250px;
+        background-color: transparent;
+        height: 27em;
         overflow: auto;
     }
 
-    .faults-table thead > tr, tbody { 
+    .faults-table thead>tr,
+    tbody {
+        width: 100%;
         display: block;
+        height: 1.5em;
     }
 
     .faults-table th {
         text-align: center;
-    }
-
-    .faults-table th {
         padding: 4px;
-        border: 3px solid lightblue;
+        border: 3px solid transparent;
         background-color: whitesmoke;
         font-size: smaller;
     }
 
+    #dashboard-table-currents tbody {
+        height: 6em;
+    }
+
     @media only screen and (max-device-width: 1100px) {
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: [col1] auto;
-            grid-template-rows: repeat(8, auto [row]);
-            padding: 10px;
-        }
-
-        .dashboard-item {
-            background-color:lightblue;
-            margin: 5px;
-            padding: 15px;
-        }
-
         .power-characteristic {
             padding: 10px;
         }
-    }
 
-    .dashboard-container header {
-        text-align: center;
+        .popup-menu {
+            position: absolute;
+            left: 0%;
+            top: 25%;
+            z-index: 100;
+            background-color: white;
+            display: none;
+            text-align: left;
+        }
     }
 </style>
 
 <div id="ubz-vis-container">
-    <!-- put actual device="#DEVICE_ID" number from database instead of 0 here -->
-    <alias device="#0" name="ubz"></alias>
-    <header>UBZ-302 Control Panel</header>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <alias device="#{{device_id}}" name="ubz"></alias>
+    <h2>UBZ-302 Control Panel</h2>
     <div style="text-align: left;" id="session-time">Session time: </div>
 
-    <div class="dashboard-container">
-        <div class="dashboard-item">
-            <header>UBZ Status</header>
-            <div><span class="status-indicator" id="mmsp-mode"></span>MMSP</div>
-            <div><span class="status-indicator" id="functional-relay-mode"></span>Functional relay</div>
-            <div><span class="status-indicator" id="motor-relay-mode"></span>Motor relay</div>
-            <p>Functional relay work mode</p>
-            <form id="functional-relay-work-mode-radio">
-                <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-                <label for="radio-workmode-alarm">Alarm relay</label><br>
-                <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-                <label for="radio-workmode-time">Time relay</label><br>
-                <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-                <label for="radio-workmode-stardelta">Star / delta</label><br>
-            </form>
-            <div>CT in use
-                <span>
-                    <select id="CT-in-use">
-                        <option value="integrated-CT">Integrated CT</option>
-                        <option value="external-CT">External CT</option>
-                    </select>
-                </span>
-            </div>
-            <div>For external CT
-                <span>
-                    <input type="number" value="100" min="20" max="800" id="external-ct-current" class="ubz-number-input">
-                </span>
-            </div>
-            <div>Motor rated current
-                <span>
-                    <input type="number" value="0" min="0" max="630" id="motor-rated-current" class="ubz-number-input">
-                </span>
-            </div>
-            <details>
-                <summary>Additional</summary>
-                <ul>
-                    <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
-                    <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
-                    <li>Current input: <span id="current-input-value">0.0</span> mA</li>
-                    <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
-                    <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
-                    <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
-                </ul>
-            </details>
-            <div><button id="motor-start-stop-button" disabled><img src = "https://cdn-icons-png.flaticon.com/512/2479/2479510.png" style="width: 100px;"></button></div>
-            <button id="save-file-button">Log event UBZ</button>
-            <button id="ubz-parameters-button">UBZ Parameters</button>
-    </div>
-    <div class="substrat" id="substarat-popup-menu"></div>
-    <div class="popup-menu" id="ubz-parameters-menu">
-        <span>UBZ parameters menu</span><span style="position: absolute; right: 0px;"><button id="ubz-parameters-close">X</button></span>
-        <div id="popup-menu-items">
-            <details>
-                <summary>Transformers</summary>
-                <div class="ubz-parameter">[150] CT in use <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-150"></div>
-                <div class="ubz-parameter">[151] CT rated current, A <input type="number" class="ubz-params-input" min="20" max="800" value="100" id="ubz-param-input-151"></div>
-            </details>
-            <details>
-                <summary>Miscellaneous</summary>
-                <div class="ubz-parameter">[152] Motor rated current, A <input type="number" class="ubz-params-input" min="0" max="630" value="0" id="ubz-param-input-152"></div>
-                <div class="ubz-parameter">[153] Average current measurement time, seconds <input type="number" class="ubz-params-input" min="10" max="600" value="60" id="ubz-param-input-153"></div>
-            </details>
-            <details>
-                <summary>Overcurrent protection</summary>
-                <div class="ubz-parameter">[154] Overcurrent protection type <input type="number" class="ubz-params-input" min="0" max="5" value="0" id="ubz-param-input-154"></div>
-                <div class="ubz-parameter">[155] Overcurrent protection tripping setting value, ratio <input type="number" class="ubz-params-input" min="0.8" max="9.0" value="4.0" step="0.1" id="ubz-param-input-155"></div>
-                <div class="ubz-parameter">[156] Overcurrent protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="600" value="10" step="0.1" id="ubz-param-input-156"></div>
-                <div class="ubz-parameter">[157] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-157"></div>
-                <div class="ubz-parameter">[158] Order of overcurrent protection tripping relative to thermal overload protection <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-158"></div>
-            </details>
-            <details>
-                <summary>Protection against ground faults</summary>
-                <div class="ubz-parameter">[159] Current fault tripping setting, A <input type="number" class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159"></div>
-                <div class="ubz-parameter">[160] Protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="2.0" value="1.0" step="0.1" id="ubz-param-input-160"></div>
-                <div class="ubz-parameter">[161] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-161"></div>
-            </details>
-            <details>
-                <summary>Negative sequence current protection</summary>
-                <div class="ubz-parameter">[162] Tripping setting, % <input type="number" class="ubz-params-input" min="5" max="20" value="10" id="ubz-param-input-162"></div>
-                <div class="ubz-parameter">[163] Protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="10" value="5" step="0.1" id="ubz-param-input-163"></div>
-                <div class="ubz-parameter">[164] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-164"></div>
-            </details>
-            <details>
-                <summary>Analysis of causes for negative sequence current protection tripping</summary>
-                <div class="ubz-parameter">[165] Negative sequence current ratio divided by negative sequence voltage ratio <input type="number" class="ubz-params-input" min="2" max="4" value="2" id="ubz-param-input-165"></div>
-                <div class="ubz-parameter">[166] Analysis permission <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-166"></div>
-            </details>
-            <details>
-                <summary>Thermal overload (motor thermal model)</summary>
-                <div class="ubz-parameter">[167] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-167"></div>
-                <div class="ubz-parameter">[168] Double overcurrent overload protection tripping time, seconds <input type="number" class="ubz-params-input" min="10" max="120" value="60" id="ubz-param-input-168"></div>
-                <div class="ubz-parameter">[169] Time increase ratio with a stopped motor <input type="number" class="ubz-params-input" min="1" max="4" value="1" step="0.1" id="ubz-param-input-169"></div>
-            </details>
-            <details>
-                <summary>Undercurrent phase protection</summary>
-                <div class="ubz-parameter">[170] Tripping setting, % <input type="number" class="ubz-params-input" min="11" max="90" value="20" id="ubz-param-input-170"></div>
-                <div class="ubz-parameter">[171] Protection tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="100" value="5" id="ubz-param-input-171"></div>
-                <div class="ubz-parameter">[172] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-172"></div>
-            </details>
-            <details>
-                <summary>Delayed start, rotor blocking</summary>
-                <div class="ubz-parameter">[173] Tripping setting, ratio <input type="number" class="ubz-params-input" min="1.5" max="7" value="5" step="0.1" id="ubz-param-input-173"></div>
-                <div class="ubz-parameter">[174] Delayed start protection tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="600" value="10" id="ubz-param-input-174"></div>
-                <div class="ubz-parameter">[175] Rotor blocking protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="300" value="1" step="0.1" id="ubz-param-input-175"></div>
-                <div class="ubz-parameter">[176] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-176"></div>
-            </details>
-            <details>
-                <summary>Voltage protection</summary>
-                <div class="ubz-parameter">[177] Minimum line voltage, V <input type="number" class="ubz-params-input" min="270" max="415" value="320" id="ubz-param-input-177"></div>
-                <div class="ubz-parameter">[178] Minimum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="5" max="30" value="10" id="ubz-param-input-178"></div>
-                <div class="ubz-parameter">[179] Minimum voltage protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-179"></div>
-                <div class="ubz-parameter">[180] Maximum line voltage, V <input type="number" class="ubz-params-input" min="330" max="475" value="415" id="ubz-param-input-180"></div>
-                <div class="ubz-parameter">[181] Maximum voltage protection tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="10" value="2" id="ubz-param-input-181"></div>
-                <div class="ubz-parameter">[182] Maximum voltage protection permission <input type="number" class="ubz-params-input" min="0" max="1" value="2" id="ubz-param-input-182"></div>
-                <div class="ubz-parameter">[183] Line voltage imbalance, V <input type="number" class="ubz-params-input" min="15" max="120" value="35" id="ubz-param-input-183"></div>
-                <div class="ubz-parameter">[184] Line voltage imbalance tripping delay, seconds <input type="number" class="ubz-params-input" min="1" max="30" value="5" id="ubz-param-input-184"></div>
-                <div class="ubz-parameter">[185] Line voltage imbalance protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-185"></div>
-                <div class="ubz-parameter">[186] Phase sequence order protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-186"></div>
-            </details>
-            <details>
-                <summary>Motor operation and automatic reclosing</summary>
-                <div class="ubz-parameter">[187] ARC time after undercurrent protection tripping, seconds <input type="number" class="ubz-params-input" min="0" max="900" value="600" id="ubz-param-input-187"></div>
-                <div class="ubz-parameter">[188] ARC time, seconds <input type="number" class="ubz-params-input" min="0" max="900" value="5" id="ubz-param-input-188"></div>
-                <div class="ubz-parameter">[189] ARC prohibition for all faults (except voltage faults) <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-189"></div>
-                <div class="ubz-parameter">[190] Motor operation permission after UBZ power-on<input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-190"></div>
-                <div class="ubz-parameter">[191] Motor control via UBZ front panel <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-191"></div>
-            </details>
-            <details>
-                <summary>Temperature control</summary>
-                <div class="ubz-parameter">[192] Temperature sensor 1 type and temperature control permission <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-192"></div>
-                <div class="ubz-parameter">[193] Motor de-energizing temperature <input type="number" class="ubz-params-input" min="0" max="100" value="80" id="ubz-param-input-193"></div>
-                <div class="ubz-parameter">[194] Sensor 1 temperature correction <input type="number" class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-194"></div>
-                <div class="ubz-parameter">[195] Temperature sensor 2 type and temperature control permission <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-195"></div>
-                <div class="ubz-parameter">[196] Motor de-energizing temperature <input type="number" class="ubz-params-input" min="0" max="220" value="180" id="ubz-param-input-196"></div>
-                <div class="ubz-parameter">[197] Warning temperature <input type="number" class="ubz-params-input" min="0" max="220" value="170" id="ubz-param-input-197"></div>
-                <div class="ubz-parameter">[198] Sensor 2 temperature correction <input type="number" class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-198"></div>
-                <div class="ubz-parameter">[199] ARC after protection tripping <input type="number" class="ubz-params-input" min="1" max="2" value="2" id="ubz-param-input-199"></div>
-                <div class="ubz-parameter">[200] Reaction to temperaturesensor failure <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-200"></div>
-            </details>
-            <details>
-                <summary>Motor insulation resistance</summary>
-                <div class="ubz-parameter">[201] Minimum motor insulation resistance <input type="number" class="ubz-params-input" min="0" max="20" value="5" step="5" id="ubz-param-input-201"></div>
-            </details>
-            <details>
-                <summary>Miscellaneous</summary>
-                <div class="ubz-parameter">[202] Minimal number of set parameters mode <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-202"></div>
-                <div class="ubz-parameter">[203] Indication on UBZ display before motor power on <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-203"></div>
-                <div class="ubz-parameter">[204] Parameter indication mode <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-204"></div>
-                <div class="ubz-parameter">[205] Functional relay operation mode <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-205"></div>
-                <div class="ubz-parameter">[206] Timer, seconds <input type="number" class="ubz-params-input" min="0" max="300" value="30" id="ubz-param-input-206"></div>
-                <div class="ubz-parameter">[207] Equipment uptime, days <input type="number" class="ubz-params-input" min="0" max="999" value="0" disabled id="ubz-param-input-207"></div>
-                <div class="ubz-parameter">[208] Motor uptime, days <input type="number" class="ubz-params-input" min="0" max="999" value="0" disabled id="ubz-param-input-208"></div>
-                <div class="ubz-parameter">[209] User access code <input type="number" class="ubz-params-input" min="0" max="9" value="0" disabled id="ubz-param-input-209"></div>
-                <div class="ubz-parameter">[210] Engineer access code <input type="number" class="ubz-params-input" min="0" max="999" value="123" disabled id="ubz-param-input-210"></div>
-                <div class="ubz-parameter">[211] Reset to factory settings <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-211"></div>
-            </details>
-            <details>
-                <summary>Serial interface parameters (RS-485/ RS-232)</summary>
-                <div class="ubz-parameter">[212] UBZ communication address <input type="number" class="ubz-params-input" min="1" max="247" value="1" disabled id="ubz-param-input-212"></div>
-                <div class="ubz-parameter">[213] Transfer rate <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-213"></div>
-                <div class="ubz-parameter">[214] Adapter reaction to lossof link <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-214"></div>
-                <div class="ubz-parameter">[215] Response timeout detection, seconds <input type="number" class="ubz-params-input" min="0" max="120" value="0" id="ubz-param-input-215"></div>
-                <div class="ubz-parameter">[216] UBZ communication via serial channel <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-216"></div>
-                <div class="ubz-parameter">[217] Device version <input type="number" class="ubz-params-input" min="21" max="21" value="21" disabled id="ubz-param-input-217"></div>
-            </details>
-            <details>
-                <summary>Functional relay mode parameters. Star-delta mode.</summary>
-                <div class="ubz-parameter">[218] Switching, seconds <input type="number" class="ubz-params-input" min="0.1" max="2.0" value="0.4" step="0.1" id="ubz-param-input-218"></div>
-            </details>
-            <details>
-                <summary>Motor phase (phases) loss, with current control</summary>
-                <div class="ubz-parameter">[219] Phase loss protection tripping delay, seconds <input type="number" class="ubz-params-input" min="0.3" max="10" value="0.5" step="0.1" id="ubz-param-input-219"></div>
-                <div class="ubz-parameter">[220] Protection permission <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-220"></div>
-                <div class="ubz-parameter">[221] Remote motor start andstop using the RS-232/RS485 interfaces<input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-221"></div>
-            </details>
-            <details>
-                <summary>0-20 mA analog input operation</summary>
-                <div class="ubz-parameter">[222] Upper thershold, mA <input type="number" class="ubz-params-input" min="0" max="20.0" value="10.0" step="0.1" id="ubz-param-input-222"></div>
-                <div class="ubz-parameter">[223] Lower thershold, mA <input type="number" class="ubz-params-input" min="0" max="20.0" value="1.0" step="0.1" id="ubz-param-input-223"></div>
-                <div class="ubz-parameter">[224] Control algorithm <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-224"></div>
-                <div class="ubz-parameter">[225] Fault logging <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-225"></div>
-            </details>
-            <details>
-                <summary>0-10 V analog input operation</summary>
-                <div class="ubz-parameter">[226] Upper thershold, V <input type="number" class="ubz-params-input" min="0" max="10.0" value="5.0" input="0.1" id="ubz-param-input-226"></div>
-                <div class="ubz-parameter">[227] Lower thershold, V <input type="number" class="ubz-params-input" min="0" max="10.0" value="1.0" input="0.1" id="ubz-param-input-227"></div>
-                <div class="ubz-parameter">[228] Control algorithm <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-228"></div>
-                <div class="ubz-parameter">[229] Fault logging <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-229"></div>
-            </details>
-            <details>
-                <summary>Control of external MS</summary>
-                <div class="ubz-parameter">[230] Control of external MS working order <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230"></div>
-            </details>
-        </div>
-        <div>
-            <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified parameters
-        </div>
-        <div>
-            <button id="button-write-ubz-params">Write parameters to device</button>
-            <button id="button-read-ubz-params">Read parameters from device</button>
-        </div>
-        </div>
-        <div class="dashboard-item">
-            <div>
-                <header>UBZ Fault Status</header>
-                <button id="fault-indicator" disabled>Fault</button>
-                <button id="ext-in-indicator" disabled>Ext. in.</button>
-                <button id="ar-indicator" disabled>AR</button>
-                <button id="rc-indicator" disabled>RC</button>
-                <button id="reset-fault-button">Reset Fault</button>
-            </div>
-            <div class="faults-table-container">
-                <table class="faults-table">
-                    <tr>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            ###
-                        </th>
-                        <th>
-                            Value
-                        </th>
-                        <th>
-                            Time
-                        </th>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="dashboard-item">
-            <div id="div-heating-graph" style="display: none;">
-                <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
-            </div>
+    <div class="container dashboard-container">
+        <div class="row">
+            <div class="col-sm">
+                <header class="dashboard-header">UBZ Status</header>
+                <div class="dashboard-group">
+                    <div><span class="status-indicator bg-success" id="mmsp-mode"></span>MMSP</div>
+                    <div><span class="status-indicator bg-success" id="functional-relay-mode"></span>Functional relay
+                    </div>
+                    <div><span class="status-indicator bg-success" id="motor-relay-mode"></span>Motor relay</div>
+                </div>
+                <div class="dashboard-group">
+                    <header class="dashboard-header">Functional relay work mode</header>
 
-            <input type="checkbox" id="minutes-voltage-graph" checked>Minutes voltages graph scale
+                    <form id="functional-relay-work-mode-radio">
+                        <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
+                        <label for="radio-workmode-alarm">Alarm relay</label><br>
+                        <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
+                        <label for="radio-workmode-time">Time relay</label><br>
+                        <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
+                        <label for="radio-workmode-stardelta">Star / delta</label><br>
+                    </form>
+                    <div class="ubz-parameter">CT in use
+                        <span>
+                            <select class="ubz-params-input" id="CT-in-use">
+                                <option value="integrated-CT">Integrated CT</option>
+                                <option value="external-CT">External CT</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="ubz-parameter">For external CT
+                        <span>
+                            <input type="number" value="100" min="20" max="800" id="external-ct-current"
+                                class="ubz-params-input">
+                        </span>
+                    </div>
+                    <div class="ubz-parameter">Motor rated current
+                        <span>
+                            <input type="number" value="0" min="0" max="630" id="motor-rated-current"
+                                class="ubz-params-input">
+                        </span>
+                    </div>
+                </div>
 
-            <div id="div-voltage-phases-graph" style="display: none;">
-                <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
-            </div>
-            <div id="div-voltage-phases-graph-m">
-                <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
-            </div>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <ul>
+                            <li>Sensor 1 temperature: <span id="sensor-1-temperature-value">Off</span></li>
+                            <li>Sensor 2 temperature: <span id="sensor-2-temperature-value">Off</span></li>
+                            <li>Current input: <span id="current-input-value">0.0</span> mA</li>
+                            <li>Analog input: <span id="analog-input-value">0.0</span> V</li>
+                            <li>Frequency: <span id="frequency-value">50.0</span> Hz</li>
+                            <li>Insulation resistance: <span id="insulation-resistance-value">20.0</span> MOhm</li>
+                        </ul>
+                    </details>
+                </div>
 
-            <input type="checkbox" id="minutes-amperage-graph" checked>Minutes currents graph scale
-
-            <div id="div-amperage-phases-graph" style="display: none;">
-                <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
+                <div class="dashboard-group"><button type="button" class="btn btn-vis" id="motor-start-stop-button"
+                        disabled>Automatic mode</button></div>
+                <div class="dashboard-group">
+                    <button type="button" class="btn btn-vis" id="save-file-button">
+                        <span class="spinner-border spinner-border-sm spinner-invisible" role="status"
+                            aria-hidden="true" id="save-file-button-spinner"></span>
+                        Log event UBZ
+                    </button>
+                    <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
+                </div>
             </div>
-            <div id="div-amperage-phases-graph-m">
-                <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+            <div class="col-sm">
+                <header class="dashboard-header">UBZ Fault Status</header>
+
+                <div class="dashboard-group">
+                    <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
+                    <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
+                    <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
+                    <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
+                    <button type="button" class="btn btn-vis" id="reset-fault-button">
+                        <span class="spinner-border spinner-border-sm spinner-invisible" role="status"
+                            aria-hidden="true" id="reset-fault-button-spinner"></span>
+                        Reset Fault
+                    </button>
+
+                </div>
+                <div class="dashboard-group">
+                    <table class="faults-table">
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                ###
+                            </th>
+                            <th>
+                                Value
+                            </th>
+                            <th>
+                                Time
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm">
+                <header class="dashboard-header">Graphs</header>
+                <div class="dashboard-group">
+                    <div id="div-heating-graph" style="display: none;">
+                        <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="minutes-voltage-graph" checked>
+                        <label class="form-check-label" for="minutes-voltage-graph">
+                            Minutes voltages graph scale
+                        </label>
+                    </div>
+
+                    <div id="div-voltage-phases-graph" style="display: none;">
+                        <canvas id="voltage-phases-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                    <div id="div-voltage-phases-graph-m">
+                        <canvas id="voltage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-group">
+                    <div class="form-check">
+                        <input type="checkbox" id="minutes-amperage-graph" checked>
+                        <label class="form-check-label" for="minutes-amperage-graph">
+                            Minutes currents graph scale
+                        </label>
+                    </div>
+
+                    <div id="div-amperage-phases-graph" style="display: none;">
+                        <canvas id="amperage-phases-graph">Your browser does not support the canvas element.</canvas>
+                    </div>
+                    <div id="div-amperage-phases-graph-m">
+                        <canvas id="amperage-phases-graph-m">Your browser does not support the canvas element.</canvas>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="dashboard-item">
-            <header>Current (Ampere)</header>
-                <div>
+
+        <div class="row">
+            <div class="col-sm">
+                <header class="dashboard-header">Current (Ampere)</header>
+                <div class="dashboard-group">
                     <p>Phase currents active values:</p>
                     <ul>
                         <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-current-rms-bar-inner"></div>
-                        </div> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                                <div class="valuebar-inner bg-success" id="phase-1-current-rms-bar-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-1-current-rms-value">0.0</span> A</li>
                         <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-current-rms-bar-inner"></div>
-                        </div> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                                <div class="valuebar-inner bg-success" id="phase-2-current-rms-bar-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-2-current-rms-value">0.0</span> A</li>
                         <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-current-rms-bar-inner"></div>
-                        </div> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                                <div class="valuebar-inner bg-success" id="phase-3-current-rms-bar-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
-                <details>
-                    <summary>Additional</summary>
-                    <div>
-                        <p>Negative sequence current:</p>
-                        <div class="valuebar" id="negative-sequence-current-bar" value="0">
-                            <div class="valuebar-inner" id="negative-sequence-current-bar-inner"></div>
-                        </div> <span id="negative-sequence-current-value">0.0</span> A
-                    </div>
-                    <div>
-                        <p>Zero sequence current:</p>
-                        <div class="valuebar" id="zero-sequence-current-bar" value="0">
-                            <div class="valuebar-inner" id="zero-sequence-current-bar-inner"></div>
-                        </div> <span id="zero-sequence-current-value">0.0</span> A
-                    </div>
-                    <div>
-                        <table>
-                            <tr>
-                                <th>Current average value:</th>
-                                <th>For time</th>
-                                <th>Max:</th>
-                            </tr>
-                            <tr>
-                                <td>Phase 1:</td>
-                                <td rowspan="3">
-                                    <span id="current-average-for-time-value">60.0</span> sec
-                                </td>
-                                <td><span id="avg-current-value-phase-1">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 2:</td>
-                                <td><span id="avg-current-value-phase-2">0.0</span> A</td>
-                            </tr>
-                            <tr>
-                                <td>Phase 3:</td>
-                                <td><span id="avg-current-value-phase-3">0.0</span> A</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <ul>
-                            <li>Motor start current: <span id="motor-start-current-value">0.0</span> A</li>
-                            <li>Overload current: <span id="overload-current-value">0.0</span> A</li>
-                        </ul>
-                    </div>
-                </details>
-        </div>
-        <div class="dashboard-item">
-            <header>Voltage (Volt)</header>
-                <div>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <div class="dashboard-group">
+                            <div>
+                                <p>Negative sequence current:</p>
+                                <div class="valuebar" id="negative-sequence-current-bar" value="0">
+                                    <div class="valuebar-inner bg-success" id="negative-sequence-current-bar-inner">
+                                    </div>
+                                </div> <span id="negative-sequence-current-value">0.0</span> A
+                            </div>
+                            <div>
+                                <p>Zero sequence current:</p>
+                                <div class="valuebar" id="zero-sequence-current-bar" value="0">
+                                    <div class="valuebar-inner bg-success" id="zero-sequence-current-bar-inner"></div>
+                                </div> <span id="zero-sequence-current-value">0.0</span> A
+                            </div>
+                        </div>
+
+                        <div class="dashboard-group">
+                            <table id="dashboard-table-currents">
+                                <tr>
+                                    <th colspan="2">Current average value:</th>
+                                    <th>For time</th>
+                                    <th>Max:</th>
+                                </tr>
+                                <tr>
+                                    <td>Phase 1:</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-1">0.0</span> A</td>
+                                    <td rowspan="3">
+                                        <span id="current-average-for-time-value">60.0</span> sec
+                                    </td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-1">0.0</span> A</td>
+                                </tr>
+                                <tr>
+                                    <td>Phase 2:</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-2">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-2">0.0</span> A</td>
+                                </tr>
+                                <tr>
+                                    <td>Phase 3:</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-3">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-3">0.0</span> A</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="dashboard-group">
+                            <div>Motor start current: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="motor-start-current-value">0.0</span> A</div>
+                            <div>Overload current: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="overload-current-value">0.0</span> A</div>
+                        </div>
+
+                    </details>
+                </div>
+            </div>
+            <div class="col-sm">
+                <header class="dashboard-header">Voltage (Volt)</header>
+                <div class="dashboard-group">
                     <p>Phase voltages active values:</p>
                     <ul>
                         <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-1-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-1-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-1-voltage-value">0.0</span> V</li>
+                                <div class="valuebar-inner bg-success" id="phase-1-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner bg-warning" id="phase-1-voltage-bar-over-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-1-voltage-value">0.0</span> V</li>
                         <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-2-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-2-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-2-voltage-value">0.0</span> V</li>
+                                <div class="valuebar-inner bg-success" id="phase-2-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner bg-warning" id="phase-2-voltage-bar-over-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-2-voltage-value">0.0</span> V</li>
                         <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
-                            <div class="valuebar-inner" id="phase-3-voltage-bar-inner"></div>
-                            <div class="overvaluebar-inner" id="phase-3-voltage-bar-over-inner"></div>
-                        </div> <span id="phase-3-voltage-value">0.0</span> V</li>
+                                <div class="valuebar-inner bg-success" id="phase-3-voltage-bar-inner"></div>
+                                <div class="overvaluebar-inner bg-warning" id="phase-3-voltage-bar-over-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
-                <details>
-                    <summary>Additional</summary>
-                    <div>
-                        <p>Line voltages active values:</p>
-                        <ul>
-                            <li>AB:
-                                <div class="valuebar" id="line-1-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-1-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-1-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-1-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-1-voltage-value">0.0</span> V</li>
-                            <li>BC:
-                                <div class="valuebar" id="line-2-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-2-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-2-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-2-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-2-voltage-value">0.0</span> V</li>
-                            <li>CA:
-                                <div class="valuebar" id="line-3-voltage-bar" value="0">
-                                    <div class="valuebar-inner" id="line-3-voltage-bar-inner"></div>
-                                    <div class="overvaluebar-inner" id="line-3-voltage-bar-over-inner"></div>
-                                    <div class="overvaluebar2-inner" id="line-3-voltage-bar-over2-inner"></div>
-                                </div>
-                                <span id="line-3-voltage-value">0.0</span> V</li>
-                        </ul>
-                    </div>
-                    <p>
-                        Negative sequence voltage:
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <div>
+                            <p>Line voltages active values:</p>
+                            <ul>
+                                <li>AB:
+                                    <div class="valuebar" id="line-1-voltage-bar" value="0">
+                                        <div class="valuebar-inner bg-success" id="line-1-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner bg-warning" id="line-1-voltage-bar-over-inner">
+                                        </div>
+                                        <div class="overvaluebar2-inner bg-danger" id="line-1-voltage-bar-over2-inner">
+                                        </div>
+                                    </div>
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-1-voltage-value">0.0</span> V
+                                </li>
+                                <li>BC:
+                                    <div class="valuebar" id="line-2-voltage-bar" value="0">
+                                        <div class="valuebar-inner bg-success" id="line-2-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner bg-warning" id="line-2-voltage-bar-over-inner">
+                                        </div>
+                                        <div class="overvaluebar2-inner bg-danger" id="line-2-voltage-bar-over2-inner">
+                                        </div>
+                                    </div>
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-2-voltage-value">0.0</span> V
+                                </li>
+                                <li>CA:
+                                    <div class="valuebar" id="line-3-voltage-bar" value="0">
+                                        <div class="valuebar-inner bg-success" id="line-3-voltage-bar-inner"></div>
+                                        <div class="overvaluebar-inner bg-warning" id="line-3-voltage-bar-over-inner">
+                                        </div>
+                                        <div class="overvaluebar2-inner bg-danger" id="line-3-voltage-bar-over2-inner">
+                                        </div>
+                                    </div>
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-3-voltage-value">0.0</span> V
+                                </li>
+                            </ul>
+                        </div>
+                        <p>
+                            Negative sequence voltage:
                         <div>
                             <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
-                                <div class="valuebar-inner" id="negative-sequence-voltage-bar-inner"></div>
-                            </div> <span id="negative-sequence-voltage-value">0.0</span> V
+                                <div class="valuebar-inner bg-success" id="negative-sequence-voltage-bar-inner"></div>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="negative-sequence-voltage-value">0.0</span> V
                         </div>
-                    </p>
-                    <p>
-                        Positive sequence voltage: <span id="positive-sequence-voltage-value">0</span> V
-                    </p>
-                    <p>
-                        Zero sequence voltage: <span id="zero-sequence-voltage-value">0</span> V
-                    </p>
-                </details>
-        </div>
-        <div class="dashboard-item">
-            <header>Time (sec)</header>
-                <div>
+                        </p>
+                        <p>
+                            Positive sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="positive-sequence-voltage-value">0</span> V
+                        </p>
+                        <p>
+                            Zero sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="zero-sequence-voltage-value">0</span> V
+                        </p>
+                    </details>
+                </div>
+            </div>
+            <div class="col-sm">
+                <header class="dashboard-header">Time (sec)</header>
+                <div class="dashboard-group">
                     <p>Time before AR:</p>
                     <div class="valuebar" id="time-before-ar-bar" value="0">
-                        <div class="valuebar-inner" id="time-before-ar-bar-inner"></div>
+                        <div class="valuebar-inner bg-success" id="time-before-ar-bar-inner"></div>
                     </div>
-                    <span id="time-before-ar-string"> Off</span>
+                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="time-before-ar-string"> Off</span>
                 </div>
-                <details>
-                    <summary>Additional</summary>
-                    <ul>
-                        <li>Startup time: <span id="startup-time-value">0</span> sec</li>
-                        <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span></li>
-                        <li>Wait time after overload deenergize: <span id="wait-time-after-overload-deenergize-string">No</span></li>
-                    </ul>
-                </details>
+                <div class="dashboard-group">
+                    <details>
+                        <summary>Additional</summary>
+                        <ul>
+                            <li>Startup time: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="startup-time-value">0</span> sec</li>
+                            <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span>
+                            </li>
+                            <li>Wait time after overload deenergize: <span
+                                    id="wait-time-after-overload-deenergize-string">No</span></li>
+                        </ul>
+                    </details>
+                </div>
 
-                <header>Power</header>
-                <ul>
-                    <li>Full power: <span id="full-power-value">-</span></li>
-                    <li>Active power: <span id="active-power-value">-</span></li>
-                    <li>Reactive power: <span id="reactive-power-value">-</span></li>
-                    <li>
-                        <select id="power-characteristic-value-1" class="power-characteristic" name="power-characteristic-value-1">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-1">
-                            -
-                        </span>
-                    </li>
-                    <li>
-                        <select id="power-characteristic-value-2" class="power-characteristic" name="power-characteristic-value-2">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-2">
-                            -
-                        </span>
-                    </li>
-                    <li>
-                        <select id="power-characteristic-value-3" class="power-characteristic" name="power-characteristic-value-3">
-                            <option value="no-selection"> -select- </option>
-                            <option value="phase-1-full-power">Phase 1 full power</option>
-                            <option value="phase-2-full-power">Phase 2 full power</option>
-                            <option value="phase-3-full-power">Phase 3 full power</option>
-                            <option value="phase-1-active-power">Phase 1 active power</option>
-                            <option value="phase-2-active-power">Phase 2 active power</option>
-                            <option value="phase-3-active-power">Phase 3 active power</option>
-                            <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                            <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                            <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                            <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                            <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                            <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
-                        </select>
-                        <span id="power-show-value-3">-</span>
-                    </li>
-                </ul>
+                <div class="dashboard-group">
+                    <header class="dashboard-header">Power</header>
+                    <ul>
+                        <li>Full power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="full-power-value">-</span></li>
+                        <li>Active power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="active-power-value">-</span></li>
+                        <li>Reactive power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="reactive-power-value">-</span></li>
+                        <li>
+                            <select id="power-characteristic-value-1" class="power-characteristic"
+                                name="power-characteristic-value-1">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-1">
+                                -
+                            </span>
+                        </li>
+                        <li>
+                            <select id="power-characteristic-value-2" class="power-characteristic"
+                                name="power-characteristic-value-2">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-2">
+                                -
+                            </span>
+                        </li>
+                        <li>
+                            <select id="power-characteristic-value-3" class="power-characteristic"
+                                name="power-characteristic-value-3">
+                                <option value="no-selection"> -select- </option>
+                                <option value="phase-1-full-power">Phase 1 full power</option>
+                                <option value="phase-2-full-power">Phase 2 full power</option>
+                                <option value="phase-3-full-power">Phase 3 full power</option>
+                                <option value="phase-1-active-power">Phase 1 active power</option>
+                                <option value="phase-2-active-power">Phase 2 active power</option>
+                                <option value="phase-3-active-power">Phase 3 active power</option>
+                                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
+                                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
+                                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
+                                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
+                                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
+                                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                            </select>
+                            <span id="power-show-value-3">-</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="substrat" id="substarat-popup-menu"></div>
+    <div class="popup-menu" id="ubz-parameters-menu">
+        <div class="popup-header-background">
+            <button type="button" class="close close-button" aria-label="Close" id="ubz-parameters-close"><span
+                    aria-hidden="true">&times;</span></button>
+            <header class="dashboard-header">UBZ parameters menu</header>
+        </div>
+
+        <div id="popup-menu-items">
+            <details>
+                <summary>Transformers</summary>
+                <div class="ubz-parameter">[150] CT in use <input type="number" class="ubz-params-input" min="0" max="1"
+                        value="0" id="ubz-param-input-150"></div>
+                <div class="ubz-parameter">[151] CT rated current, A <input type="number" class="ubz-params-input"
+                        min="20" max="800" value="100" id="ubz-param-input-151"></div>
+            </details>
+            <details>
+                <summary>Miscellaneous</summary>
+                <div class="ubz-parameter">[152] Motor rated current, A <input type="number" class="ubz-params-input"
+                        min="0" max="630" value="0" id="ubz-param-input-152"></div>
+                <div class="ubz-parameter">[153] Average current measurement time, seconds <input type="number"
+                        class="ubz-params-input" min="10" max="600" value="60" id="ubz-param-input-153"></div>
+            </details>
+            <details>
+                <summary>Overcurrent protection</summary>
+                <div class="ubz-parameter">[154] Overcurrent protection type <input type="number"
+                        class="ubz-params-input" min="0" max="5" value="0" id="ubz-param-input-154"></div>
+                <div class="ubz-parameter">[155] Overcurrent protection tripping setting value, ratio <input
+                        type="number" class="ubz-params-input" min="0.8" max="9.0" value="4.0" step="0.1"
+                        id="ubz-param-input-155"></div>
+                <div class="ubz-parameter">[156] Overcurrent protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="0.3" max="600" value="10" step="0.1" id="ubz-param-input-156">
+                </div>
+                <div class="ubz-parameter">[157] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="2" id="ubz-param-input-157"></div>
+                <div class="ubz-parameter">[158] Order of overcurrent protection tripping relative to thermal
+                    overload protection <input type="number" class="ubz-params-input" min="0" max="1" value="1"
+                        id="ubz-param-input-158"></div>
+            </details>
+            <details>
+                <summary>Protection against ground faults</summary>
+                <div class="ubz-parameter">[159] Current fault tripping setting, A <input type="number"
+                        class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159">
+                </div>
+                <div class="ubz-parameter">[160] Protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="0.3" max="2.0" value="1.0" step="0.1" id="ubz-param-input-160">
+                </div>
+                <div class="ubz-parameter">[161] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="2" id="ubz-param-input-161"></div>
+            </details>
+            <details>
+                <summary>Negative sequence current protection</summary>
+                <div class="ubz-parameter">[162] Tripping setting, % <input type="number" class="ubz-params-input"
+                        min="5" max="20" value="10" id="ubz-param-input-162"></div>
+                <div class="ubz-parameter">[163] Protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="0.3" max="10" value="5" step="0.1" id="ubz-param-input-163">
+                </div>
+                <div class="ubz-parameter">[164] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="2" id="ubz-param-input-164"></div>
+            </details>
+            <details>
+                <summary>Analysis of causes for negative sequence current protection tripping</summary>
+                <div class="ubz-parameter">[165] Negative sequence current ratio divided by negative sequence
+                    voltage ratio <input type="number" class="ubz-params-input" min="2" max="4" value="2"
+                        id="ubz-param-input-165"></div>
+                <div class="ubz-parameter">[166] Analysis permission <input type="number" class="ubz-params-input"
+                        min="0" max="1" value="1" id="ubz-param-input-166"></div>
+            </details>
+            <details>
+                <summary>Thermal overload (motor thermal model)</summary>
+                <div class="ubz-parameter">[167] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="2" id="ubz-param-input-167"></div>
+                <div class="ubz-parameter">[168] Double overcurrent overload protection tripping time, seconds
+                    <input type="number" class="ubz-params-input" min="10" max="120" value="60"
+                        id="ubz-param-input-168">
+                </div>
+                <div class="ubz-parameter">[169] Time increase ratio with a stopped motor <input type="number"
+                        class="ubz-params-input" min="1" max="4" value="1" step="0.1" id="ubz-param-input-169">
+                </div>
+            </details>
+            <details>
+                <summary>Undercurrent phase protection</summary>
+                <div class="ubz-parameter">[170] Tripping setting, % <input type="number" class="ubz-params-input"
+                        min="11" max="90" value="20" id="ubz-param-input-170"></div>
+                <div class="ubz-parameter">[171] Protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="1" max="100" value="5" id="ubz-param-input-171"></div>
+                <div class="ubz-parameter">[172] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="2" id="ubz-param-input-172"></div>
+            </details>
+            <details>
+                <summary>Delayed start, rotor blocking</summary>
+                <div class="ubz-parameter">[173] Tripping setting, ratio <input type="number" class="ubz-params-input"
+                        min="1.5" max="7" value="5" step="0.1" id="ubz-param-input-173">
+                </div>
+                <div class="ubz-parameter">[174] Delayed start protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="1" max="600" value="10" id="ubz-param-input-174"></div>
+                <div class="ubz-parameter">[175] Rotor blocking protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="0.3" max="300" value="1" step="0.1" id="ubz-param-input-175">
+                </div>
+                <div class="ubz-parameter">[176] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="1" id="ubz-param-input-176"></div>
+            </details>
+            <details>
+                <summary>Voltage protection</summary>
+                <div class="ubz-parameter">[177] Minimum line voltage, V <input type="number" class="ubz-params-input"
+                        min="270" max="415" value="320" id="ubz-param-input-177"></div>
+                <div class="ubz-parameter">[178] Minimum voltage protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="5" max="30" value="10" id="ubz-param-input-178">
+                </div>
+                <div class="ubz-parameter">[179] Minimum voltage protection permission <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-179"></div>
+                <div class="ubz-parameter">[180] Maximum line voltage, V <input type="number" class="ubz-params-input"
+                        min="330" max="475" value="415" id="ubz-param-input-180"></div>
+                <div class="ubz-parameter">[181] Maximum voltage protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="1" max="10" value="2" id="ubz-param-input-181">
+                </div>
+                <div class="ubz-parameter">[182] Maximum voltage protection permission <input type="number"
+                        class="ubz-params-input" min="0" max="1" value="2" id="ubz-param-input-182"></div>
+                <div class="ubz-parameter">[183] Line voltage imbalance, V <input type="number" class="ubz-params-input"
+                        min="15" max="120" value="35" id="ubz-param-input-183"></div>
+                <div class="ubz-parameter">[184] Line voltage imbalance tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="1" max="30" value="5" id="ubz-param-input-184"></div>
+                <div class="ubz-parameter">[185] Line voltage imbalance protection permission <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-185"></div>
+                <div class="ubz-parameter">[186] Phase sequence order protection permission <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-186"></div>
+            </details>
+            <details>
+                <summary>Motor operation and automatic reclosing</summary>
+                <div class="ubz-parameter">[187] ARC time after undercurrent protection tripping, seconds <input
+                        type="number" class="ubz-params-input" min="0" max="900" value="600" id="ubz-param-input-187">
+                </div>
+                <div class="ubz-parameter">[188] ARC time, seconds <input type="number" class="ubz-params-input" min="0"
+                        max="900" value="5" id="ubz-param-input-188"></div>
+                <div class="ubz-parameter">[189] ARC prohibition for all faults (except voltage faults) <input
+                        type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-189">
+                </div>
+                <div class="ubz-parameter">[190] Motor operation permission after UBZ power-on<input type="number"
+                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-190"></div>
+                <div class="ubz-parameter">[191] Motor control via UBZ front panel <input type="number"
+                        class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-191"></div>
+            </details>
+            <details>
+                <summary>Temperature control</summary>
+                <div class="ubz-parameter">[192] Temperature sensor 1 type and temperature control permission <input
+                        type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-192">
+                </div>
+                <div class="ubz-parameter">[193] Motor de-energizing temperature <input type="number"
+                        class="ubz-params-input" min="0" max="100" value="80" id="ubz-param-input-193"></div>
+                <div class="ubz-parameter">[194] Sensor 1 temperature correction <input type="number"
+                        class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-194"></div>
+                <div class="ubz-parameter">[195] Temperature sensor 2 type and temperature control permission <input
+                        type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-195">
+                </div>
+                <div class="ubz-parameter">[196] Motor de-energizing temperature <input type="number"
+                        class="ubz-params-input" min="0" max="220" value="180" id="ubz-param-input-196"></div>
+                <div class="ubz-parameter">[197] Warning temperature <input type="number" class="ubz-params-input"
+                        min="0" max="220" value="170" id="ubz-param-input-197"></div>
+                <div class="ubz-parameter">[198] Sensor 2 temperature correction <input type="number"
+                        class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-198"></div>
+                <div class="ubz-parameter">[199] ARC after protection tripping <input type="number"
+                        class="ubz-params-input" min="1" max="2" value="2" id="ubz-param-input-199"></div>
+                <div class="ubz-parameter">[200] Reaction to temperaturesensor failure <input type="number"
+                        class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-200"></div>
+            </details>
+            <details>
+                <summary>Motor insulation resistance</summary>
+                <div class="ubz-parameter">[201] Minimum motor insulation resistance <input type="number"
+                        class="ubz-params-input" min="0" max="20" value="5" step="5" id="ubz-param-input-201"></div>
+            </details>
+            <details>
+                <summary>Miscellaneous</summary>
+                <div class="ubz-parameter">[202] Minimal number of set parameters mode <input type="number"
+                        class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-202"></div>
+                <div class="ubz-parameter">[203] Indication on UBZ display before motor power on <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-203">
+                </div>
+                <div class="ubz-parameter">[204] Parameter indication mode <input type="number" class="ubz-params-input"
+                        min="0" max="1" value="1" id="ubz-param-input-204"></div>
+                <div class="ubz-parameter">[205] Functional relay operation mode <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-205"></div>
+                <div class="ubz-parameter">[206] Timer, seconds <input type="number" class="ubz-params-input" min="0"
+                        max="300" value="30" id="ubz-param-input-206"></div>
+                <div class="ubz-parameter">[207] Equipment uptime, days <input type="number" class="ubz-params-input"
+                        min="0" max="999" value="0" disabled id="ubz-param-input-207">
+                </div>
+                <div class="ubz-parameter">[208] Motor uptime, days <input type="number" class="ubz-params-input"
+                        min="0" max="999" value="0" disabled id="ubz-param-input-208"></div>
+                <div class="ubz-parameter">[209] User access code <input type="number" class="ubz-params-input" min="0"
+                        max="9" value="0" disabled id="ubz-param-input-209"></div>
+                <div class="ubz-parameter">[210] Engineer access code <input type="number" class="ubz-params-input"
+                        min="0" max="999" value="123" disabled id="ubz-param-input-210"></div>
+                <div class="ubz-parameter">[211] Reset to factory settings <input type="number" class="ubz-params-input"
+                        min="0" max="1" value="0" id="ubz-param-input-211"></div>
+            </details>
+            <details>
+                <summary>Serial interface parameters (RS-485/ RS-232)</summary>
+                <div class="ubz-parameter">[212] UBZ communication address <input type="number" class="ubz-params-input"
+                        min="1" max="247" value="1" disabled id="ubz-param-input-212">
+                </div>
+                <div class="ubz-parameter">[213] Transfer rate <input type="number" class="ubz-params-input" min="0"
+                        max="1" value="0" id="ubz-param-input-213"></div>
+                <div class="ubz-parameter">[214] Adapter reaction to lossof link <input type="number"
+                        class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-214"></div>
+                <div class="ubz-parameter">[215] Response timeout detection, seconds <input type="number"
+                        class="ubz-params-input" min="0" max="120" value="0" id="ubz-param-input-215"></div>
+                <div class="ubz-parameter">[216] UBZ communication via serial channel <input type="number"
+                        class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-216"></div>
+                <div class="ubz-parameter">[217] Device version <input type="number" class="ubz-params-input" min="21"
+                        max="21" value="21" disabled id="ubz-param-input-217"></div>
+            </details>
+            <details>
+                <summary>Functional relay mode parameters. Star-delta mode.</summary>
+                <div class="ubz-parameter">[218] Switching, seconds <input type="number" class="ubz-params-input"
+                        min="0.1" max="2.0" value="0.4" step="0.1" id="ubz-param-input-218"></div>
+            </details>
+            <details>
+                <summary>Motor phase (phases) loss, with current control</summary>
+                <div class="ubz-parameter">[219] Phase loss protection tripping delay, seconds <input type="number"
+                        class="ubz-params-input" min="0.3" max="10" value="0.5" step="0.1" id="ubz-param-input-219">
+                </div>
+                <div class="ubz-parameter">[220] Protection permission <input type="number" class="ubz-params-input"
+                        min="0" max="2" value="1" id="ubz-param-input-220"></div>
+                <div class="ubz-parameter">[221] Remote motor start andstop using the RS-232/RS485 interfaces<input
+                        type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-221">
+                </div>
+            </details>
+            <details>
+                <summary>0-20 mA analog input operation</summary>
+                <div class="ubz-parameter">[222] Upper thershold, mA <input type="number" class="ubz-params-input"
+                        min="0" max="20.0" value="10.0" step="0.1" id="ubz-param-input-222"></div>
+                <div class="ubz-parameter">[223] Lower thershold, mA <input type="number" class="ubz-params-input"
+                        min="0" max="20.0" value="1.0" step="0.1" id="ubz-param-input-223"></div>
+                <div class="ubz-parameter">[224] Control algorithm <input type="number" class="ubz-params-input" min="0"
+                        max="2" value="0" id="ubz-param-input-224"></div>
+                <div class="ubz-parameter">[225] Fault logging <input type="number" class="ubz-params-input" min="0"
+                        max="1" value="0" id="ubz-param-input-225"></div>
+            </details>
+            <details>
+                <summary>0-10 V analog input operation</summary>
+                <div class="ubz-parameter">[226] Upper thershold, V <input type="number" class="ubz-params-input"
+                        min="0" max="10.0" value="5.0" input="0.1" id="ubz-param-input-226"></div>
+                <div class="ubz-parameter">[227] Lower thershold, V <input type="number" class="ubz-params-input"
+                        min="0" max="10.0" value="1.0" input="0.1" id="ubz-param-input-227"></div>
+                <div class="ubz-parameter">[228] Control algorithm <input type="number" class="ubz-params-input" min="0"
+                        max="2" value="0" id="ubz-param-input-228"></div>
+                <div class="ubz-parameter">[229] Fault logging <input type="number" class="ubz-params-input" min="0"
+                        max="1" value="0" id="ubz-param-input-229"></div>
+            </details>
+            <details>
+                <summary>Control of external MS</summary>
+                <div class="ubz-parameter">[230] Control of external MS working order <input type="number"
+                        class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230"></div>
+            </details>
+        </div>
+
+        <div class="popup-footer-background">
+            <div>
+                <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
+                parameters
+            </div>
+            <div>
+                <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to
+                    device</button>
+                <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from
+                    device</button>
+            </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.0.1"></script>
 
 <!-- Alarms defined in device -->
 <script type="text/javascript">
@@ -858,12 +1068,12 @@
     async function postResponse(body, url) {
         const res = await new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
-            request.onload = function() {
+            request.onload = function () {
                 const data = JSON.parse(request.response);
                 resolve(data);
             }
 
-            request.onerror = function(err) {
+            request.onerror = function (err) {
                 console.error(err);
                 reject(err)
             }
@@ -880,12 +1090,12 @@
     async function getResponse(url) {
         const res = await new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
-            request.onload = function() {
+            request.onload = function () {
                 const data = JSON.parse(request.response);
                 resolve(data);
             }
 
-            request.onerror = function(err) {
+            request.onerror = function (err) {
                 console.error(err);
                 reject(err)
             }
@@ -913,7 +1123,7 @@
             }
         };
 
-        const res = await postResponse(body,`${API_BASE_URL}/v1/raw/read-register-group/`);
+        const res = await postResponse(body, `${API_BASE_URL}/v1/raw/read-register-group/`);
         return res;
     }
 
@@ -983,16 +1193,20 @@
         toString() {
             return "code: " + this.code.toString() + "\nvalue: " + this.value.toString() + "\ntime: " + this.time.toString() + "\n";
         }
+
+        isUndefined() {
+            return this.code == undefined && this.value == undefined && this.time == undefined;
+        }
     }
 
     async function processEventLog() {
         let eventLog = [new EventFault(), new EventFault(), new EventFault(), new EventFault(), new EventFault()];
-        const eventLogRawRegs = await rawReadRegs(243, (4*5));
+        const eventLogRawRegs = await rawReadRegs(243, (4 * 5));
         if (eventLogRawRegs.ok) {
-            for (let i=0; i<5; i++) {
-                eventLog[i].code = eventLogRawRegs.ok[i*4];
-                eventLog[i].value = eventLogRawRegs.ok[i*4+1];
-                eventLog[i].time = (eventLogRawRegs.ok[i*4+2] << 16) + eventLogRawRegs.ok[i*4+3];
+            for (let i = 0; i < 5; i++) {
+                eventLog[i].code = eventLogRawRegs.ok[i * 4];
+                eventLog[i].value = eventLogRawRegs.ok[i * 4 + 1];
+                eventLog[i].time = (eventLogRawRegs.ok[i * 4 + 2] << 16) + eventLogRawRegs.ok[i * 4 + 3];
             }
         }
         return eventLog;
@@ -1022,7 +1236,7 @@
     function eventToReadableStrings(event) {
         let out = {
             timeStr: "",
-            valueStr : "",
+            valueStr: "",
         };
 
         // "When UBZ is powered on, 5000000 is written into the registers used to store fault time." - documentation
@@ -1034,7 +1248,7 @@
             let m = (event.time % 3600) / 60;
             out.timeStr = h.toString() + " h : " + m.toString() + " m";
         }
-        
+
         if (event.code == 10 && event.value == 10000) {
             out.valueStr = "------";
         } else {
@@ -1046,10 +1260,13 @@
 
     async function createReportURL() {
         let eventlog = await processEventLog();
+        if (eventlog[0].isUndefined() && eventlog[1].isUndefined() && eventlog[2].isUndefined() && eventlog[3].isUndefined() && eventlog[4].isUndefined()) {
+            return "";
+        }
         const now = new Date();
 
         let eventLogString =
-"<html>\
+            "<html>\
 <head>\
     <title>Log of failures UBZ</title>\
 </head>\
@@ -1076,9 +1293,9 @@
 
         let timeFromPowerOnStr = await getTimeStrFromSwitchingOn();
         eventLogString +=
-        "<br>Time from power on device: ";
+            "<br>Time from power on device: ";
         eventLogString += timeFromPowerOnStr;
-        
+
         eventLogString += "<br></p>\
         <table border='0' width='100%'>\
  <tr>\
@@ -1093,7 +1310,7 @@
   <td bgcolor='#0040D5' align='left'><strong><font color=#FFFFFF>Code</font></strong></td>\
  </tr> ";
 
-        for (let i=0; i<5; i++) {
+        for (let i = 0; i < 5; i++) {
             const eventReadableStrings = eventToReadableStrings(eventlog[i]);
             let timeStr = "";
             if (eventlog[i].time == 0) {
@@ -1101,9 +1318,9 @@
             } else {
                 timeStr = eventReadableStrings.timeStr;
             }
-            eventLogString += 
-            "<tr>\
-<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i+1).toString() + "</font>&nbsp;</td>\
+            eventLogString +=
+                "<tr>\
+<td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + (i + 1).toString() + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF>" + faultCodeToName(eventlog[i].code) + "</font>&nbsp;</td>\
 <td valign='middle' align='left' bgcolor='#8080FF'>&nbsp;<font color=#FFFFFF></font>&nbsp;</td>\
@@ -1116,12 +1333,12 @@
         }
 
         eventLogString +=
-        "</table><p>Failure time - is measured from the moment of power on UBZ and till the moment of occurrence of failure.</p>\
+            "</table><p>Failure time - is measured from the moment of power on UBZ and till the moment of occurrence of failure.</p>\
 <p>Failures are sorted with a bottom upwards by a stack method (i.e. the last failure is from above).</p>\
 </body>\
 </html>";
 
-        return URL.createObjectURL(new Blob([eventLogString], {type: 'text/html'}));
+        return URL.createObjectURL(new Blob([eventLogString], { type: 'text/html' }));
     }
 </script>
 
@@ -1223,7 +1440,7 @@
 
     function switchableGraphsByCheckbox(checkboxSelector, id1Selector, id2Selector) {
         let checkbox = document.querySelector(checkboxSelector);
-        checkbox.addEventListener("change", function() {
+        checkbox.addEventListener("change", function () {
             if (checkbox.checked) {
                 document.querySelector(id1Selector).style.display = 'none';
                 document.querySelector(id2Selector).style.display = 'block';
@@ -1244,27 +1461,27 @@
 
         let threshold1Percentage = undefined;
         let threshold2Percentage = undefined;
- 
+
         if ((threshold2 !== undefined) && (threshold1 !== undefined)) {
             threshold1Percentage = 100 * threshold1 / maxValue;
             threshold2Percentage = 100 * threshold2 / maxValue;
 
-            const innerOverBarId = barId  + '-over-inner';
-            const innerOver2BarId = barId  + '-over2-inner';
+            const innerOverBarId = barId + '-over-inner';
+            const innerOver2BarId = barId + '-over2-inner';
 
             if (widthPercentage <= threshold1Percentage) {
-                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
                 document.querySelector(innerOverBarId).style.width = "0%";
                 document.querySelector(innerOver2BarId).style.width = "0%";
             } else if (widthPercentage <= threshold2Percentage) {
-                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
                 const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
                 document.querySelector(innerOver2BarId).style.width = "0%";
             } else if (widthPercentage <= 100) {
-                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
                 const widthPercentageOverStr = (threshold2Percentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
@@ -1274,21 +1491,21 @@
         } else if (threshold1 !== undefined) {
             threshold1Percentage = 100 * threshold1 / maxValue;
 
-            const innerOverBarId = barId  + '-over-inner';
+            const innerOverBarId = barId + '-over-inner';
 
             if (widthPercentage <= threshold1Percentage) {
-                const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+                const widthPercentageStr = widthPercentage.toFixed(0) + '%';
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
                 document.querySelector(innerOverBarId).style.width = "0%";
             } else if (widthPercentage <= 100) {
-                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';       
+                const widthPercentageStr = threshold1Percentage.toFixed(0) + '%';
                 document.querySelector(innerBarId).style.width = widthPercentageStr;
                 const widthPercentageOverStr = (widthPercentage - threshold1Percentage).toFixed(0) + '%';
                 document.querySelector(innerOverBarId).style.width = widthPercentageOverStr;
             }
         }
         if ((threshold1 === undefined) && (threshold2 === undefined)) {
-            const widthPercentageStr = widthPercentage.toFixed(0) + '%';       
+            const widthPercentageStr = widthPercentage.toFixed(0) + '%';
             document.querySelector(innerBarId).style.width = widthPercentageStr;
         }
     }
@@ -1307,7 +1524,7 @@
             row.style.backgroundColor = "white";
         }
         row.style.fontSize = "smaller";
-    
+
         let cell1 = document.createElement("td");
         let cell2 = document.createElement("td");
         let cell3 = document.createElement("td");
@@ -1337,30 +1554,45 @@
     const PRIORITY_DIVISOR_MID = 5;
     const PRIORITY_DIVISOR_LOW = 10;
 
+    const readSpinnersList = document.querySelectorAll(".reading-process-spinner");
+    function spinnersOn() {
+        readSpinnersList.forEach((spinner) => {
+            spinner.classList.remove("spinner-invisible");
+        });
+    }
+
+    function spinnersOff() {
+        readSpinnersList.forEach((spinner) => {
+            spinner.classList.add("spinner-invisible");
+        });
+    }
+
     const mapRegisters = new Map();
     async function batchRegistersRead() {
         if (cycleNumber % PRIORITY_DIVISOR_HIGH == 0) {
+            spinnersOn();
             const regs100_132 = await rawReadRegs(100, 33);
             if (regs100_132.ok) {
-                for (i=0; i<33; i++) {
-                    mapRegisters.set(100+i, regs100_132.ok[i]);
+                for (i = 0; i < 33; i++) {
+                    mapRegisters.set(100 + i, regs100_132.ok[i]);
                 }
             } else {
-                for (i=0; i<33; i++) {
-                    mapRegisters.set(100+i, undefined);
+                for (i = 0; i < 33; i++) {
+                    mapRegisters.set(100 + i, undefined);
                 }
             }
 
             const regsPower = await rawReadRegs(135, 3);
             if (regsPower.ok) {
-                mapRegisters.set(135 , regsPower.ok[0]);
-                mapRegisters.set(137 , regsPower.ok[1]);
-                mapRegisters.set(139 , regsPower.ok[2]);
+                mapRegisters.set(135, regsPower.ok[0]);
+                mapRegisters.set(137, regsPower.ok[1]);
+                mapRegisters.set(139, regsPower.ok[2]);
             } else {
-                mapRegisters.set(135 , undefined);
-                mapRegisters.set(137 , undefined);
-                mapRegisters.set(139 , undefined);
+                mapRegisters.set(135, undefined);
+                mapRegisters.set(137, undefined);
+                mapRegisters.set(139, undefined);
             }
+            spinnersOff();
 
             const regs150_153 = await rawReadRegs(150, 4);
             if (regs150_153.ok) {
@@ -1414,12 +1646,12 @@
 
             const regs211 = await rawReadRegs(211, 3);
             if (regs211.ok) {
-                for (i=0; i<3; i++) {
-                    mapRegisters.set(211+i, regs211.ok[i]);
+                for (i = 0; i < 3; i++) {
+                    mapRegisters.set(211 + i, regs211.ok[i]);
                 }
             } else {
-                for (i=0; i<3; i++) {
-                    mapRegisters.set(211+i, undefined);
+                for (i = 0; i < 3; i++) {
+                    mapRegisters.set(211 + i, undefined);
                 }
             }
 
@@ -1474,11 +1706,11 @@
         let alarmsBits1 = mapRegisters.get(alarms[0].address);
         let alarmsBits2 = mapRegisters.get(alarms[0].address + 1);
         if (alarmsBits1 != undefined && alarmsBits2 != undefined) {
-            for (let i=0; i<16; i++) {
+            for (let i = 0; i < 16; i++) {
                 faultsCurr[i] = ((alarmsBits1 >>> i) & 1) === FAULT;
             }
-            for (let i=16; i<ALARM_TYPES_NUMBER; i++) {
-                faultsCurr[i] = ((alarmsBits2 >>> (i-16)) & 1) === FAULT;
+            for (let i = 16; i < ALARM_TYPES_NUMBER; i++) {
+                faultsCurr[i] = ((alarmsBits2 >>> (i - 16)) & 1) === FAULT;
             }
         }
     }
@@ -1491,7 +1723,7 @@
 
         const shouldBePrinted = Array(faultsCurr.length).fill(false);
 
-        for (let i=0; i<faultsCurr.length; i++) {
+        for (let i = 0; i < faultsCurr.length; i++) {
             if ((!faultsPrev[i]) && (faultsCurr[i])) {
                 shouldBePrinted[i] = true;
             }
@@ -1519,14 +1751,14 @@
                 this.queue.shift();
             }
             const timestamp = [new Date().valueOf()];
-            this.queue.push({element, colors, timestamp});
+            this.queue.push({ element, colors, timestamp });
         }
 
         pushFromHistory(element, timestamp, colors) {
             while (this.queue.length >= this.capacity) {
                 this.queue.shift();
             }
-            this.queue.push({element, colors, timestamp});
+            this.queue.push({ element, colors, timestamp });
         }
 
         turn() {
@@ -1544,20 +1776,22 @@
 
             this.chart = new Chart(document.querySelector(selector).getContext("2d"), {
                 data: {
-                    datasets: new Array(graphsNumber).fill().map(function() { return {
-                        type: "scatter",
-                        data: new Array(capacity).fill({x: undefined, y: undefined}),
-                        backgroundColor: "grey",
-                        borderColor: "rgba(128, 128, 128, 0.5)",
-                    }}),
+                    datasets: new Array(graphsNumber).fill().map(function () {
+                        return {
+                            type: "scatter",
+                            data: new Array(capacity).fill({ x: undefined, y: undefined }),
+                            backgroundColor: "grey",
+                            borderColor: "rgba(128, 128, 128, 0.5)",
+                        }
+                    }),
                 },
                 options: {
                     animation: false,
                     showLine: true,
                     scales: {
-                        xAxes: {
+                        x: {
                             ticks: {
-                                callback: function(value, index, ticks) {
+                                callback: function (value, index, ticks) {
                                     return value + 's';
                                 },
                             },
@@ -1575,12 +1809,12 @@
         }
 
         setMaxX(value) {
-            this.chart.options.scales.xAxes.max = value;
+            this.chart.options.scales.x.max = value;
             this.chart.update();
         }
 
         setDataLabels(labels) {
-            for (let i=0; i<labels.length; i++) {
+            for (let i = 0; i < labels.length; i++) {
                 this.chart.data.datasets[i].label = labels[i];
             }
             this.chart.update();
@@ -1592,7 +1826,7 @@
         }
 
         setColors(colors) {
-            for (let i=0; i<colors.length; i++) {
+            for (let i = 0; i < colors.length; i++) {
                 this.chart.data.datasets[i].backgroundColor = colors[i];
                 this.chart.data.datasets[i].borderColor = colors[i];
             }
@@ -1601,9 +1835,9 @@
 
         setMinutesScale() {
             this.minutesScale = true;
-            this.chart.options.scales.xAxes.ticks.callback = function(value, index, ticks) {
-                                    return value + 'm';
-                                };
+            this.chart.options.scales.x.ticks.callback = function (value, index, ticks) {
+                return value + 'm';
+            };
             this.chart.update();
         }
 
@@ -1614,15 +1848,15 @@
             const datasetsNumber = values.length;
             const now = new Date().valueOf();
 
-            for (let i=0; i<data.length; i++) {
-                for (let ds=0; ds<datasetsNumber; ds++) {
+            for (let i = 0; i < data.length; i++) {
+                for (let ds = 0; ds < datasetsNumber; ds++) {
                     if (this.minutesScale == true) {
-                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                        this.chart.data.datasets[ds].data[this.sequencing.maxIndex - i] = {
                             x: (now - data[i].timestamp[0]) / 60000,
                             y: data[i].element[ds],
                         };
                     } else {
-                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                        this.chart.data.datasets[ds].data[this.sequencing.maxIndex - i] = {
                             x: (now - data[i].timestamp[0]) / 1000,
                             y: data[i].element[ds],
                         };
@@ -1641,15 +1875,15 @@
             const datasetsNumber = values.length;
             const now = new Date().valueOf();
 
-            for (let i=0; i<data.length; i++) {
-                for (let ds=0; ds<datasetsNumber; ds++) {
+            for (let i = 0; i < data.length; i++) {
+                for (let ds = 0; ds < datasetsNumber; ds++) {
                     if (this.minutesScale == true) {
-                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                        this.chart.data.datasets[ds].data[this.sequencing.maxIndex - i] = {
                             x: (now - data[i].timestamp[ds]) / 60000,
                             y: data[i].element[ds],
                         };
                     } else {
-                            this.chart.data.datasets[ds].data[this.sequencing.maxIndex-i] = {
+                        this.chart.data.datasets[ds].data[this.sequencing.maxIndex - i] = {
                             x: (now - data[i].timestamp[ds]) / 1000,
                             y: data[i].element[ds],
                         };
@@ -1712,30 +1946,27 @@
         const FUNCTIONAL_RELAY_BIT = 2;
         const CLOSED = 1;
 
-        const INDICATOR_LIT = "lightgreen";
-        const INDICATOR_DIM = "darkgreen";
-
         if (mmspMode != undefined) {
             if (mmspMode == 1) {
-                document.querySelector("#mmsp-mode").style.backgroundColor = INDICATOR_LIT;
+                document.querySelector("#mmsp-mode").classList.add("btn-pulse");
             }
         }
         else {
-            document.querySelector("#mmsp-mode").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#mmsp-mode").classList.remove("btn-pulse");
         }
 
         const bitsValue = mapRegisters.get(240);
 
         if (extractBitValue(bitsValue, FUNCTIONAL_RELAY_BIT) == CLOSED) {
-            document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#functional-relay-mode").classList.add("btn-pulse");
         } else {
-            document.querySelector("#functional-relay-mode").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#functional-relay-mode").classList.remove("btn-pulse");
         }
 
         if (extractBitValue(bitsValue, LOAD_RELAY_BIT) == CLOSED) {
-            document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#motor-relay-mode").classList.add("btn-pulse");
         } else {
-            document.querySelector("#motor-relay-mode").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#motor-relay-mode").classList.remove("btn-pulse");
         }
     }
 
@@ -1759,30 +1990,26 @@
     }
 
     async function processArIndicator() {
-        const INDICATOR_LIT = "lightgreen";
-        const INDICATOR_DIM = "green";
         const ALLOW_REMOTE = 2;
 
         if (mapRegisters.get(203) == ALLOW_REMOTE) {
-            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#ar-indicator").classList.add("btn-pulse");
         } else {
-            document.querySelector("#ar-indicator").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#ar-indicator").classList.remove("btn-pulse");
         }
     }
 
     async function processRcIndicator() {
-        const INDICATOR_LIT = "lightcyan";
-        const INDICATOR_DIM = "dodgerblue";
         const PROHIBITED = 0;
 
         if (mapRegisters.get(221) != PROHIBITED && mapRegisters.get(221) != undefined) {
-            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_LIT;
+            document.querySelector("#rc-indicator").classList.add("btn-pulse");
             document.querySelector("#motor-start-stop-button").innerHTML = "Start";
             document.querySelector("#motor-start-stop-button").disabled = false;
             document.querySelector("#motor-start-stop-button").addEventListener("click", startStopMotor);
         } else {
-            document.querySelector("#rc-indicator").style.backgroundColor = INDICATOR_DIM;
-            document.querySelector("#motor-start-stop-button").innerHTML = "<img src = 'https://cdn-icons-png.flaticon.com/512/2479/2479510.png' style='width: 100px;'>";
+            document.querySelector("#rc-indicator").classList.remove("btn-pulse");
+            document.querySelector("#motor-start-stop-button").innerHTML = "Automatic mode";
             document.querySelector("#motor-start-stop-button").disabled = true;
             document.querySelector("#motor-start-stop-button").removeEventListener("click", startStopMotor);
         }
@@ -1792,38 +2019,20 @@
         const INDICATOR_LIT = "orange";
         const INDICATOR_DIM = "darkgoldenrod";
 
-        if (mapRegisters.get(224) != 0 && mapRegisters.get(228) != 0) {
-            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_LIT;
+        if (mapRegisters.get(224) == undefined || mapRegisters.get(228) == undefined) {
+            document.querySelector("#ext-in-indicator").classList.remove("btn-pulse");
+        } else if (mapRegisters.get(224) != 0 && mapRegisters.get(228) != 0) {
+            document.querySelector("#ext-in-indicator").classList.add("btn-pulse");
         } else {
-            document.querySelector("#ext-in-indicator").style.backgroundColor = INDICATOR_DIM;
+            document.querySelector("#ext-in-indicator").classList.remove("btn-pulse");
         }
     }
 
     function processFaultIndicator(isFault) {
-        const INDICATOR_LIT = "lightsalmon";
-        const INDICATOR_DIM = "crimson";
-
-        const LED_SWITCH_INTERVAL_MS = 1000;
         if (isFault) {
-            if (!faultIndicatorSet) {
-                let lighten = false;
-
-                var faultIndicatorInterval = setInterval(function() {
-                    if (lighten) {
-                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_LIT;
-                    } else {
-                        document.querySelector("#fault-indicator").style.backgroundColor = INDICATOR_DIM;
-                    }
-                    lighten = !lighten;
-                }, LED_SWITCH_INTERVAL_MS);
-
-                faultIndicatorSet = true;
-            }
+            document.querySelector("#fault-indicator").classList.add("btn-pulse");
         } else {
-            if (faultIndicatorSet) {
-                faultIndicatorSet = false;
-                clearInterval(faultIndicatorInterval);
-            }
+            document.querySelector("#fault-indicator").classList.remove("btn-pulse");
         }
     }
 </script>
@@ -1970,7 +2179,7 @@
 <!-- Event listeners -->
 <script type="text/javascript">
     // TODO: affect only when changed
-    document.querySelector("#radio-workmode-alarm").addEventListener("click", async function() {
+    document.querySelector("#radio-workmode-alarm").addEventListener("click", async function () {
         await writeRegValues(205, [0]);
     });
 
@@ -1983,7 +2192,9 @@
     });
 
     document.querySelector("#reset-fault-button").addEventListener("click", async function () {
+        document.querySelector("#reset-fault-button-spinner").classList.remove("spinner-invisible");
         await writeRegValues(COMMAND_REGISTER, RESET_FAULT);
+        document.querySelector("#reset-fault-button-spinner").classList.add("spinner-invisible");
     });
 
     document.querySelector("#power-characteristic-value-1").addEventListener("change", async function () {
@@ -2002,17 +2213,27 @@
     });
 
     document.querySelector("#save-file-button").addEventListener("click", async function () {
-        let now = new Date();
+        document.querySelector("#save-file-button-spinner").classList.remove("spinner-invisible");
+        const now = new Date();
+        const promiseTimeout = new Promise((resolve, reject) => {
+            setTimeout(() => "", 10000);
+        });
         const url = await createReportURL();
-        const hiddenEl = document.createElement("a");
-        hiddenEl.href = url;
-        hiddenEl.target = "_blank";
-        hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";// - ${this.reportName} (${this.fromDateNaiveStr} - ${this.tillDateNaiveStr}).${format};
-        hiddenEl.click();
-        delete(hiddenEl);
+        if (url.length == 0) {
+            console.log("No response for report");
+        } else {
+            const hiddenEl = document.createElement("a");
+            hiddenEl.href = url;
+            hiddenEl.target = "_blank";
+            hiddenEl.download = "UBZ faults " + now.toUTCString() + ".html";
+            hiddenEl.click();
+            delete (hiddenEl);
+        }
+
+        document.querySelector("#save-file-button-spinner").classList.add("spinner-invisible");
     });
 
-    document.querySelector("#CT-in-use").addEventListener("change", async function() {
+    document.querySelector("#CT-in-use").addEventListener("change", async function () {
         if (document.querySelector("#CT-in-use").value == "integrated-CT") {
             const res = await writeRegValues(150, [0]);
         } else if (document.querySelector("#CT-in-use").value == "external-CT") {
@@ -2020,45 +2241,45 @@
         }
     });
 
-    document.querySelector("#external-ct-current").addEventListener("change", async function() {
+    document.querySelector("#external-ct-current").addEventListener("change", async function () {
         await writeRegValues(151, [document.querySelector("#external-ct-current").value]);
     });
 
-    document.querySelector("#motor-rated-current").addEventListener("change", async function() {
+    document.querySelector("#motor-rated-current").addEventListener("change", async function () {
         await writeRegValues(152, [document.querySelector("#motor-rated-current").value]);
     });
 
     switchableGraphsByCheckbox("#minutes-voltage-graph", "#div-voltage-phases-graph", "#div-voltage-phases-graph-m");
     switchableGraphsByCheckbox("#minutes-amperage-graph", "#div-amperage-phases-graph", "#div-amperage-phases-graph-m");
 
-    document.querySelector("#ubz-parameters-button").addEventListener("click", function() {
+    document.querySelector("#ubz-parameters-button").addEventListener("click", function () {
         document.querySelector("#substarat-popup-menu").style.display = 'block'
         document.querySelector("#ubz-parameters-menu").style.display = 'block';
     });
 
-    document.querySelector("#ubz-parameters-close").addEventListener("click", function() {
+    document.querySelector("#ubz-parameters-close").addEventListener("click", function () {
         document.querySelector("#substarat-popup-menu").style.display = 'none'
         document.querySelector("#ubz-parameters-menu").style.display = 'none';
     });
 
     var ubzParamsChanged = new Array(81).fill(false);
 
-    for (let i=150; i<=230; i++) {
-        document.querySelector("#ubz-param-input-" + i.toString()).addEventListener("change", function() {
-            ubzParamsChanged[i-150] = true;
+    for (let i = 150; i <= 230; i++) {
+        document.querySelector("#ubz-param-input-" + i.toString()).addEventListener("change", function () {
+            ubzParamsChanged[i - 150] = true;
         });
     }
 
-    document.querySelector("#button-write-ubz-params").addEventListener("click", async function() {
+    document.querySelector("#button-write-ubz-params").addEventListener("click", async function () {
         if (document.querySelector("#checkbox-write-only-modified-ubz-params").checked) {
-            for (let i=150; i<=230; i++) {
-                if (ubzParamsChanged[i-150]) {
+            for (let i = 150; i <= 230; i++) {
+                if (ubzParamsChanged[i - 150]) {
                     await writeRegValues(i, [document.querySelector("#ubz-param-input-" + i.toString()).value]);
                 }
             }
         } else {
             let values = new Array();
-            for (let i=150; i<=230; i++) {
+            for (let i = 150; i <= 230; i++) {
                 values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
             }
             await writeRegValues(150, values);
@@ -2067,12 +2288,12 @@
         ubzParamsChanged.fill(false);
     });
 
-    document.querySelector("#button-read-ubz-params").addEventListener("click", async function() {
+    document.querySelector("#button-read-ubz-params").addEventListener("click", async function () {
         const ubzParams = await rawReadRegs(150, 81); // registers 150-230
 
         if (ubzParams.ok) {
-            for (let i=150; i<=230; i++) {
-                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i-150];
+            for (let i = 150; i <= 230; i++) {
+                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
             }
         }
     });
@@ -2099,7 +2320,7 @@
         const amp3History = await readRegFromDb(102);
         const ampHistoryLength = Math.max(amp1History.length, amp2History.length, amp3History.length);
 
-        for (let i=voltHistoryLength-1; i>=0; i--) {
+        for (let i = voltHistoryLength - 1; i >= 0; i--) {
             const volt1 = volt1History[i][1];
             const volt2 = volt2History[i][1];
             const volt3 = volt3History[i][1];
@@ -2109,7 +2330,7 @@
             voltGraphM.addFromHistory([volt1, volt2, volt3], [t1, t2, t3]);
         }
 
-        for (let i=ampHistoryLength-1; i>=0; i--) {
+        for (let i = ampHistoryLength - 1; i >= 0; i--) {
             const amp1 = amp1History[i][1];
             const amp2 = amp2History[i][1];
             const amp3 = amp3History[i][1];
@@ -2119,26 +2340,22 @@
             ampGraphM.addFromHistory([amp1, amp2, amp3], [t1, t2, t3]);
         }
 
-        while (true) {
-            if (ubzParams.ok) {
-                for (let i=150; i<=230; i++) {
-                    document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i-150];
-                }
-
-                if (ubzParams.ok[0] == 0) {
-                    document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
-                    deactivateExternalCTsettings();
-                }
-                if (ubzParams.ok[0] == 1) {
-                    document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
-                    activateExternalCTsettings();
-                }
-
-                document.querySelector("#external-ct-current").value = ubzParams.ok[1];
-                document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
-
-                break;
+        if (ubzParams.ok) {
+            for (let i = 150; i <= 230; i++) {
+                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
             }
+
+            if (ubzParams.ok[0] == 0) {
+                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                deactivateExternalCTsettings();
+            }
+            if (ubzParams.ok[0] == 1) {
+                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                activateExternalCTsettings();
+            }
+
+            document.querySelector("#external-ct-current").value = ubzParams.ok[1];
+            document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
         }
 
         {
@@ -2155,10 +2372,10 @@
         }
     }
 
-    async function updateValuesOnVis() {
-        const FAULT_BIT = 0;
-        const FAULT = 1;
+    const FAULT_BIT = 0;
+    const FAULT = 1;
 
+    async function updateValuesOnVis() {
         let currentDateTime = new Date();
         let sessionTimeString = timeStringFromMillis((currentDateTime - dateTimeStart));
         document.querySelector("#session-time").innerHTML = "Session time: " + sessionTimeString;
@@ -2182,7 +2399,7 @@
             await determineFaults();
 
             let faultsToPrint = faultsSouldBePrinted(faultsPrev, faultsCurr);
-            for (let i=0; i<faultsCurr.length; i++) {
+            for (let i = 0; i < faultsCurr.length; i++) {
                 if (faultsToPrint[i]) {
                     let time = timeString(currentDateTime);
 
@@ -2249,7 +2466,22 @@
         } else {
             document.querySelector("#avg-current-value-phase-3").innerHTML = "Err";
         }
-        
+        if (mapRegisters.get(107) != undefined) {
+            document.querySelector("#max-current-value-phase-1").innerHTML = (mapRegisters.get(107) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-1").innerHTML = "Err";
+        }
+        if (mapRegisters.get(108) != undefined) {
+            document.querySelector("#max-current-value-phase-2").innerHTML = (mapRegisters.get(108) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-2").innerHTML = "Err";
+        }
+        if (mapRegisters.get(109) != undefined) {
+            document.querySelector("#max-current-value-phase-3").innerHTML = (mapRegisters.get(109) * 0.1).toFixed(1);
+        } else {
+            document.querySelector("#max-current-value-phase-3").innerHTML = "Err";
+        }
+
         if (mapRegisters.get(110) != undefined && mapRegisters.get(100) != 0) {
             document.querySelector("#motor-start-current-value").innerHTML = (mapRegisters.get(110) * 0.1).toFixed(1);
         } else {
@@ -2273,6 +2505,7 @@
             document.querySelector("#negative-sequence-current-bar").value = 0;
         }
         barValue("#negative-sequence-current-bar", 2000);
+
         if (mapRegisters.get(114) != undefined) {
             document.querySelector("#phase-1-voltage-value").innerHTML = mapRegisters.get(114);
             document.querySelector("#phase-1-voltage-bar").value = mapRegisters.get(114);
