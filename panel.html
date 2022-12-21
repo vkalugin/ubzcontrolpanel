@@ -221,6 +221,7 @@
                         <label for="radio-workmode-stardelta">Star / delta</label><br>
                     </form>
                     <div class="ubz-parameter">CT in use
+                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                         <span>
                             <select class="ubz-params-input" id="CT-in-use">
                                 <option value="integrated-CT">Integrated CT</option>
@@ -229,12 +230,14 @@
                         </span>
                     </div>
                     <div class="ubz-parameter">For external CT
+                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                         <span>
                             <input type="number" value="100" min="20" max="800" id="external-ct-current"
                                 class="ubz-params-input">
                         </span>
                     </div>
                     <div class="ubz-parameter">Motor rated current
+                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                         <span>
                             <input type="number" value="0" min="0" max="630" id="motor-rated-current"
                                 class="ubz-params-input">
@@ -315,6 +318,7 @@
                         <label class="form-check-label" for="minutes-voltage-graph">
                             Minutes voltages graph scale
                         </label>
+                        <span class="spinner-border spinner-border-sm init-graph-spinner" role="status"></span>
                     </div>
 
                     <div id="div-voltage-phases-graph" style="display: none;">
@@ -331,6 +335,7 @@
                         <label class="form-check-label" for="minutes-amperage-graph">
                             Minutes currents graph scale
                         </label>
+                        <span class="spinner-border spinner-border-sm init-graph-spinner" role="status"></span>
                     </div>
 
                     <div id="div-amperage-phases-graph" style="display: none;">
@@ -351,13 +356,16 @@
                     <ul>
                         <li>Phase1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-1-current-rms-bar-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-1-current-rms-value">0.0</span> A</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-1-current-rms-value">0.0</span> A</li>
                         <li>Phase2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-2-current-rms-bar-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-2-current-rms-value">0.0</span> A</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-2-current-rms-value">0.0</span> A</li>
                         <li>Phase3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-3-current-rms-bar-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-3-current-rms-value">0.0</span> A</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-3-current-rms-value">0.0</span> A</li>
                     </ul>
                 </div>
                 <div class="dashboard-group">
@@ -388,28 +396,38 @@
                                 </tr>
                                 <tr>
                                     <td>Phase 1:</td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-1">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="avg-current-value-phase-1">0.0</span> A</td>
                                     <td rowspan="3">
                                         <span id="current-average-for-time-value">60.0</span> sec
                                     </td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-1">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="max-current-value-phase-1">0.0</span> A</td>
                                 </tr>
                                 <tr>
                                     <td>Phase 2:</td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-2">0.0</span> A</td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-2">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="avg-current-value-phase-2">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="max-current-value-phase-2">0.0</span> A</td>
                                 </tr>
                                 <tr>
                                     <td>Phase 3:</td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="avg-current-value-phase-3">0.0</span> A</td>
-                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="max-current-value-phase-3">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="avg-current-value-phase-3">0.0</span> A</td>
+                                    <td><span class="spinner-border spinner-border-sm reading-process-spinner"
+                                            role="status"></span> <span id="max-current-value-phase-3">0.0</span> A</td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="dashboard-group">
-                            <div>Motor start current: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="motor-start-current-value">0.0</span> A</div>
-                            <div>Overload current: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="overload-current-value">0.0</span> A</div>
+                            <div>Motor start current: <span
+                                    class="spinner-border spinner-border-sm reading-process-spinner"
+                                    role="status"></span> <span id="motor-start-current-value">0.0</span> A</div>
+                            <div>Overload current: <span
+                                    class="spinner-border spinner-border-sm reading-process-spinner"
+                                    role="status"></span> <span id="overload-current-value">0.0</span> A</div>
                         </div>
 
                     </details>
@@ -423,15 +441,18 @@
                         <li>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-1-voltage-bar-inner"></div>
                                 <div class="overvaluebar-inner bg-warning" id="phase-1-voltage-bar-over-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-1-voltage-value">0.0</span> V</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-1-voltage-value">0.0</span> V</li>
                         <li>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-2-voltage-bar-inner"></div>
                                 <div class="overvaluebar-inner bg-warning" id="phase-2-voltage-bar-over-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-2-voltage-value">0.0</span> V</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-2-voltage-value">0.0</span> V</li>
                         <li>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="phase-3-voltage-bar-inner"></div>
                                 <div class="overvaluebar-inner bg-warning" id="phase-3-voltage-bar-over-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="phase-3-voltage-value">0.0</span> V</li>
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="phase-3-voltage-value">0.0</span> V</li>
                     </ul>
                 </div>
                 <div class="dashboard-group">
@@ -448,7 +469,8 @@
                                         <div class="overvaluebar2-inner bg-danger" id="line-1-voltage-bar-over2-inner">
                                         </div>
                                     </div>
-                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-1-voltage-value">0.0</span> V
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                        role="status"></span> <span id="line-1-voltage-value">0.0</span> V
                                 </li>
                                 <li>BC:
                                     <div class="valuebar" id="line-2-voltage-bar" value="0">
@@ -458,7 +480,8 @@
                                         <div class="overvaluebar2-inner bg-danger" id="line-2-voltage-bar-over2-inner">
                                         </div>
                                     </div>
-                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-2-voltage-value">0.0</span> V
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                        role="status"></span> <span id="line-2-voltage-value">0.0</span> V
                                 </li>
                                 <li>CA:
                                     <div class="valuebar" id="line-3-voltage-bar" value="0">
@@ -468,7 +491,8 @@
                                         <div class="overvaluebar2-inner bg-danger" id="line-3-voltage-bar-over2-inner">
                                         </div>
                                     </div>
-                                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="line-3-voltage-value">0.0</span> V
+                                    <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                        role="status"></span> <span id="line-3-voltage-value">0.0</span> V
                                 </li>
                             </ul>
                         </div>
@@ -477,14 +501,19 @@
                         <div>
                             <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="negative-sequence-voltage-bar-inner"></div>
-                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="negative-sequence-voltage-value">0.0</span> V
+                            </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="negative-sequence-voltage-value">0.0</span> V
                         </div>
                         </p>
                         <p>
-                            Positive sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="positive-sequence-voltage-value">0</span> V
+                            Positive sequence voltage: <span
+                                class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
+                            <span id="positive-sequence-voltage-value">0</span> V
                         </p>
                         <p>
-                            Zero sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="zero-sequence-voltage-value">0</span> V
+                            Zero sequence voltage: <span
+                                class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
+                            <span id="zero-sequence-voltage-value">0</span> V
                         </p>
                     </details>
                 </div>
@@ -496,16 +525,22 @@
                     <div class="valuebar" id="time-before-ar-bar" value="0">
                         <div class="valuebar-inner bg-success" id="time-before-ar-bar-inner"></div>
                     </div>
-                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="time-before-ar-string"> Off</span>
+                    <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
+                        id="time-before-ar-string"> Off</span>
                 </div>
                 <div class="dashboard-group">
                     <details>
                         <summary>Additional</summary>
                         <ul>
-                            <li>Startup time: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="startup-time-value">0</span> sec</li>
-                            <li>Time before overload tripping: <span id="time-before-overload-tripping-string">No</span>
+                            <li>Startup time: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                    role="status"></span> <span id="startup-time-value">0</span> sec</li>
+                            <li>Time before overload tripping: <span
+                                    class="spinner-border spinner-border-sm reading-process-spinner"
+                                    role="status"></span> <span id="time-before-overload-tripping-string">No</span>
                             </li>
                             <li>Wait time after overload deenergize: <span
+                                    class="spinner-border spinner-border-sm reading-process-spinner"
+                                    role="status"></span> <span
                                     id="wait-time-after-overload-deenergize-string">No</span></li>
                         </ul>
                     </details>
@@ -514,9 +549,12 @@
                 <div class="dashboard-group">
                     <header class="dashboard-header">Power</header>
                     <ul>
-                        <li>Full power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="full-power-value">-</span></li>
-                        <li>Active power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="active-power-value">-</span></li>
-                        <li>Reactive power: <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span id="reactive-power-value">-</span></li>
+                        <li>Full power: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="full-power-value">-</span></li>
+                        <li>Active power: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="active-power-value">-</span></li>
+                        <li>Reactive power: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                                role="status"></span> <span id="reactive-power-value">-</span></li>
                         <li>
                             <select id="power-characteristic-value-1" class="power-characteristic"
                                 name="power-characteristic-value-1">
@@ -1450,6 +1488,18 @@
             }
         })
     }
+
+    function spinnersOn(list) {
+        list.forEach((spinner) => {
+            spinner.classList.remove("spinner-invisible");
+        });
+    }
+
+    function spinnersOff(list) {
+        list.forEach((spinner) => {
+            spinner.classList.add("spinner-invisible");
+        });
+    }
 </script>
 
 <!-- Multicolor bar processing -->
@@ -1555,22 +1605,11 @@
     const PRIORITY_DIVISOR_LOW = 10;
 
     const readSpinnersList = document.querySelectorAll(".reading-process-spinner");
-    function spinnersOn() {
-        readSpinnersList.forEach((spinner) => {
-            spinner.classList.remove("spinner-invisible");
-        });
-    }
-
-    function spinnersOff() {
-        readSpinnersList.forEach((spinner) => {
-            spinner.classList.add("spinner-invisible");
-        });
-    }
 
     const mapRegisters = new Map();
     async function batchRegistersRead() {
         if (cycleNumber % PRIORITY_DIVISOR_HIGH == 0) {
-            spinnersOn();
+            spinnersOn(readSpinnersList);
             const regs100_132 = await rawReadRegs(100, 33);
             if (regs100_132.ok) {
                 for (i = 0; i < 33; i++) {
@@ -1592,7 +1631,7 @@
                 mapRegisters.set(137, undefined);
                 mapRegisters.set(139, undefined);
             }
-            spinnersOff();
+            spinnersOff(readSpinnersList);
 
             const regs150_153 = await rawReadRegs(150, 4);
             if (regs150_153.ok) {
@@ -2303,12 +2342,34 @@
     const PHASE_VOLTAGE_THRESHOLD = 220;
     const UPDATE_VISUALIZATION_INTERVAL_MS = 1000;
     const dateTimeStart = new Date();
+    const initReadSpinnersList = document.querySelectorAll(".init-reading-spinner");
+    const initGraphHistorySpinnersList = document.querySelectorAll(".init-graph-spinner");
     var deviceConnected = false;
     var faultIndicatorSet = false;
     var loopLock = false;
 
     async function initElements() {
+        spinnersOn(initReadSpinnersList);
+        spinnersOn(initGraphHistorySpinnersList);
         const ubzParams = await rawReadRegs(150, 81); // registers 150-230
+        if (ubzParams.ok) {
+            for (let i = 150; i <= 230; i++) {
+                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
+            }
+
+            if (ubzParams.ok[0] == 0) {
+                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
+                deactivateExternalCTsettings();
+            }
+            if (ubzParams.ok[0] == 1) {
+                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
+                activateExternalCTsettings();
+            }
+
+            document.querySelector("#external-ct-current").value = ubzParams.ok[1];
+            document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
+        }
+        spinnersOff(initReadSpinnersList);
 
         const volt1History = await readRegFromDb(114);
         const volt2History = await readRegFromDb(115);
@@ -2339,24 +2400,7 @@
             const t3 = new Date(amp3History[i][0]).valueOf();
             ampGraphM.addFromHistory([amp1, amp2, amp3], [t1, t2, t3]);
         }
-
-        if (ubzParams.ok) {
-            for (let i = 150; i <= 230; i++) {
-                document.querySelector("#ubz-param-input-" + i.toString()).value = ubzParams.ok[i - 150];
-            }
-
-            if (ubzParams.ok[0] == 0) {
-                document.querySelector("#CT-in-use").children[0].setAttribute("selected", "true");
-                deactivateExternalCTsettings();
-            }
-            if (ubzParams.ok[0] == 1) {
-                document.querySelector("#CT-in-use").children[1].setAttribute("selected", "true");
-                activateExternalCTsettings();
-            }
-
-            document.querySelector("#external-ct-current").value = ubzParams.ok[1];
-            document.querySelector("#motor-rated-current").value = ubzParams.ok[2];
-        }
+        spinnersOff(initGraphHistorySpinnersList);
 
         {
             const characteristicString = await stringPowerCharacteristicByKey(document.querySelector("#power-characteristic-value-1").value);
@@ -2704,6 +2748,22 @@
             document.querySelector("#reactive-power-value").innerHTML = (mapRegisters.get(139) * 0.01).toString();
         } else {
             document.querySelector("#reactive-power-value").innerHTML = "Reading error";
+        }
+
+        if (mapRegisters.get(129) > 600) {
+            document.querySelector("#time-before-overload-tripping-string").innerHTML = "No";
+        } else if (mapRegisters.get(129) != undefined) {
+            document.querySelector("#time-before-overload-tripping-string").innerHTML = mapRegisters.get(129).toString();
+        } else {
+            document.querySelector("#time-before-overload-tripping-string").innerHTML = "Reading error";
+        }
+
+        if (mapRegisters.get(131) > 900) {
+            document.querySelector("#wait-time-after-overload-deenergize-string").innerHTML = "No";
+        } else if (mapRegisters.get(131) != undefined) {
+            document.querySelector("#wait-time-after-overload-deenergize-string").innerHTML = mapRegisters.get(131).toString();
+        } else {
+            document.querySelector("#wait-time-after-overload-deenergize-string").innerHTML = "Err";
         }
 
         loopLock = false;
