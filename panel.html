@@ -201,7 +201,10 @@
     <div class="container dashboard-container">
         <div class="row">
             <div class="col-sm">
-                <header class="dashboard-header">UBZ Status</header>
+                <header class="dashboard-header">
+                    UBZ Status
+                    <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
+                </header>
                 <div class="dashboard-group">
                     <div><span class="status-indicator bg-success" id="mmsp-mode"></span>MMSP</div>
                     <div><span class="status-indicator bg-success" id="functional-relay-mode"></span>Functional relay
@@ -209,8 +212,10 @@
                     <div><span class="status-indicator bg-success" id="motor-relay-mode"></span>Motor relay</div>
                 </div>
                 <div class="dashboard-group">
-                    <header class="dashboard-header">Functional relay work mode</header>
-
+                    <header class="dashboard-header">
+                        Functional relay work mode
+                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
+                    </header>
                     <form id="functional-relay-work-mode-radio">
                         <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
                         <label for="radio-workmode-alarm">Alarm relay</label><br>
