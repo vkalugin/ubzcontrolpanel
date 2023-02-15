@@ -68,7 +68,7 @@
         width: 100%;
         height: 100%;
         z-index: 50;
-        background-color: #f0f0f0f0;
+        background-color: #1c1c1c7f;
         display: none;
     }
 
@@ -76,22 +76,20 @@
         position: absolute;
         left: 25%;
         top: 25%;
-        min-width: 600px;
+        width: 600px;
         z-index: 100;
-        background-color: white;
+        background-color: whitesmoke;
         display: none;
         text-align: left;
         padding: 10px;
     }
 
     .popup-header-background {
-        /* background-color: whitesmoke; */
         padding-top: 5px;
         padding-bottom: 10px;
     }
 
     .popup-footer-background {
-        /* background-color: whitesmoke; */
         padding-top: 10px;
         padding-bottom: 5px;
     }
@@ -119,21 +117,42 @@
     }
 
     .ubz-parameter-area {
-        margin: 10px;
+        /* margin: 25px; */
+        /* margin-bottom: 25px; */
+        padding: 10px;
     }
 
     .ubz-mainmenu-parameter-area {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
 
     .ubz-params-input {
-        float: right;
+        /* float: right; */
         width: 8em;
+    }
+
+    .ubz-parameter-description {
+        max-width: 75%;
+        float: left;
+        /* padding-top: 5px;
+        padding-bottom: 5px; */
     }
 
     .ubz-value {
         float: right;
+    }
+
+    .ubz-input {
+        width: 8em;
+    }
+
+    .ubz-parameters-menu-section {
+        padding-top: 10px;
+    }
+
+    .ubz-parameters-menu-summary {
+        padding-top: 5px;
     }
 
     #heating-graph {
@@ -237,26 +256,31 @@
                         <label for="radio-workmode-stardelta">Star / delta</label><br>
                     </form>
                     <div class="ubz-mainmenu-parameter-area">CT in use
-                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
-                        <span>
-                            <select class="ubz-params-input" id="CT-in-use">
+
+                        <span class="ubz-value">
+                            <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
+                            <select class="ubz-input" id="CT-in-use">
                                 <option value="integrated-CT">Integrated CT</option>
                                 <option value="external-CT">External CT</option>
                             </select>
                         </span>
                     </div>
                     <div class="ubz-mainmenu-parameter-area">For external CT
-                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
-                        <span>
-                            <input type="number" value="100" min="20" max="800" id="external-ct-current"
-                                class="ubz-params-input">
+                        <span class="ubz-value">
+                            <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
+                            <span>
+                                <input class="ubz-input" type="number" value="100" min="20" max="800"
+                                    id="external-ct-current">
+                            </span>
                         </span>
                     </div>
                     <div class="ubz-mainmenu-parameter-area">Motor rated current
-                        <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
-                        <span>
-                            <input type="number" value="0" min="0" max="630" id="motor-rated-current"
-                                class="ubz-params-input">
+                        <span class="ubz-value">
+                            <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
+                            <span>
+                                <input class="ubz-input" type="number" value="0" min="0" max="630"
+                                    id="motor-rated-current">
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -648,254 +672,754 @@
         </div>
 
         <div id="popup-menu-items">
-            <details>
-                <summary>Transformers</summary>
-                <div class="ubz-parameter-area">[150] CT in use <input type="number" class="ubz-params-input" min="0"
-                        max="1" value="0" id="ubz-param-input-150"></div>
-                <div class="ubz-parameter-area">[151] CT rated current, A <input type="number" class="ubz-params-input"
-                        min="20" max="800" value="100" id="ubz-param-input-151"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Transformers</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [150] CT in use
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-150">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [151] CT rated current, A
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="20" max="800" value="100" id="ubz-param-input-151">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Miscellaneous</summary>
-                <div class="ubz-parameter-area">[152] Motor rated current, A <input type="number"
-                        class="ubz-params-input" min="0" max="630" value="0" id="ubz-param-input-152"></div>
-                <div class="ubz-parameter-area">[153] Average current measurement time, seconds <input type="number"
-                        class="ubz-params-input" min="10" max="600" value="60" id="ubz-param-input-153"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Miscellaneous</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [152] Motor rated current, A
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="630" value="0" id="ubz-param-input-152">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [153] Average current measurement time, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="10" max="600" value="60" id="ubz-param-input-153">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Overcurrent protection</summary>
-                <div class="ubz-parameter-area">[154] Overcurrent protection type <input type="number"
-                        class="ubz-params-input" min="0" max="5" value="0" id="ubz-param-input-154"></div>
-                <div class="ubz-parameter-area">[155] Overcurrent protection tripping setting value, ratio <input
-                        type="number" class="ubz-params-input" min="0.8" max="9.0" value="4.0" step="0.1"
-                        id="ubz-param-input-155"></div>
-                <div class="ubz-parameter-area">[156] Overcurrent protection tripping delay, seconds <input
-                        type="number" class="ubz-params-input" min="0.3" max="600" value="10" step="0.1"
-                        id="ubz-param-input-156">
-                </div>
-                <div class="ubz-parameter-area">[157] Protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-157"></div>
-                <div class="ubz-parameter-area">[158] Order of overcurrent protection tripping relative to thermal
-                    overload protection <input type="number" class="ubz-params-input" min="0" max="1" value="1"
-                        id="ubz-param-input-158"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Overcurrent protection</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [154] Overcurrent protection type
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="5" value="0" id="ubz-param-input-154">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [155] Overcurrent protection tripping setting value, ratio
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.8" max="9.0" value="4.0" step="0.1" id="ubz-param-input-155">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [156] Overcurrent protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="600" value="10" step="0.1" id="ubz-param-input-156">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [157] Protection permission
+                        </td>
+                        <td>
+                            <div class="ubz-parameter-description"></div><input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-157">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [158] Order of overcurrent protection tripping relative to thermal overload protection
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1"id="ubz-param-input-158">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Protection against ground faults</summary>
-                <div class="ubz-parameter-area">[159] Current fault tripping setting, A <input type="number"
-                        class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159">
-                </div>
-                <div class="ubz-parameter-area">[160] Protection tripping delay, seconds <input type="number"
-                        class="ubz-params-input" min="0.3" max="2.0" value="1.0" step="0.1" id="ubz-param-input-160">
-                </div>
-                <div class="ubz-parameter-area">[161] Protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-161"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Protection against ground faults</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [159] Current fault tripping setting, A
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [160] Protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="2.0" value="1.0" step="0.1" id="ubz-param-input-160">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [161] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-161">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Negative sequence current protection</summary>
-                <div class="ubz-parameter-area">[162] Tripping setting, % <input type="number" class="ubz-params-input"
-                        min="5" max="20" value="10" id="ubz-param-input-162"></div>
-                <div class="ubz-parameter-area">[163] Protection tripping delay, seconds <input type="number"
-                        class="ubz-params-input" min="0.3" max="10" value="5" step="0.1" id="ubz-param-input-163">
-                </div>
-                <div class="ubz-parameter-area">[164] Protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-164"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Negative sequence current protection</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [162] Tripping setting, %
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="5" max="20" value="10" id="ubz-param-input-162">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [163] Protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="10" value="5" step="0.1" id="ubz-param-input-163">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [164] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-164">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Analysis of causes for negative sequence current protection tripping</summary>
-                <div class="ubz-parameter-area">[165] Negative sequence current ratio divided by negative sequence
-                    voltage ratio <input type="number" class="ubz-params-input" min="2" max="4" value="2"
-                        id="ubz-param-input-165"></div>
-                <div class="ubz-parameter-area">[166] Analysis permission <input type="number" class="ubz-params-input"
-                        min="0" max="1" value="1" id="ubz-param-input-166"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Analysis of causes for negative sequence current protection tripping</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [165] Negative sequence current ratio divided by negative sequence voltage ratio
+                        </td>
+                        <td>
+                            <div class="ubz-parameter-description"></div><input type="number" class="ubz-params-input" min="2" max="4" value="2" id="ubz-param-input-165">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [166] Analysis permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-166">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Thermal overload (motor thermal model)</summary>
-                <div class="ubz-parameter-area">[167] Protection permission <input type="number" class="ubz-params-input"
-                        min="0" max="2" value="2" id="ubz-param-input-167"></div>
-                <div class="ubz-parameter-area">[168] Double overcurrent overload protection tripping time, seconds
-                    <input type="number" class="ubz-params-input" min="10" max="120" value="60"
-                        id="ubz-param-input-168">
-                </div>
-                <div class="ubz-parameter-area">[169] Time increase ratio with a stopped motor <input type="number"
-                        class="ubz-params-input" min="1" max="4" value="1" step="0.1" id="ubz-param-input-169">
-                </div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Thermal overload (motor thermal model)</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [167] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-167">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [168] Double overcurrent overload protection tripping time, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="10" max="120" value="60" id="ubz-param-input-168">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [169] Time increase ratio with a stopped motor
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="4" value="1" step="0.1" id="ubz-param-input-169">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Undercurrent phase protection</summary>
-                <div class="ubz-parameter-area">[170] Tripping setting, % <input type="number" class="ubz-params-input"
-                        min="11" max="90" value="20" id="ubz-param-input-170"></div>
-                <div class="ubz-parameter-area">[171] Protection tripping delay, seconds <input type="number"
-                        class="ubz-params-input" min="1" max="100" value="5" id="ubz-param-input-171"></div>
-                <div class="ubz-parameter-area">[172] Protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-172"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Undercurrent phase protection</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [170] Tripping setting, %
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="11" max="90" value="20" id="ubz-param-input-170">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [171] Protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="100" value="5" id="ubz-param-input-171">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [172] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-172">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Delayed start, rotor blocking</summary>
-                <div class="ubz-parameter-area">[173] Tripping setting, ratio <input type="number"
-                        class="ubz-params-input" min="1.5" max="7" value="5" step="0.1" id="ubz-param-input-173">
-                </div>
-                <div class="ubz-parameter-area">[174] Delayed start protection tripping delay, seconds <input
-                        type="number" class="ubz-params-input" min="1" max="600" value="10" id="ubz-param-input-174">
-                </div>
-                <div class="ubz-parameter-area">[175] Rotor blocking protection tripping delay, seconds <input
-                        type="number" class="ubz-params-input" min="0.3" max="300" value="1" step="0.1"
-                        id="ubz-param-input-175">
-                </div>
-                <div class="ubz-parameter-area">[176] Protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-176"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Delayed start, rotor blocking</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [173] Tripping setting, ratio
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1.5" max="7" value="5" step="0.1" id="ubz-param-input-173">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [174] Delayed start protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="600" value="10" id="ubz-param-input-174">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [175] Rotor blocking protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="300" value="1" step="0.1" id="ubz-param-input-175">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [176] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-176">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Voltage protection</summary>
-                <div class="ubz-parameter-area">[177] Minimum line voltage, V <input type="number"
-                        class="ubz-params-input" min="270" max="415" value="320" id="ubz-param-input-177"></div>
-                <div class="ubz-parameter-area">[178] Minimum voltage protection tripping delay, seconds <input
-                        type="number" class="ubz-params-input" min="5" max="30" value="10" id="ubz-param-input-178">
-                </div>
-                <div class="ubz-parameter-area">[179] Minimum voltage protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-179"></div>
-                <div class="ubz-parameter-area">[180] Maximum line voltage, V <input type="number"
-                        class="ubz-params-input" min="330" max="475" value="415" id="ubz-param-input-180"></div>
-                <div class="ubz-parameter">[181] Maximum voltage protection tripping delay, seconds <input type="number"
-                        class="ubz-params-input" min="1" max="10" value="2" id="ubz-param-input-181">
-                </div>
-                <div class="ubz-parameter-area">[182] Maximum voltage protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="1" value="2" id="ubz-param-input-182"></div>
-                <div class="ubz-parameter-area">[183] Line voltage imbalance, V <input type="number"
-                        class="ubz-params-input" min="15" max="120" value="35" id="ubz-param-input-183"></div>
-                <div class="ubz-parameter-area">[184] Line voltage imbalance tripping delay, seconds <input
-                        type="number" class="ubz-params-input" min="1" max="30" value="5" id="ubz-param-input-184">
-                </div>
-                <div class="ubz-parameter-area">[185] Line voltage imbalance protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-185"></div>
-                <div class="ubz-parameter-area">[186] Phase sequence order protection permission <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-186"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Voltage protection</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [177] Minimum line voltage, V
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="270" max="415" value="320" id="ubz-param-input-177">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [178] Minimum voltage protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="5" max="30" value="10" id="ubz-param-input-178">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [179] Minimum voltage protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-179">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [180] Maximum line voltage, V
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="330" max="475" value="415" id="ubz-param-input-180">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [181] Maximum voltage protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="10" value="2" id="ubz-param-input-181">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [182] Maximum voltage protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="2" id="ubz-param-input-182">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [183] Line voltage imbalance, V
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="15" max="120" value="35" id="ubz-param-input-183">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [184] Line voltage imbalance tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="30" value="5" id="ubz-param-input-184">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [185] Line voltage imbalance protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="2" id="ubz-param-input-185">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [186] Phase sequence order protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-186">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Motor operation and automatic reclosing</summary>
-                <div class="ubz-parameter">[187] ARC time after undercurrent protection tripping, seconds <input
-                        type="number" class="ubz-params-input" min="0" max="900" value="600" id="ubz-param-input-187">
-                </div>
-                <div class="ubz-parameter">[188] ARC time, seconds <input type="number" class="ubz-params-input" min="0"
-                        max="900" value="5" id="ubz-param-input-188"></div>
-                <div class="ubz-parameter">[189] ARC prohibition for all faults (except voltage faults) <input
-                        type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-189">
-                </div>
-                <div class="ubz-parameter">[190] Motor operation permission after UBZ power-on<input type="number"
-                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-190"></div>
-                <div class="ubz-parameter">[191] Motor control via UBZ front panel <input type="number"
-                        class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-191"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Motor operation and automatic reclosing</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [187] ARC time after undercurrent protection tripping, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="900" value="600" id="ubz-param-input-187">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [188] ARC time, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="900" value="5" id="ubz-param-input-188">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [189] ARC prohibition for all faults (except voltage faults)
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-189">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [190] Motor operation permission after UBZ power-on
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-190">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [191] Motor control via UBZ front panel
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-191">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Temperature control</summary>
-                <div class="ubz-parameter">[192] Temperature sensor 1 type and temperature control permission <input
-                        type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-192">
-                </div>
-                <div class="ubz-parameter">[193] Motor de-energizing temperature <input type="number"
-                        class="ubz-params-input" min="0" max="100" value="80" id="ubz-param-input-193"></div>
-                <div class="ubz-parameter">[194] Sensor 1 temperature correction <input type="number"
-                        class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-194"></div>
-                <div class="ubz-parameter">[195] Temperature sensor 2 type and temperature control permission <input
-                        type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-195">
-                </div>
-                <div class="ubz-parameter">[196] Motor de-energizing temperature <input type="number"
-                        class="ubz-params-input" min="0" max="220" value="180" id="ubz-param-input-196"></div>
-                <div class="ubz-parameter">[197] Warning temperature <input type="number" class="ubz-params-input"
-                        min="0" max="220" value="170" id="ubz-param-input-197"></div>
-                <div class="ubz-parameter">[198] Sensor 2 temperature correction <input type="number"
-                        class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-198"></div>
-                <div class="ubz-parameter">[199] ARC after protection tripping <input type="number"
-                        class="ubz-params-input" min="1" max="2" value="2" id="ubz-param-input-199"></div>
-                <div class="ubz-parameter">[200] Reaction to temperaturesensor failure <input type="number"
-                        class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-200"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Temperature control</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [192] Temperature sensor 1 type and temperature control permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-192">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [193] Motor de-energizing temperature
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="100" value="80" id="ubz-param-input-193">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [194] Sensor 1 temperature correction
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-194">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [195] Temperature sensor 2 type and temperature control permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-195">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [196] Motor de-energizing temperature
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="220" value="180" id="ubz-param-input-196">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [197] Warning temperature
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="220" value="170" id="ubz-param-input-197">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [198] Sensor 2 temperature correction
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="-9" max="9" value="0" id="ubz-param-input-198">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [199] ARC after protection tripping
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="2" value="2" id="ubz-param-input-199">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [200] Reaction to temperaturesensor failure
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-200">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Motor insulation resistance</summary>
-                <div class="ubz-parameter">[201] Minimum motor insulation resistance <input type="number"
-                        class="ubz-params-input" min="0" max="20" value="5" step="5" id="ubz-param-input-201"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Motor insulation resistance</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [201] Minimum motor insulation resistance
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="20" value="5" step="5" id="ubz-param-input-201">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Miscellaneous</summary>
-                <div class="ubz-parameter">[202] Minimal number of set parameters mode <input type="number"
-                        class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-202"></div>
-                <div class="ubz-parameter">[203] Indication on UBZ display before motor power on <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-203">
-                </div>
-                <div class="ubz-parameter">[204] Parameter indication mode <input type="number" class="ubz-params-input"
-                        min="0" max="1" value="1" id="ubz-param-input-204"></div>
-                <div class="ubz-parameter">[205] Functional relay operation mode <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-205"></div>
-                <div class="ubz-parameter">[206] Timer, seconds <input type="number" class="ubz-params-input" min="0"
-                        max="300" value="30" id="ubz-param-input-206"></div>
-                <div class="ubz-parameter">[207] Equipment uptime, days <input type="number" class="ubz-params-input"
-                        min="0" max="999" value="0" disabled id="ubz-param-input-207">
-                </div>
-                <div class="ubz-parameter">[208] Motor uptime, days <input type="number" class="ubz-params-input"
-                        min="0" max="999" value="0" disabled id="ubz-param-input-208"></div>
-                <div class="ubz-parameter">[209] User access code <input type="number" class="ubz-params-input" min="0"
-                        max="9" value="0" disabled id="ubz-param-input-209"></div>
-                <div class="ubz-parameter">[210] Engineer access code <input type="number" class="ubz-params-input"
-                        min="0" max="999" value="123" disabled id="ubz-param-input-210"></div>
-                <div class="ubz-parameter">[211] Reset to factory settings <input type="number" class="ubz-params-input"
-                        min="0" max="1" value="0" id="ubz-param-input-211"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Miscellaneous</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [202] Minimal number of set parameters mode
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-202">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [203] Indication on UBZ display before motor power on
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-203">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [204] Parameter indication mode
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-204">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [205] Functional relay operation mode
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-205">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [206] Timer, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="300" value="30" id="ubz-param-input-206">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [207] Equipment uptime, days
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="999" value="0" disabled id="ubz-param-input-207">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [208] Motor uptime, days
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="999" value="0" disabled id="ubz-param-input-208">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [209] User access code
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="9" value="0" disabled id="ubz-param-input-209">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [210] Engineer access code
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="999" value="123" disabled id="ubz-param-input-210">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [211] Reset to factory settings
+                        </td>
+                        <td>
+                            <input type="number"
+                            class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-211">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Serial interface parameters (RS-485/ RS-232)</summary>
-                <div class="ubz-parameter">[212] UBZ communication address <input type="number" class="ubz-params-input"
-                        min="1" max="247" value="1" disabled id="ubz-param-input-212">
-                </div>
-                <div class="ubz-parameter">[213] Transfer rate <input type="number" class="ubz-params-input" min="0"
-                        max="1" value="0" id="ubz-param-input-213"></div>
-                <div class="ubz-parameter">[214] Adapter reaction to lossof link <input type="number"
-                        class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-214"></div>
-                <div class="ubz-parameter">[215] Response timeout detection, seconds <input type="number"
-                        class="ubz-params-input" min="0" max="120" value="0" id="ubz-param-input-215"></div>
-                <div class="ubz-parameter">[216] UBZ communication via serial channel <input type="number"
-                        class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-216"></div>
-                <div class="ubz-parameter">[217] Device version <input type="number" class="ubz-params-input" min="21"
-                        max="21" value="21" disabled id="ubz-param-input-217"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Serial interface parameters (RS-485/ RS-232)</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [212] UBZ communication address
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="1" max="247" value="1" disabled id="ubz-param-input-212">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [213] Transfer rate
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-213">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [214] Adapter reaction to lossof link
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="3" value="0" id="ubz-param-input-214">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [215] Response timeout detection, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="120" value="0" id="ubz-param-input-215">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [216] UBZ communication via serial channel
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-216">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [217] Device version
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="21" max="21" value="21" disabled id="ubz-param-input-217">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Functional relay mode parameters. Star-delta mode.</summary>
-                <div class="ubz-parameter">[218] Switching, seconds <input type="number" class="ubz-params-input"
-                        min="0.1" max="2.0" value="0.4" step="0.1" id="ubz-param-input-218"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Functional relay mode parameters. Star-delta mode.</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [218] Switching, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.1" max="2.0" value="0.4" step="0.1" id="ubz-param-input-218">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Motor phase (phases) loss, with current control</summary>
-                <div class="ubz-parameter">[219] Phase loss protection tripping delay, seconds <input type="number"
-                        class="ubz-params-input" min="0.3" max="10" value="0.5" step="0.1" id="ubz-param-input-219">
-                </div>
-                <div class="ubz-parameter">[220] Protection permission <input type="number" class="ubz-params-input"
-                        min="0" max="2" value="1" id="ubz-param-input-220"></div>
-                <div class="ubz-parameter">[221] Remote motor start andstop using the RS-232/RS485 interfaces<input
-                        type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-221">
-                </div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Motor phase (phases) loss, with current control</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [219] Phase loss protection tripping delay, seconds
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0.3" max="10" value="0.5" step="0.1" id="ubz-param-input-219">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [220] Protection permission
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="1" id="ubz-param-input-220">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [221] Remote motor start andstop using the RS-232/RS485 interfaces
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-221">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>0-20 mA analog input operation</summary>
-                <div class="ubz-parameter">[222] Upper thershold, mA <input type="number" class="ubz-params-input"
-                        min="0" max="20.0" value="10.0" step="0.1" id="ubz-param-input-222"></div>
-                <div class="ubz-parameter">[223] Lower thershold, mA <input type="number" class="ubz-params-input"
-                        min="0" max="20.0" value="1.0" step="0.1" id="ubz-param-input-223"></div>
-                <div class="ubz-parameter">[224] Control algorithm <input type="number" class="ubz-params-input" min="0"
-                        max="2" value="0" id="ubz-param-input-224"></div>
-                <div class="ubz-parameter">[225] Fault logging <input type="number" class="ubz-params-input" min="0"
-                        max="1" value="0" id="ubz-param-input-225"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">0-20 mA analog input operation</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [222] Upper thershold, mA
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="20.0" value="10.0" step="0.1" id="ubz-param-input-222">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [223] Lower thershold, mA
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="20.0" value="1.0" step="0.1" id="ubz-param-input-223">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [224] Control algorithm
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-224">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [225] Fault logging
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-225">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>0-10 V analog input operation</summary>
-                <div class="ubz-parameter">[226] Upper thershold, V <input type="number" class="ubz-params-input"
-                        min="0" max="10.0" value="5.0" input="0.1" id="ubz-param-input-226"></div>
-                <div class="ubz-parameter">[227] Lower thershold, V <input type="number" class="ubz-params-input"
-                        min="0" max="10.0" value="1.0" input="0.1" id="ubz-param-input-227"></div>
-                <div class="ubz-parameter">[228] Control algorithm <input type="number" class="ubz-params-input" min="0"
-                        max="2" value="0" id="ubz-param-input-228"></div>
-                <div class="ubz-parameter">[229] Fault logging <input type="number" class="ubz-params-input" min="0"
-                        max="1" value="0" id="ubz-param-input-229"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">0-10 V analog input operation</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [226] Upper thershold, V
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="10.0" value="5.0" input="0.1" id="ubz-param-input-226">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [227] Lower thershold, V
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="10.0" value="1.0" input="0.1" id="ubz-param-input-227">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [228] Control algorithm
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="2" value="0" id="ubz-param-input-228">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            [229] Fault logging
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="0" id="ubz-param-input-229">
+                        </td>
+                    </tr>
+                </table>
             </details>
-            <details>
-                <summary>Control of external MS</summary>
-                <div class="ubz-parameter">[230] Control of external MS working order <input type="number"
-                        class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230"></div>
+            <details class="ubz-parameters-menu-section">
+                <summary class="ubz-parameters-menu-summary">Control of external MS</summary>
+                <table>
+                    <tr>
+                        <td>
+                            [230] Control of external MS working order
+                        </td>
+                        <td>
+                            <input type="number" class="ubz-params-input" min="0" max="1" value="1" id="ubz-param-input-230">
+                        </td>
+                    </tr>
+                </table>
             </details>
         </div>
 
