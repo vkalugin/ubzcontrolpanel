@@ -101,6 +101,17 @@
         top: 1.5em;
     }
 
+    .settings-list {
+        min-width: 100%;
+        width: 100%;
+        border: 1px solid black;
+        table-layout: fixed;
+    }
+
+    .settings-list tr td {
+        border: 1px solid black;
+    }
+
     .dashboard-spinner-overlay {
         position: absolute;
         left: 50%;
@@ -129,7 +140,7 @@
     }
 
     .ubz-params-input {
-        /* float: right; */
+        /* display: flex; */
         width: 8em;
     }
 
@@ -675,7 +686,7 @@
         <div id="popup-menu-items">
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Transformers</summary>
-                <table style="height: 4em;">
+                <table class="settings-list" style="height: 4em;">
                     <tr>
                         <td>
                             [150] tPt: CT in use
@@ -696,7 +707,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Miscellaneous</summary>
-                <table style="height: 4em; min-width: 100%; align-items: center;">
+                <table class="settings-list" style="height: 4em;">
                     <tr>
                         <td>
                             [152] ind: Motor rated current, A
@@ -717,7 +728,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Overcurrent protection</summary>
-                    <table style="height: 10em;">
+                    <table class="settings-list" style="height: 10em;">
                         <tr>
                             <td>
                                 [154] i^P: Overcurrent protection type
@@ -762,13 +773,15 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Protection against ground faults</summary>
-                <table style="height: 6em;">
+                <table class="settings-list" style="height: 6em;">
                     <tr>
                         <td>
                             [159] i_S: Current fault tripping setting, A
                         </td>
-                        <td style="text-align: end;">
-                            <input type="number" class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159">
+                        <td style="max-width: 8em;">
+                            <div>
+                                <input type="number" class="ubz-params-input" min="0.3" max="5.0" value="0.5" step="0.1" id="ubz-param-input-159">
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -791,7 +804,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Negative sequence current protection</summary>
-                <table style="height: 6em;">
+                <table class="settings-list" style="height: 6em;">
                     <tr>
                         <td>
                             [162] ioS: Tripping setting, %
@@ -820,7 +833,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Analysis of causes for negative sequence current protection tripping</summary>
-                <table style="height: 4em;">
+                <table class="settings-list" style="height: 4em;">
                     <tr>
                         <td>
                             [165] iOS: Negative sequence current ratio divided by negative sequence voltage ratio
@@ -841,7 +854,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Thermal overload (motor thermal model)</summary>
-                <table style="height: 6em;">
+                <table class="settings-list" style="height: 6em;">
                     <tr>
                         <td>
                             [167] dtr: Protection permission
@@ -870,7 +883,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Undercurrent phase protection</summary>
-                <table style="height: 6em;">
+                <table class="settings-list" style="height: 6em;">
                     <tr>
                         <td>
                             [170] i=S: Tripping setting, %
@@ -899,7 +912,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Delayed start, rotor blocking</summary>
-                <table style="height: 8em;">
+                <table class="settings-list" style="height: 8em;">
                     <tr>
                         <td>
                             [173] PPS: Tripping setting, ratio
@@ -936,7 +949,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Voltage protection</summary>
-                <table style="height: 20em;">
+                <table class="settings-list" style="height: 20em;">
                     <tr>
                         <td>
                             [177] U=S: Minimum line voltage, V
@@ -1021,7 +1034,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Motor operation and automatic reclosing</summary>
-                <table style="height: 10em;">
+                <table class="settings-list" style="height: 10em;">
                     <tr>
                         <td>
                             [187] Atn: ARC time after undercurrent protection tripping, seconds
@@ -1066,7 +1079,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Temperature control</summary>
-                <table style="height: 18em;">
+                <table class="settings-list" style="height: 18em;">
                     <tr>
                         <td>
                             [192] C1r: Temperature sensor 1 type and temperature control permission
@@ -1143,7 +1156,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Motor insulation resistance</summary>
-                <table style="height: 2em;">
+                <table class="settings-list" style="height: 2em;">
                     <tr>
                         <td>
                             [201] rid: Minimum motor insulation resistance
@@ -1156,7 +1169,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Miscellaneous</summary>
-                <table style="height: 20em;">
+                <table class="settings-list" style="height: 20em;">
                     <tr>
                         <td>
                             [202] Sin: Minimal number of set parameters mode
@@ -1242,7 +1255,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Serial interface parameters (RS-485/ RS-232)</summary>
-                <table style="height: 12em;">
+                <table class="settings-list" style="height: 12em;">
                     <tr>
                         <td>
                             [212] rSA: UBZ communication address
@@ -1295,7 +1308,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Functional relay mode parameters. Star-delta mode.</summary>
-                <table style="height: 2em;">
+                <table class="settings-list" style="height: 2em;">
                     <tr>
                         <td>
                             [218] Ftt: Switching, seconds
@@ -1308,7 +1321,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Motor phase (phases) loss, with current control</summary>
-                <table style="height: 6em;">
+                <table class="settings-list" style="height: 6em;">
                     <tr>
                         <td>
                             [219] ibt: Phase loss protection tripping delay, seconds
@@ -1337,7 +1350,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">0-20 mA analog input operation</summary>
-                <table style="height: 8em;">
+                <table class="settings-list" style="height: 8em;">
                     <tr>
                         <td>
                             [222] Ait: Upper thershold, mA
@@ -1374,7 +1387,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">0-10 V analog input operation</summary>
-                <table style="height: 8em;">
+                <table class="settings-list" style="height: 8em;">
                     <tr>
                         <td>
                             [226] AUt: Upper thershold, V
@@ -1411,7 +1424,7 @@
             </details>
             <details class="ubz-parameters-menu-section">
                 <summary class="ubz-parameters-menu-summary">Control of external MS</summary>
-                <table style="height: 2em;">
+                <table class="settings-list" style="height: 2em;">
                     <tr>
                         <td>
                             [230] CCi: Control of external MS working order
