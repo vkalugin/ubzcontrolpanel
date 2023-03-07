@@ -138,19 +138,20 @@
     }
 
     .ubz-params-input {
-        /* display: flex; */
         width: 8em;
     }
 
     .ubz-parameter-description {
         max-width: 75%;
         float: left;
-        /* padding-top: 5px;
-        padding-bottom: 5px; */
     }
 
     .ubz-value {
         float: right;
+    }
+
+    .ubz-value-text {
+        color: #909090;
     }
 
     .ubz-input {
@@ -301,15 +302,15 @@
                 <div class="dashboard-group">
                     <details>
                         <summary>Additional</summary>
-                        <div>Sensor 1 temperature: <span id="sensor-1-temperature-value" class="ubz-value">Off</span>
+                        <div>Sensor 1 temperature: <span id="sensor-1-temperature-value" class="ubz-value ubz-value-text">Off</span>
                         </div>
-                        <div>Sensor 2 temperature: <span id="sensor-2-temperature-value" class="ubz-value">Off</span>
+                        <div>Sensor 2 temperature: <span id="sensor-2-temperature-value" class="ubz-value ubz-value-text">Off</span>
                         </div>
-                        <div>Current input: <span id="current-input-value" class="ubz-value">0.0</span> mA</div>
-                        <div>Analog input: <span id="analog-input-value" class="ubz-value">0.0</span> V</div>
-                        <div>Frequency: <span id="frequency-value" class="ubz-value">50.0</span> Hz</div>
-                        <div>Insulation resistance: <span id="insulation-resistance-value" class="ubz-value">20.0</span>
-                            MOhm</div>
+                        <div>Current input: <span id="current-input-value" class="ubz-value ubz-value-text">0.0</span> <span class="ubz-value-text">mA</span></div>
+                        <div>Analog input: <span id="analog-input-value" class="ubz-value ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
+                        <div>Frequency: <span id="frequency-value" class="ubz-value ubz-value-text">50.0</span> <span class="ubz-value-text">Hz</span></div>
+                        <div>Insulation resistance: <span id="insulation-resistance-value" class="ubz-value ubz-value-text">20.0</span>
+                            <span class="ubz-value-text">MOhm</span></div>
                     </details>
                 </div>
 
@@ -410,15 +411,15 @@
                     <div>Phase 1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
                             <div class="valuebar-inner bg-success" id="phase-1-current-rms-bar-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-1-current-rms-value">0.0</span> A</div>
+                            role="status"></span> <span id="phase-1-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></div>
                     <div>Phase 2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
                             <div class="valuebar-inner bg-success" id="phase-2-current-rms-bar-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-2-current-rms-value">0.0</span> A</div>
+                            role="status"></span> <span id="phase-2-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></div>
                     <div>Phase 3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
                             <div class="valuebar-inner bg-success" id="phase-3-current-rms-bar-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-3-current-rms-value">0.0</span> A</div>
+                            role="status"></span> <span id="phase-3-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></div>
                 </div>
                 <div class="dashboard-group">
                     <details>
@@ -429,13 +430,13 @@
                                 <div class="valuebar" id="negative-sequence-current-bar" value="0">
                                     <div class="valuebar-inner bg-success" id="negative-sequence-current-bar-inner">
                                     </div>
-                                </div> <span id="negative-sequence-current-value">0.0</span> A
+                                </div> <span id="negative-sequence-current-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span>
                             </div>
                             <div>
                                 <p>Zero sequence current:</p>
                                 <div class="valuebar" id="zero-sequence-current-bar" value="0">
                                     <div class="valuebar-inner bg-success" id="zero-sequence-current-bar-inner"></div>
-                                </div> <span id="zero-sequence-current-value">0.0</span> A
+                                </div> <span id="zero-sequence-current-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span>
                             </div>
                         </div>
 
@@ -449,26 +450,26 @@
                                 <tr>
                                     <td>Phase 1:</td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="avg-current-value-phase-1">0.0</span> A</td>
+                                            role="status"></span> <span id="avg-current-value-phase-1" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                     <td rowspan="3">
-                                        <span id="current-average-for-time-value">60.0</span> sec
+                                        <span id="current-average-for-time-value" class="ubz-value-text">60.0</span> <span class="ubz-value-text">sec</span>
                                     </td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="max-current-value-phase-1">0.0</span> A</td>
+                                            role="status"></span> <span id="max-current-value-phase-1" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                 </tr>
                                 <tr>
                                     <td>Phase 2:</td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="avg-current-value-phase-2">0.0</span> A</td>
+                                            role="status"></span> <span id="avg-current-value-phase-2" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="max-current-value-phase-2">0.0</span> A</td>
+                                            role="status"></span> <span id="max-current-value-phase-2" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                 </tr>
                                 <tr>
                                     <td>Phase 3:</td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="avg-current-value-phase-3">0.0</span> A</td>
+                                            role="status"></span> <span id="avg-current-value-phase-3" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                     <td><span class="spinner-border spinner-border-sm reading-process-spinner"
-                                            role="status"></span> <span id="max-current-value-phase-3">0.0</span> A</td>
+                                            role="status"></span> <span id="max-current-value-phase-3" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -476,10 +477,10 @@
                         <div class="dashboard-group">
                             <div>Motor start current: <span
                                     class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="motor-start-current-value">0.0</span> A</div>
+                                    role="status"></span> <span id="motor-start-current-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></div>
                             <div>Overload current: <span
                                     class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="overload-current-value">0.0</span> A</div>
+                                    role="status"></span> <span id="overload-current-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span></div>
                         </div>
 
                     </details>
@@ -493,17 +494,17 @@
                             <div class="valuebar-inner bg-success" id="phase-1-voltage-bar-inner"></div>
                             <div class="overvaluebar-inner bg-warning" id="phase-1-voltage-bar-over-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-1-voltage-value">0.0</span> V</div>
+                            role="status"></span> <span id="phase-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
                     <div>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
                             <div class="valuebar-inner bg-success" id="phase-2-voltage-bar-inner"></div>
                             <div class="overvaluebar-inner bg-warning" id="phase-2-voltage-bar-over-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-2-voltage-value">0.0</span> V</div>
+                            role="status"></span> <span id="phase-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
                     <div>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
                             <div class="valuebar-inner bg-success" id="phase-3-voltage-bar-inner"></div>
                             <div class="overvaluebar-inner bg-warning" id="phase-3-voltage-bar-over-inner"></div>
                         </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                            role="status"></span> <span id="phase-3-voltage-value">0.0</span> V</div>
+                            role="status"></span> <span id="phase-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
                 </div>
                 <div class="dashboard-group">
                     <details>
@@ -519,7 +520,7 @@
                                     </div>
                                 </div>
                                 <span class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="line-1-voltage-value">0.0</span> V
+                                    role="status"></span> <span id="line-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
                             </div>
                             <div>BC:
                                 <div class="valuebar" id="line-2-voltage-bar" value="0">
@@ -530,7 +531,7 @@
                                     </div>
                                 </div>
                                 <span class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="line-2-voltage-value">0.0</span> V
+                                    role="status"></span> <span id="line-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
                             </div>
                             <div>CA:
                                 <div class="valuebar" id="line-3-voltage-bar" value="0">
@@ -541,7 +542,7 @@
                                     </div>
                                 </div>
                                 <span class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="line-3-voltage-value">0.0</span> V
+                                    role="status"></span> <span id="line-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
                             </div>
                         </div>
                         <p>
@@ -550,18 +551,18 @@
                             <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
                                 <div class="valuebar-inner bg-success" id="negative-sequence-voltage-bar-inner"></div>
                             </div> <span class="spinner-border spinner-border-sm reading-process-spinner"
-                                role="status"></span> <span id="negative-sequence-voltage-value">0.0</span> V
+                                role="status"></span> <span id="negative-sequence-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
                         </div>
                         </p>
                         <p>
                             Positive sequence voltage: <span
                                 class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
-                            <span id="positive-sequence-voltage-value">0</span> V
+                            <span id="positive-sequence-voltage-value" class="ubz-value-text">0</span> <span class="ubz-value-text">V</span>
                         </p>
                         <p>
                             Zero sequence voltage: <span
                                 class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
-                            <span id="zero-sequence-voltage-value">0</span> V
+                            <span id="zero-sequence-voltage-value" class="ubz-value-text">0</span> <span class="ubz-value-text">V</span>
                         </p>
                     </details>
                 </div>
@@ -574,7 +575,7 @@
                         <div class="valuebar-inner bg-success" id="time-before-ar-bar-inner"></div>
                     </div>
                     <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                        id="time-before-ar-string"> Off</span>
+                        id="time-before-ar-string" class="ubz-value-text"> Off</span>
                 </div>
                 <div class="dashboard-group">
                     <details>
@@ -582,18 +583,18 @@
 
                         <div>Startup time: <span class="ubz-value"><span
                                     class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="startup-time-value">0</span> sec</span></div>
+                                    role="status"></span> <span class="ubz-value-text" id="startup-time-value">0</span> <span class="ubz-value-text">sec</span></span></div>
                         <div>Time before overload tripping:
                             <span class="ubz-value">
                                 <span class="spinner-border spinner-border-sm reading-process-spinner"
-                                    role="status"></span> <span id="time-before-overload-tripping-string">No</span>
+                                    role="status"></span> <span id="time-before-overload-tripping-string" class="ubz-value-text">No</span>
                             </span>
                         </div>
                         <div>Wait time after overload deenergize:
                             <span class="ubz-value">
                                 <span class="spinner-border spinner-border-sm reading-process-spinner"
                                     role="status"></span> <span
-                                    id="wait-time-after-overload-deenergize-string">No</span>
+                                    id="wait-time-after-overload-deenergize-string" class="ubz-value-text">No</span>
                         </div>
                         </span>
                     </details>
@@ -603,13 +604,13 @@
                     <header class="dashboard-header">Power</header>
                     <div>Full power: <span class="ubz-value"><span
                                 class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
-                            <span id="full-power-value">-</span></span></div>
+                            <span id="full-power-value" class="ubz-value-text">-</span></span></div>
                     <div>Active power: <span class="ubz-value"><span
                                 class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
-                            <span id="active-power-value">-</span></span></div>
+                            <span id="active-power-value" class="ubz-value-text">-</span></span></div>
                     <div>Reactive power: <span class="ubz-value"><span
                                 class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
-                            <span id="reactive-power-value">-</span></span></div>
+                            <span id="reactive-power-value" class="ubz-value-text">-</span></span></div>
                     <div>
                         <select id="power-characteristic-value-1" class="power-characteristic"
                             name="power-characteristic-value-1">
@@ -627,7 +628,7 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
-                        <span id="power-show-value-1" class="ubz-value">
+                        <span id="power-show-value-1" class="ubz-value ubz-value-text">
                             -
                         </span>
                     </div>
@@ -648,7 +649,7 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
-                        <span id="power-show-value-2" class="ubz-value">
+                        <span id="power-show-value-2" class="ubz-value ubz-value-text">
                             -
                         </span>
                     </div>
@@ -669,7 +670,7 @@
                             <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
                             <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
                         </select>
-                        <span id="power-show-value-3" class="ubz-value">-</span>
+                        <span id="power-show-value-3" class="ubz-value ubz-value-text">-</span>
                     </div>
                 </div>
             </div>
@@ -677,6 +678,7 @@
     </div>
 
     <div class="substrat" id="substarat-popup-menu"></div>
+
     <div class="popup-menu" id="ubz-parameters-menu">
         <div class="popup-header-background">
             <button type="button" class="close close-button" aria-label="Close" id="ubz-parameters-close"><span
