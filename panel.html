@@ -39,6 +39,12 @@
         margin-right: 0.25em;
     }
 
+    .indicator {
+        display: inline-block;
+        width: 20%;
+        margin-right: 2.5%;
+    }
+
     .valuebar {
         min-width: 100px;
         height: 8px;
@@ -329,15 +335,22 @@
                 <header class="dashboard-header">UBZ Fault Status</header>
 
                 <div class="dashboard-group">
-                    <button type="button" class="btn btn-danger" id="fault-indicator" disabled>Fault</button>
-                    <button type="button" class="btn btn-warning" id="ext-in-indicator" disabled>Ext. in.</button>
-                    <button type="button" class="btn btn-success" id="ar-indicator" disabled>AR</button>
-                    <button type="button" class="btn btn-info" id="rc-indicator" disabled>RC</button>
-                    <button type="button" class="btn btn-vis" id="reset-fault-button">
-                        <span class="spinner-border spinner-border-sm spinner-invisible" role="status"
-                            aria-hidden="true" id="reset-fault-button-spinner"></span>
-                        Reset Fault
-                    </button>
+                    <div style="margin: 10px; text-align: center;">
+                        <div class="indicator bg-danger" id="fault-indicator">Fault</div>
+                        <div class="indicator bg-warning" id="ext-in-indicator">Ext. in.</div>
+                        <div class="indicator bg-success" id="ar-indicator">AR</div>
+                        <div class="indicator bg-info" id="rc-indicator">RC</div>
+                    </div>
+                    
+
+                    <div style="margin: 10px; text-align: center;">
+                        <button type="button" class="btn btn-vis" id="reset-fault-button">
+                            <span class="spinner-border spinner-border-sm spinner-invisible" role="status"
+                                aria-hidden="true" id="reset-fault-button-spinner"></span>
+                            Reset Fault
+                        </button>
+                    </div>
+                    
 
                 </div>
                 <div class="dashboard-group">
