@@ -195,22 +195,20 @@
 
     .faults-table {
         width: 100%;
+        /* max-height: 27em; */
     }
 
     .faults-table tbody {
         background-color: transparent;
-        height: 27em;
         overflow: auto;
+        width: 100%;
+        max-height: 300px;
     }
 
     .faults-table thead tr {
         width: 100%;
-        display: block;
+        /* display: block; */
         height: 1.5em;
-    }
-
-    .faults-table tbody {
-        width: 100%;
     }
 
     .faults-table th {
@@ -218,6 +216,11 @@
         padding: 4px;
         border: 3px solid transparent;
         background-color: whitesmoke;
+        height: 1.5em;
+    }
+
+    .faults-table td {
+        height: 1.5em;
     }
 
     #dashboard-table-currents tbody {
@@ -355,20 +358,23 @@
                 </div>
                 <div class="dashboard-group">
                     <table class="faults-table">
-                        <tr>
-                            <th>
-                                Name
-                            </th>
-                            <th>
-                                ###
-                            </th>
-                            <th>
-                                Value
-                            </th>
-                            <th>
-                                Time
-                            </th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    ###
+                                </th>
+                                <th>
+                                    Value
+                                </th>
+                                <th>
+                                    Time
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="faults-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -2141,7 +2147,15 @@
     var rowIsEven = false;
 
     function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
-        let tableBody = document.getElementsByTagName("tbody").item(0);
+        let tableBody = document.querySelector("#faults-table-body");
+
+        console.log(parseInt(tableBody.style.height));
+
+        if (tableBody.style.height === "") {
+            tableBody.style.height = "20px";
+            console.log(tableBody.style.height);
+        }
+
         let row = document.createElement("tr");
         if (rowIsEven) {
             row.style.backgroundColor = "whitesmoke";
@@ -2166,6 +2180,17 @@
 
         tableBody.appendChild(row);
         rowIsEven = !rowIsEven;
+
+        if (parseInt(tableBody.style.height) < 300) {
+            let h = (parseInt(tableBody.style.height) + 20).toString() + "px";
+            console.log(h);
+            tableBody.style.height = h;
+        } else {
+            tableBody.style.height = "300px";
+        }
+
+        // console.log(parseInt(tableBody.style.height));
+        // tableBody.style.maxHeight = "27em";
     }
 </script>
 
@@ -3040,6 +3065,8 @@
 
             faultsPrev = faultsCurr;
         }
+
+        addRow("fault.name", "fault.mnemonic", "0", "time");
 
         if (mapRegisters.get(100) != undefined) {
             document.querySelector("#phase-1-current-rms-value").innerHTML = (mapRegisters.get(100) * 0.1).toFixed(1);
