@@ -195,7 +195,6 @@
 
     .faults-table {
         width: 100%;
-        /* max-height: 27em; */
     }
 
     .faults-table tbody {
@@ -206,9 +205,13 @@
         border: 1px solid green;
     }
 
+    .faults-table thead {
+        display: block;
+        border: 1px solid red;
+    }
+
     .faults-table thead tr {
         width: 100%;
-        /* display: block; */
         height: 1.5em;
     }
 
@@ -218,6 +221,7 @@
         border: 3px solid transparent;
         background-color: whitesmoke;
         height: 1.5em;
+        min-width: 100%;
     }
 
     .faults-table td {
@@ -361,7 +365,7 @@
                 </div>
                 <div class="dashboard-group">
                     <table class="faults-table">
-                        <thead>
+                        <thead id="faults-table-head">
                             <tr>
                                 <th>
                                     Name
@@ -2152,13 +2156,6 @@
     function addRow(col1innerHtml, col2innerHtml, col3innerHtml, col4innerHtml) {
         let tableBody = document.querySelector("#faults-table-body");
 
-        // console.log(parseInt(tableBody.style.height));
-
-        // if (tableBody.style.height === "") {
-        //     tableBody.style.height = "20px";
-        //     console.log(tableBody.style.height);
-        // }
-
         let row = document.createElement("tr");
         if (rowIsEven) {
             row.style.backgroundColor = "whitesmoke";
@@ -2184,16 +2181,8 @@
         tableBody.appendChild(row);
         rowIsEven = !rowIsEven;
 
-        // if (parseInt(tableBody.style.height) < 300) {
-        //     let h = (parseInt(tableBody.style.height) + 20).toString() + "px";
-        //     console.log(h);
-        //     tableBody.style.height = h;
-        // } else {
-        //     tableBody.style.height = "300px";
-        // }
-
-        // console.log(parseInt(tableBody.style.height));
-        // tableBody.style.maxHeight = "27em";
+        // document.querySelector("#faults-table-head").style.display = "none";
+        // document.querySelector("#faults-table-head").style.display = "block";
     }
 </script>
 
