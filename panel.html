@@ -195,7 +195,9 @@
 
     .faults-table {
         width: 100%;
-        /* table-layout: fixed; */
+        display: block;
+        max-height: 320px;
+        overflow: auto;
     }
 
     .faults-table tbody {
@@ -208,7 +210,7 @@
     }
 
     .faults-table thead {
-        display: block;
+        /* display: block; */
         border: 1px solid red;
     }
 
@@ -369,7 +371,7 @@
                     
 
                 </div>
-                <div class="dashboard-group" style="overflow-y: auto; max-height: 320px;">
+                <div class="dashboard-group">
                     <table class="faults-table">
                         <thead id="faults-table-head">
                             <colgroup>
