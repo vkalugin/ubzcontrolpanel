@@ -98,8 +98,9 @@
     }
 
     .popup-footer-background {
-        padding-top: 10px;
-        padding-bottom: 5px;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        padding-left: 10px;
     }
 
     .close-button {
@@ -236,6 +237,8 @@
             background-color: white;
             display: none;
             text-align: left;
+            min-width: none;
+            width: 100%;
         }
     }
 </style>
@@ -1462,7 +1465,7 @@
         </div>
 
         <div class="popup-footer-background">
-            <div>
+            <div style="margin-top: 0; margin-bottom: 5px;">
                 <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
                 parameters
             </div>
