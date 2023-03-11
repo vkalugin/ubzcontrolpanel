@@ -168,6 +168,8 @@
 
     .ubz-parameters-menu-summary {
         padding-top: 5px;
+        max-width: 90%;
+        overflow-wrap: break-word;
     }
 
     #heating-graph {
@@ -226,6 +228,10 @@
         height: 6em;
     }
 
+    #narrow-screen-hack {
+        display: none;
+    }
+
     @media only screen and (max-device-width: 1440px) {
         .power-characteristic {
             padding: 10px;
@@ -240,7 +246,21 @@
             display: none;
             text-align: left;
             min-width: none;
-            max-width: 100%;
+            max-width: 90%;
+        }
+
+        .settings-list {
+            width: 90%;
+        }
+
+        .ubz-parameters-menu-summary {
+            max-width: 90%;
+            overflow-wrap: break-word;
+        }
+
+        #narrow-screen-hack {
+            display: block;
+            margin-top: 5px;
         }
     }
 </style>
@@ -1474,6 +1494,7 @@
             <div>
                 <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to
                     device</button>
+                    <div id="narrow-screen-hack"></div>
                 <button type="button" class="btn btn-vis" id="button-read-ubz-params">Read parameters from
                     device</button>
             </div>
