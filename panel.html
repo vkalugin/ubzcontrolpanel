@@ -70,7 +70,7 @@
         width: 4em;
     }
 
-    .substrat {
+    .substrate {
         position: absolute;
         left: 0;
         top: 0;
@@ -723,7 +723,7 @@
         </div>
     </div>
 
-    <div class="substrat" id="substarat-popup-menu"></div>
+    <div class="substrate" id="substrate-popup-menu"></div>
 
     <div class="popup-menu" id="ubz-parameters-menu">
         <div class="popup-header-background">
@@ -2908,12 +2908,17 @@
     switchableGraphsByCheckbox("#minutes-amperage-graph", "#div-amperage-phases-graph", "#div-amperage-phases-graph-m");
 
     document.querySelector("#ubz-parameters-button").addEventListener("click", function () {
-        document.querySelector("#substarat-popup-menu").style.display = 'block'
+        document.querySelector("#substrate-popup-menu").style.display = 'block';
         document.querySelector("#ubz-parameters-menu").style.display = 'block';
     });
 
+    document.querySelector("#substrate-popup-menu").addEventListener("click", function () {
+        document.querySelector("#substrate-popup-menu").style.display = 'none';
+        document.querySelector("#ubz-parameters-menu").style.display = 'none';
+    })
+
     document.querySelector("#ubz-parameters-close").addEventListener("click", function () {
-        document.querySelector("#substarat-popup-menu").style.display = 'none'
+        document.querySelector("#substrate-popup-menu").style.display = 'none';
         document.querySelector("#ubz-parameters-menu").style.display = 'none';
     });
 
