@@ -3081,8 +3081,6 @@
             faultsPrev = faultsCurr;
         }
 
-        addRow("fault.name", "fault.mnemonic", "0", "time");
-
         if (mapRegisters.get(100) != undefined) {
             document.querySelector("#phase-1-current-rms-value").innerHTML = (mapRegisters.get(100) * 0.1).toFixed(1);
             document.querySelector("#phase-1-current-rms-bar").value = mapRegisters.get(100);
