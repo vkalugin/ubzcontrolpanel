@@ -1751,7 +1751,6 @@
   <script type="text/javascript">
     const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
-    const CONTAINER = document.querySelector("#ubz-vis-container");
     const DEVICE_ID = document.querySelector("#vis-wrapper alias").getAttribute("device").replace("#", "");
 
     async function postResponse(body, url) {
@@ -1842,7 +1841,7 @@
 
       const orgId = netInfo.orgId;
 
-      const bodyParam = CONTAINER.querySelector("alias").getAttribute("device") + ">" + reg.toString();
+      const bodyParam = document.querySelector("#vis-wrapper alias").getAttribute("device") + ">" + reg.toString();
 
       let paramId = await postResponse(bodyParam, `${API_BASE_URL}/v1/org/${orgId}/params/get-id-by-reference/`);
 
