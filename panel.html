@@ -1752,7 +1752,7 @@
     const API_TOKEN = document.querySelector(".vis-view").getAttribute("apitoken");
     const API_BASE_URL = document.querySelector(".vis-view").getAttribute("apibaseurl");
     const CONTAINER = document.querySelector("#ubz-vis-container");
-    const DEVICE_ID = CONTAINER.querySelector("alias").getAttribute("device").replace("#", "");
+    const DEVICE_ID = document.querySelector("#vis-wrapper alias").getAttribute("device").replace("#", "");
 
     async function postResponse(body, url) {
       const res = await new Promise((resolve, reject) => {
