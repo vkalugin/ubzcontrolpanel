@@ -1839,7 +1839,7 @@
 
       const orgId = netInfo.orgId;
 
-      const bodyParam = document.querySelector("#vis-wrapper alias").getAttribute("device") + ">" + reg.toString();
+      const bodyParam = DEVICE_STR + ">" + reg.toString();
 
       let paramId = await postResponse(bodyParam, `${API_BASE_URL}/v1/org/${orgId}/params/get-id-by-reference/`);
 
