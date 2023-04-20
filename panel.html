@@ -1534,6 +1534,8 @@
           <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
           parameters
         </div>
+        <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true"
+                  id="readwrite-params-spinner"></span>
         <div>
           <button type="button" class="btn btn-vis" id="button-write-ubz-params">Write parameters to
             device</button>
@@ -2972,24 +2974,30 @@
 
     document.querySelector("#button-write-ubz-params").addEventListener("click", async function () {
       if (document.querySelector("#checkbox-write-only-modified-ubz-params").checked) {
+        document.querySelector("#readwrite-params-spinner").classList.remove("spinner-invisible");
         for (let i = 150; i <= 230; i++) {
           if (ubzParamsChanged[i - 150]) {
             await writeRegValues(i, [document.querySelector("#ubz-param-input-" + i.toString()).value]);
           }
         }
+        document.querySelector("#readwrite-params-spinner").classList.add("spinner-invisible");
       } else {
         let values = new Array();
+        document.querySelector("#readwrite-params-spinner").classList.remove("spinner-invisible");
         for (let i = 150; i <= 230; i++) {
           values.push(document.querySelector("#ubz-param-input-" + i.toString()).value);
         }
         await writeRegValues(150, values);
+        document.querySelector("#readwrite-params-spinner").classList.add("spinner-invisible");
       }
 
       ubzParamsChanged.fill(false);
     });
 
     document.querySelector("#button-read-ubz-params").addEventListener("click", async function () {
+      document.querySelector("#readwrite-params-spinner").classList.remove("spinner-invisible");
       const ubzParams = await rawReadRegs(150, 81); // registers 150-230
+      document.querySelector("#readwrite-params-spinner").classList.add("spinner-invisible");
 
       if (ubzParams.ok) {
         for (let i = 150; i <= 230; i++) {
