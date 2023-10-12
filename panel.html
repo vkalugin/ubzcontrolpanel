@@ -1822,6 +1822,16 @@
       return res;
     }
 
+    // backported from rpm-416
+    async function readLongReg(address) {
+      const regs = await rawReadRegs(address, 2);
+      if (regs.ok) {
+        return ((regs.ok[0]) << 16) + regs.ok[1];
+      } else {
+        return undefined;
+      }
+    }
+
     async function writeRegValues(address, values) {
       const deviceInfo = await getResponse(`${API_BASE_URL}/v1/device/${DEVICE_ID}/`);
 
@@ -2278,16 +2288,10 @@
           }
         }
 
-        const regsPower = await rawReadRegs(135, 3);
-        if (regsPower.ok) {
-          mapRegisters.set(135, regsPower.ok[0]);
-          mapRegisters.set(137, regsPower.ok[1]);
-          mapRegisters.set(139, regsPower.ok[2]);
-        } else {
-          mapRegisters.set(135, undefined);
-          mapRegisters.set(137, undefined);
-          mapRegisters.set(139, undefined);
-        }
+        mapRegisters.set(135, await readLongReg(135));
+        mapRegisters.set(137, await readLongReg(137));
+        mapRegisters.set(139, await readLongReg(139));
+
         spinnersOff(readSpinnersList);
 
         const regs150_153 = await rawReadRegs(150, 4);
@@ -2319,12 +2323,7 @@
       }
 
       if (cycleNumber % PRIORITY_DIVISOR_LOW == 0) {
-        const reg133 = await rawReadRegs(133, 1);
-        if (reg133.ok) {
-          mapRegisters.set(133, reg133.ok[0]);
-        } else {
-          mapRegisters.set(133, undefined);
-        }
+        mapRegisters.set(await readLongReg(133));
 
         const reg203 = await rawReadRegs(203, 1);
         if (reg203.ok) {
@@ -2779,9 +2778,9 @@
           {
             const RMSVoltagePhase1 = mapRegisters.get(114);
             const RMSCurrentPhase1 = mapRegisters.get(100);
-            const cosPhiPhase1 = await rawReadRegs(141, 1);
-            if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1.ok) {
-              const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * 0.1 * cosPhiPhase1.ok[0] * 0.001;
+            const cosPhiPhase1 = await readLongReg(141);
+            if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+              const phase1activePower = RMSVoltagePhase1 * RMSCurrentPhase1 * 0.1 * cosPhiPhase1 * 0.001;
               outstring = phase1activePower.toString();
             }
           }
@@ -2790,9 +2789,9 @@
           {
             const RMSVoltagePhase2 = mapRegisters.get(115);
             const RMSCurrentPhase2 = mapRegisters.get(101);
-            const cosPhiPhase2 = await rawReadRegs(143, 1);
-            if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2.ok) {
-              const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * 0.1 * cosPhiPhase2.ok[0] * 0.001;
+            const cosPhiPhase2 = await readLongReg(143);
+            if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+              const phase2activePower = RMSVoltagePhase2 * RMSCurrentPhase2 * 0.1 * cosPhiPhase2 * 0.001;
               outstring = phase2activePower.toString();
             }
           }
@@ -2801,9 +2800,9 @@
           {
             const RMSVoltagePhase3 = mapRegisters.get(116);
             const RMSCurrentPhase3 = mapRegisters.get(102);
-            const cosPhiPhase3 = await rawReadRegs(145, 1);
-            if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3.ok) {
-              const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * 0.1 * cosPhiPhase3.ok[0] * 0.001;
+            const cosPhiPhase3 = await readLongReg(145);
+            if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+              const phase3activePower = RMSVoltagePhase3 * RMSCurrentPhase3 * 0.1 * cosPhiPhase3 * 0.001;
               outstring = phase3activePower.toString();
             }
           }
@@ -2812,9 +2811,9 @@
           {
             const RMSVoltagePhase1 = mapRegisters.get(114);
             const RMSCurrentPhase1 = mapRegisters.get(100);
-            const cosPhiPhase1 = await rawReadRegs(141, 1);
-            if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1.ok) {
-              const sinPhiPhase1 = sinFromCos(cosPhiPhase1.ok[0] * 0.001);
+            const cosPhiPhase1 = await readLongReg(141);
+            if (RMSVoltagePhase1 != undefined && RMSCurrentPhase1 != undefined && cosPhiPhase1 != undefined) {
+              const sinPhiPhase1 = sinFromCos(cosPhiPhase1 * 0.001);
               const phase1reactivePower = RMSVoltagePhase1 * RMSCurrentPhase1 * 0.1 * sinPhiPhase1;
               outstring = phase1reactivePower.toString();
             }
@@ -2824,9 +2823,9 @@
           {
             const RMSVoltagePhase2 = mapRegisters.get(115);
             const RMSCurrentPhase2 = mapRegisters.get(101);
-            const cosPhiPhase2 = await rawReadRegs(143, 1);
-            if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2.ok) {
-              const sinPhiPhase2 = sinFromCos(cosPhiPhase2.ok[0] * 0.001);
+            const cosPhiPhase2 = await readLongReg(143);
+            if (RMSVoltagePhase2 != undefined && RMSCurrentPhase2 != undefined && cosPhiPhase2 != undefined) {
+              const sinPhiPhase2 = sinFromCos(cosPhiPhase2 * 0.001);
               const phase2reactivePower = RMSVoltagePhase2 * RMSCurrentPhase2 * 0.1 * sinPhiPhase2;
               outstring = phase2reactivePower.toString();
             }
@@ -2836,9 +2835,9 @@
           {
             const RMSVoltagePhase3 = mapRegisters.get(116);
             const RMSCurrentPhase3 = mapRegisters.get(102);
-            const cosPhiPhase3 = await rawReadRegs(145, 1);
-            if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3.ok) {
-              const sinPhiPhase3 = sinFromCos(cosPhiPhase3.ok[0] * 0.001);
+            const cosPhiPhase3 = await readLongReg(145);
+            if (RMSVoltagePhase3 != undefined && RMSCurrentPhase3 != undefined && cosPhiPhase3 != undefined) {
+              const sinPhiPhase3 = sinFromCos(cosPhiPhase3 * 0.001);
               const phase3reactivePower = RMSVoltagePhase3 * RMSCurrentPhase3 * 0.1 * sinPhiPhase3;
               outstring = phase3reactivePower.toString();
             }
@@ -2846,27 +2845,27 @@
           break;
         case "phase-1-cos-phi":
           {
-            const cosPhiPhase1Raw = await rawReadRegs(141, 1);
-            if (cosPhiPhase1Raw.ok) {
-              const cosPhiPhase1 = cosPhiPhase1Raw.ok[0] * 0.001;
+            const cosPhiPhase1Raw = await readLongReg(141); 
+            if (cosPhiPhase1Raw != undefined) {
+              const cosPhiPhase1 = cosPhiPhase1Raw * 0.001;
               outstring = cosPhiPhase1.toFixed(3);
             }
           }
           break;
         case "phase-2-cos-phi":
           {
-            const cosPhiPhase2Raw = await rawReadRegs(143, 1);
-            if (cosPhiPhase2Raw.ok) {
-              const cosPhiPhase2 = cosPhiPhase2Raw.ok[0] * 0.001;
+            const cosPhiPhase2Raw = await readLongReg(143);
+            if (cosPhiPhase2Raw != undefined) {
+              const cosPhiPhase2 = cosPhiPhase2Raw * 0.001;
               outstring = cosPhiPhase2.toFixed(3);
             }
           }
           break;
         case "phase-3-cos-phi":
           {
-            const cosPhiPhase3Raw = await rawReadRegs(145, 1);
-            if (cosPhiPhase3Raw.ok) {
-              const cosPhiPhase3 = cosPhiPhase3Raw.ok[0] * 0.001;
+            const cosPhiPhase3Raw = await readLongReg(145);
+            if (cosPhiPhase3Raw != undefined) {
+              const cosPhiPhase3 = cosPhiPhase3Raw * 0.001;
               outstring = cosPhiPhase3.toFixed(3);
             }
           }
