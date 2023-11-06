@@ -277,7 +277,7 @@
       <div class="row">
         <div class="col-sm">
           <header class="dashboard-header">
-            UBZ Status
+            <span id="ubz-status-text">UBZ Status</span>
             <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
           </header>
           <div class="dashboard-group">
@@ -293,23 +293,23 @@
             </header>
             <form id="functional-relay-work-mode-radio">
               <input type="radio" id="radio-workmode-alarm" name="func-relay-workmode" value="alarmrelay">
-              <label for="radio-workmode-alarm">Alarm relay</label><br>
+              <label for="radio-workmode-alarm"><span id="radio-workmode-alarm-text">Alarm relay</span></label><br>
               <input type="radio" id="radio-workmode-time" name="func-relay-workmode" value="timerelay">
-              <label for="radio-workmode-time">Time relay</label><br>
+              <label for="radio-workmode-time"><span id="radio-workmode-time-text">Time relay</span></label><br>
               <input type="radio" id="radio-workmode-stardelta" name="func-relay-workmode" value="stardelta">
-              <label for="radio-workmode-stardelta">Star / delta</label><br>
+              <label for="radio-workmode-stardelta"><span id="radio-workmode-stardelta-text">Star / delta</span></label><br>
             </form>
-            <div class="ubz-mainmenu-parameter-area">CT in use
+            <div class="ubz-mainmenu-parameter-area"> <span id="ct-in-use-text">CT in use</span>
 
               <span class="ubz-value">
                 <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                 <select class="ubz-input" id="CT-in-use">
-                  <option value="integrated-CT">Integrated CT</option>
-                  <option value="external-CT">External CT</option>
+                  <option value="integrated-CT"><span id="integrated-ct-text">Integrated CT</span></option>
+                  <option value="external-CT"><span id="external-ct-text">External CT</span></option>
                 </select>
               </span>
             </div>
-            <div class="ubz-mainmenu-parameter-area">For external CT
+            <div class="ubz-mainmenu-parameter-area"><span id="for-external-ct-text">For external CT</span>
               <span class="ubz-value">
                 <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                 <span>
@@ -317,7 +317,7 @@
                 </span>
               </span>
             </div>
-            <div class="ubz-mainmenu-parameter-area">Motor rated current
+            <div class="ubz-mainmenu-parameter-area"><span id="motor-rated-current-text">Motor rated current</span>
               <span class="ubz-value">
                 <span class="spinner-border spinner-border-sm init-reading-spinner" role="status"></span>
                 <span>
@@ -329,20 +329,20 @@
 
           <div class="dashboard-group">
             <details>
-              <summary>Additional</summary>
-              <div>Sensor 1 temperature: <span id="sensor-1-temperature-value"
-                  class="ubz-value ubz-value-text">Off</span>
+              <summary class="additional-drop-down-block">Additional</summary>
+              <div><span id="sensor-1-temperature-text">Sensor 1 temperature: </span><span id="sensor-1-temperature-value"
+                  class="ubz-value ubz-value-text ubz-off-text">Off</span>
               </div>
-              <div>Sensor 2 temperature: <span id="sensor-2-temperature-value"
-                  class="ubz-value ubz-value-text">Off</span>
+              <div><span id="sensor-2-temperature-text">Sensor 2 temperature: </span><span id="sensor-2-temperature-value"
+                  class="ubz-value ubz-value-text ubz-off-text">Off</span>
               </div>
-              <div>Current input: <span id="current-input-value" class="ubz-value ubz-value-text">0.0</span> <span
+              <div><span id="current-input-text">Current input: </span><span id="current-input-value" class="ubz-value ubz-value-text">0.0</span> <span
                   class="ubz-value-text">mA</span></div>
-              <div>Analog input: <span id="analog-input-value" class="ubz-value ubz-value-text">0.0</span> <span
+              <div><span id="analog-input-text">Analog input: </span><span id="analog-input-value" class="ubz-value ubz-value-text">0.0</span> <span
                   class="ubz-value-text">V</span></div>
-              <div>Frequency: <span id="frequency-value" class="ubz-value ubz-value-text">50.0</span> <span
+              <div><span id="frequency-text">Frequency: </span><span id="frequency-value" class="ubz-value ubz-value-text">50.0</span> <span
                   class="ubz-value-text">Hz</span></div>
-              <div>Insulation resistance: <span id="insulation-resistance-value"
+              <div><span id="insulation-resistance-text">Insulation resistance: </span><span id="insulation-resistance-value"
                   class="ubz-value ubz-value-text">20.0</span>
                 <span class="ubz-value-text">MOhm</span>
               </div>
@@ -355,13 +355,13 @@
             <button type="button" class="btn btn-vis" id="save-file-button">
               <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true"
                 id="save-file-button-spinner"></span>
-              Log event UBZ
+              <span id="log-event-ubz-text">Log event UBZ</span>
             </button>
             <button type="button" class="btn btn-vis" id="ubz-parameters-button">UBZ Parameters</button>
           </div>
         </div>
         <div class="col-sm">
-          <header class="dashboard-header">UBZ Fault Status</header>
+          <header class="dashboard-header" id="header-ubz-fault-status">UBZ Fault Status</header>
 
           <div class="dashboard-group">
             <div style="margin: 10px; text-align: center;">
@@ -376,7 +376,7 @@
               <button type="button" class="btn btn-vis" id="reset-fault-button">
                 <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true"
                   id="reset-fault-button-spinner"></span>
-                Reset Fault
+                <span id="reset-fault-text">Reset Fault</span>
               </button>
             </div>
 
@@ -392,16 +392,16 @@
                   <col span="1" style="width: 30%">
                 </colgroup>
                 <tr>
-                  <th>
+                  <th id="table-header-name">
                     Name
                   </th>
                   <th>
                     ###
                   </th>
-                  <th>
+                  <th id="table-header-value">
                     Value
                   </th>
-                  <th>
+                  <th id="table-header-time">
                     Time
                   </th>
                 </tr>
@@ -411,7 +411,7 @@
           </div>
         </div>
         <div class="col-sm">
-          <header class="dashboard-header">Graphs</header>
+          <header class="dashboard-header" id="header-graphs">Graphs</header>
           <div class="dashboard-group">
             <div id="div-heating-graph" style="display: none;">
               <canvas id="heating-graph">Your browser does not support the canvas element.</canvas>
@@ -421,7 +421,7 @@
           <div class="dashboard-group">
             <div class="form-check">
               <input type="checkbox" id="minutes-voltage-graph" checked>
-              <label class="form-check-label" for="minutes-voltage-graph">
+              <label class="form-check-label" for="minutes-voltage-graph" id="minutes-voltages-graph-scale-text">
                 Minutes voltages graph scale
               </label>
               <span class="spinner-border spinner-border-sm init-graph-spinner" role="status"></span>
@@ -438,7 +438,7 @@
           <div class="dashboard-group">
             <div class="form-check">
               <input type="checkbox" id="minutes-amperage-graph" checked>
-              <label class="form-check-label" for="minutes-amperage-graph">
+              <label class="form-check-label" for="minutes-amperage-graph" id="minutes-amperages-graph-scale-text">
                 Minutes currents graph scale
               </label>
               <span class="spinner-border spinner-border-sm init-graph-spinner" role="status"></span>
@@ -456,20 +456,20 @@
 
       <div class="row">
         <div class="col-sm">
-          <header class="dashboard-header">Current (Ampere)</header>
+          <header class="dashboard-header" id="header-current-ampere">Current (Ampere)</header>
           <div class="dashboard-group">
-            <p>Phase currents active values:</p>
-            <div>Phase 1: <div class="valuebar" id="phase-1-current-rms-bar" value="0">
+            <p id="phase-currents-active-values-text">Phase currents active values:</p>
+            <div><span class="phase-1-text">Phase 1: </span><div class="valuebar" id="phase-1-current-rms-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-1-current-rms-bar-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
                 id="phase-1-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span>
             </div>
-            <div>Phase 2: <div class="valuebar" id="phase-2-current-rms-bar" value="0">
+            <div><span class="phase-2-text">Phase 2: </span><div class="valuebar" id="phase-2-current-rms-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-2-current-rms-bar-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
                 id="phase-2-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span>
             </div>
-            <div>Phase 3: <div class="valuebar" id="phase-3-current-rms-bar" value="0">
+            <div><span class="phase-3-text">Phase 3: </span><div class="valuebar" id="phase-3-current-rms-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-3-current-rms-bar-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
                 id="phase-3-current-rms-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">A</span>
@@ -477,10 +477,10 @@
           </div>
           <div class="dashboard-group">
             <details>
-              <summary>Additional</summary>
+              <summary class="additional-drop-down-block">Additional</summary>
               <div class="dashboard-group">
                 <div>
-                  <p>Negative sequence current:</p>
+                  <p id="negative-sequence-current-text">Negative sequence current:</p>
                   <div class="valuebar" id="negative-sequence-current-bar" value="0">
                     <div class="valuebar-inner bg-success" id="negative-sequence-current-bar-inner">
                     </div>
@@ -488,7 +488,7 @@
                     class="ubz-value-text">A</span>
                 </div>
                 <div>
-                  <p>Zero sequence current:</p>
+                  <p id="zero-sequence-current-text">Zero sequence current:</p>
                   <div class="valuebar" id="zero-sequence-current-bar" value="0">
                     <div class="valuebar-inner bg-success" id="zero-sequence-current-bar-inner"></div>
                   </div> <span id="zero-sequence-current-value" class="ubz-value-text">0.0</span> <span
@@ -499,19 +499,19 @@
               <div class="dashboard-group">
                 <table id="dashboard-table-currents">
                   <tr>
-                    <th colspan="2">Current average value:</th>
-                    <th>For time</th>
-                    <th>Max:</th>
+                    <th colspan="2" id="current-average-value-text">Current average value:</th>
+                    <th id="for-time-text">For time:</th>
+                    <th id="max-text">Max:</th>
                   </tr>
                   <tr>
-                    <td>Phase 1:</td>
+                    <td class="phase-1-text">Phase 1:</td>
                     <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                       <span id="avg-current-value-phase-1" class="ubz-value-text">0.0</span> <span
                         class="ubz-value-text">A</span>
                     </td>
                     <td rowspan="3">
                       <span id="current-average-for-time-value" class="ubz-value-text">60.0</span> <span
-                        class="ubz-value-text">sec</span>
+                        class="ubz-value-text ubz-sec-text">sec</span>
                     </td>
                     <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                       <span id="max-current-value-phase-1" class="ubz-value-text">0.0</span> <span
@@ -519,7 +519,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Phase 2:</td>
+                    <td class="phase-2-text">Phase 2:</td>
                     <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                       <span id="avg-current-value-phase-2" class="ubz-value-text">0.0</span> <span
                         class="ubz-value-text">A</span>
@@ -530,7 +530,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Phase 3:</td>
+                    <td class="phase-3-text">Phase 3:</td>
                     <td><span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                       <span id="avg-current-value-phase-3" class="ubz-value-text">0.0</span> <span
                         class="ubz-value-text">A</span>
@@ -544,10 +544,10 @@
               </div>
 
               <div class="dashboard-group">
-                <div>Motor start current: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                <div><span id="motor-start-current-text">Motor start current: </span><span class="spinner-border spinner-border-sm reading-process-spinner"
                     role="status"></span> <span id="motor-start-current-value" class="ubz-value-text">0.0</span> <span
                     class="ubz-value-text">A</span></div>
-                <div>Overload current: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                <div><span id="overload-current-text">Overload current: </span><span class="spinner-border spinner-border-sm reading-process-spinner"
                     role="status"></span> <span id="overload-current-value" class="ubz-value-text">0.0</span> <span
                     class="ubz-value-text">A</span></div>
               </div>
@@ -556,30 +556,30 @@
           </div>
         </div>
         <div class="col-sm">
-          <header class="dashboard-header">Voltage (Volt)</header>
+          <header class="dashboard-header" id="header-voltage-volt">Voltage (Volt)</header>
           <div class="dashboard-group">
-            <p>Phase voltages active values:</p>
-            <div>Phase1: <div class="valuebar" id="phase-1-voltage-bar" value="0">
+            <p id="phase-voltages-active-values-text">Phase voltages active values:</p>
+            <div> <span class="phase-1-text">Phase 1: </span><div class="valuebar" id="phase-1-voltage-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-1-voltage-bar-inner"></div>
                 <div class="overvaluebar-inner bg-warning" id="phase-1-voltage-bar-over-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                id="phase-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
-            <div>Phase2: <div class="valuebar" id="phase-2-voltage-bar" value="0">
+                id="phase-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span></div>
+            <div> <span class="phase-2-text">Phase 2: </span><div class="valuebar" id="phase-2-voltage-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-2-voltage-bar-inner"></div>
                 <div class="overvaluebar-inner bg-warning" id="phase-2-voltage-bar-over-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                id="phase-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
-            <div>Phase3: <div class="valuebar" id="phase-3-voltage-bar" value="0">
+                id="phase-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span></div>
+            <div> <span class="phase-3-text">Phase 3: </span><div class="valuebar" id="phase-3-voltage-bar" value="0">
                 <div class="valuebar-inner bg-success" id="phase-3-voltage-bar-inner"></div>
                 <div class="overvaluebar-inner bg-warning" id="phase-3-voltage-bar-over-inner"></div>
               </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                id="phase-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span></div>
+                id="phase-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span></div>
           </div>
           <div class="dashboard-group">
             <details>
-              <summary>Additional</summary>
+              <summary class="additional-drop-down-block">Additional</summary>
               <div>
-                <p>Line voltages active values:</p>
+                <p id="line-voltages-active-values-text">Line voltages active values:</p>
                 <div>AB:
                   <div class="valuebar" id="line-1-voltage-bar" value="0">
                     <div class="valuebar-inner bg-success" id="line-1-voltage-bar-inner"></div>
@@ -589,7 +589,7 @@
                     </div>
                   </div>
                   <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                    id="line-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
+                    id="line-1-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span>
                 </div>
                 <div>BC:
                   <div class="valuebar" id="line-2-voltage-bar" value="0">
@@ -600,7 +600,7 @@
                     </div>
                   </div>
                   <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                    id="line-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
+                    id="line-2-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span>
                 </div>
                 <div>CA:
                   <div class="valuebar" id="line-3-voltage-bar" value="0">
@@ -611,69 +611,72 @@
                     </div>
                   </div>
                   <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                    id="line-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text">V</span>
+                    id="line-3-voltage-value" class="ubz-value-text">0.0</span> <span class="ubz-value-text volts-text">V</span>
                 </div>
               </div>
               <p>
-                Negative sequence voltage:
+                <span id="negative-sequence-voltage-text">Negative sequence voltage:</span>
+                
               <div>
                 <div class="valuebar" id="negative-sequence-voltage-bar" value="0">
                   <div class="valuebar-inner bg-success" id="negative-sequence-voltage-bar-inner"></div>
                 </div> <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                 <span id="negative-sequence-voltage-value" class="ubz-value-text">0.0</span> <span
-                  class="ubz-value-text">V</span>
+                  class="ubz-value-text volts-text">V</span>
               </div>
               </p>
               <p>
-                Positive sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                <span id="positive-sequence-voltage-text">Positive sequence voltage: </span>
+                <span class="spinner-border spinner-border-sm reading-process-spinner"
                   role="status"></span>
                 <span id="positive-sequence-voltage-value" class="ubz-value-text">0</span> <span
-                  class="ubz-value-text">V</span>
+                  class="ubz-value-text volts-text">V</span>
               </p>
               <p>
-                Zero sequence voltage: <span class="spinner-border spinner-border-sm reading-process-spinner"
+                <span id="zero-sequence-voltage-text">Zero sequence voltage: </span>
+                <span class="spinner-border spinner-border-sm reading-process-spinner"
                   role="status"></span>
                 <span id="zero-sequence-voltage-value" class="ubz-value-text">0</span> <span
-                  class="ubz-value-text">V</span>
+                  class="ubz-value-text volts-text">V</span>
               </p>
             </details>
           </div>
         </div>
         <div class="col-sm">
-          <header class="dashboard-header">Time (sec)</header>
+          <header class="dashboard-header" id="header-time-sec">Time (sec)</header>
           <div class="dashboard-group">
-            <p>Time before AR:</p>
+            <p id="time-before-ar-text">Time before AR:</p>
             <div class="valuebar" id="time-before-ar-bar" value="0">
               <div class="valuebar-inner bg-success" id="time-before-ar-bar-inner"></div>
             </div>
             <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-              id="time-before-ar-string" class="ubz-value-text"> Off</span>
+              id="time-before-ar-string" class="ubz-value-text ubz-off-text"> Off</span>
           </div>
           <div class="dashboard-group">
             <details>
-              <summary>Additional</summary>
+              <summary class="additional-drop-down-block">Additional</summary>
 
-              <div>Startup time: <span class="ubz-value"><span
+              <div><span id="startup-time-text">Startup time:</span> <span class="ubz-value"><span
                     class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
                     class="ubz-value-text" id="startup-time-value">0</span> <span
-                    class="ubz-value-text">sec</span></span></div>
-              <div>Time before overload tripping:
+                    class="ubz-value-text ubz-sec-text">sec</span></span></div>
+              <div> <span id="time-before-overload-tripping-text">Time before overload tripping:</span>
                 <span class="ubz-value">
                   <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                    id="time-before-overload-tripping-string" class="ubz-value-text">No</span>
+                    id="time-before-overload-tripping-string" class="ubz-value-text ubz-no-text">No</span>
                 </span>
               </div>
-              <div>Wait time after overload deenergize:
+              <div> <span id="wait-time-after-overload-deenergize-text">Wait time after overload deenergize:</span>
                 <span class="ubz-value">
                   <span class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span> <span
-                    id="wait-time-after-overload-deenergize-string" class="ubz-value-text">No</span>
+                    id="wait-time-after-overload-deenergize-string" class="ubz-value-text ubz-no-text">No</span>
               </div>
               </span>
             </details>
           </div>
 
           <div class="dashboard-group">
-            <header class="dashboard-header">Power</header>
+            <header class="dashboard-header" id="header-power">Power</header>
             <div>Full power: <span class="ubz-value"><span
                   class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                 <span id="full-power-value" class="ubz-value-text">-</span></span></div>
@@ -686,19 +689,19 @@
             <div>
               <select id="power-characteristic-value-1" class="power-characteristic"
                 name="power-characteristic-value-1">
-                <option value="no-selection"> -select- </option>
-                <option value="phase-1-full-power">Phase 1 full power</option>
-                <option value="phase-2-full-power">Phase 2 full power</option>
-                <option value="phase-3-full-power">Phase 3 full power</option>
-                <option value="phase-1-active-power">Phase 1 active power</option>
-                <option value="phase-2-active-power">Phase 2 active power</option>
-                <option value="phase-3-active-power">Phase 3 active power</option>
-                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                <option value="no-selection" class="no-selection-text"> -select- </option>
+                <option value="phase-1-full-power" class="phase-1-full-power-text">Phase 1 full power</option>
+                <option value="phase-2-full-power" class="phase-2-full-power-text">Phase 2 full power</option>
+                <option value="phase-3-full-power" class="phase-3-full-power-text">Phase 3 full power</option>
+                <option value="phase-1-active-power" class="phase-1-active-power-text">Phase 1 active power</option>
+                <option value="phase-2-active-power" class="phase-2-active-power-text">Phase 2 active power</option>
+                <option value="phase-3-active-power" class="phase-3-active-power-text">Phase 3 active power</option>
+                <option value="phase-1-reactive-power" class="phase-1-reactive-power-text">Phase 1 reactive power</option>
+                <option value="phase-2-reactive-power" class="phase-2-reactive-power-text">Phase 2 reactive power</option>
+                <option value="phase-3-reactive-power" class="phase-3-reactive-power-text">Phase 3 reactive power</option>
+                <option value="phase-1-cos-phi" class="phase-1-cos-phi-text">Phase 1 cos Phi</option>
+                <option value="phase-2-cos-phi" class="phase-2-cos-phi-text">Phase 2 cos Phi</option>
+                <option value="phase-3-cos-phi" class="phase-3-cos-phi-text">Phase 3 cos Phi</option>
               </select>
               <span id="power-show-value-1" class="ubz-value ubz-value-text">
                 -
@@ -707,19 +710,19 @@
             <div>
               <select id="power-characteristic-value-2" class="power-characteristic"
                 name="power-characteristic-value-2">
-                <option value="no-selection"> -select- </option>
-                <option value="phase-1-full-power">Phase 1 full power</option>
-                <option value="phase-2-full-power">Phase 2 full power</option>
-                <option value="phase-3-full-power">Phase 3 full power</option>
-                <option value="phase-1-active-power">Phase 1 active power</option>
-                <option value="phase-2-active-power">Phase 2 active power</option>
-                <option value="phase-3-active-power">Phase 3 active power</option>
-                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                <option value="no-selection" class="no-selection-text"> -select- </option>
+                <option value="phase-1-full-power" class="phase-1-full-power-text">Phase 1 full power</option>
+                <option value="phase-2-full-power" class="phase-2-full-power-text">Phase 2 full power</option>
+                <option value="phase-3-full-power" class="phase-3-full-power-text">Phase 3 full power</option>
+                <option value="phase-1-active-power" class="phase-1-active-power-text">Phase 1 active power</option>
+                <option value="phase-2-active-power" class="phase-2-active-power-text">Phase 2 active power</option>
+                <option value="phase-3-active-power" class="phase-3-active-power-text">Phase 3 active power</option>
+                <option value="phase-1-reactive-power" class="phase-1-reactive-power-text">Phase 1 reactive power</option>
+                <option value="phase-2-reactive-power" class="phase-2-reactive-power-text">Phase 2 reactive power</option>
+                <option value="phase-3-reactive-power" class="phase-3-reactive-power-text">Phase 3 reactive power</option>
+                <option value="phase-1-cos-phi" class="phase-1-cos-phi-text">Phase 1 cos Phi</option>
+                <option value="phase-2-cos-phi" class="phase-2-cos-phi-text">Phase 2 cos Phi</option>
+                <option value="phase-3-cos-phi" class="phase-3-cos-phi-text">Phase 3 cos Phi</option>
               </select>
               <span id="power-show-value-2" class="ubz-value ubz-value-text">
                 -
@@ -728,19 +731,19 @@
             <div>
               <select id="power-characteristic-value-3" class="power-characteristic"
                 name="power-characteristic-value-3">
-                <option value="no-selection"> -select- </option>
-                <option value="phase-1-full-power">Phase 1 full power</option>
-                <option value="phase-2-full-power">Phase 2 full power</option>
-                <option value="phase-3-full-power">Phase 3 full power</option>
-                <option value="phase-1-active-power">Phase 1 active power</option>
-                <option value="phase-2-active-power">Phase 2 active power</option>
-                <option value="phase-3-active-power">Phase 3 active power</option>
-                <option value="phase-1-reactive-power">Phase 1 reactive power</option>
-                <option value="phase-2-reactive-power">Phase 2 reactive power</option>
-                <option value="phase-3-reactive-power">Phase 3 reactive power</option>
-                <option value="phase-1-cos-phi">Phase 1 cos Phi</option>
-                <option value="phase-2-cos-phi">Phase 2 cos Phi</option>
-                <option value="phase-3-cos-phi">Phase 3 cos Phi</option>
+                <option value="no-selection" class="no-selection-text"> -select- </option>
+                <option value="phase-1-full-power" class="phase-1-full-power-text">Phase 1 full power</option>
+                <option value="phase-2-full-power" class="phase-2-full-power-text">Phase 2 full power</option>
+                <option value="phase-3-full-power" class="phase-3-full-power-text">Phase 3 full power</option>
+                <option value="phase-1-active-power" class="phase-1-active-power-text">Phase 1 active power</option>
+                <option value="phase-2-active-power" class="phase-2-active-power-text">Phase 2 active power</option>
+                <option value="phase-3-active-power" class="phase-3-active-power-text">Phase 3 active power</option>
+                <option value="phase-1-reactive-power" class="phase-1-reactive-power-text">Phase 1 reactive power</option>
+                <option value="phase-2-reactive-power" class="phase-2-reactive-power-text">Phase 2 reactive power</option>
+                <option value="phase-3-reactive-power" class="phase-3-reactive-power-text">Phase 3 reactive power</option>
+                <option value="phase-1-cos-phi" class="phase-1-cos-phi-text">Phase 1 cos Phi</option>
+                <option value="phase-2-cos-phi" class="phase-2-cos-phi-text">Phase 2 cos Phi</option>
+                <option value="phase-3-cos-phi" class="phase-3-cos-phi-text">Phase 3 cos Phi</option>
               </select>
               <span id="power-show-value-3" class="ubz-value ubz-value-text">-</span>
             </div>
@@ -1562,6 +1565,117 @@
       document.querySelector("#mmsp-mode-text").innerHTML = "РМКУП";
       document.querySelector("#functional-relay-mode-text").innerHTML = "Функциональное реле";
       document.querySelector("#motor-relay-mode-text").innerHTML = "Реле двигателя";
+      document.querySelector("#ubz-status-text").innerHTML = "Состояние УБЗ";
+      document.querySelector("#radio-workmode-alarm-text").innerHTML = "Реле сигнализации";
+      document.querySelector("#radio-workmode-time-text").innerHTML = "Реле времени";
+      document.querySelector("#radio-workmode-stardelta-text").innerHTML = "Звезда / треугольник";
+      document.querySelector("#ct-in-use-text").innerHTML = "Используемый ТТ";
+      document.querySelector("#integrated-ct-text").innerHTML = "Встроенный ТТ";
+      document.querySelector("#external-ct-text").innerHTML = "Внешний ТТ";
+      document.querySelector("#for-external-ct-text").innerHTML = "Для внешнего ТТ";
+      document.querySelector("#motor-rated-current-text").innerHTML = "Номинальный ток двигателя";
+      document.querySelectorAll(".additional-drop-down-block").forEach((element) => {
+        element.innerHTML = "Дополнительно";
+      });
+      document.querySelector("#sensor-1-temperature-text").innerHTML = "Датчик температуры 1: ";
+      document.querySelector("#sensor-2-temperature-text").innerHTML = "Датчик температуры 2: ";
+      document.querySelector("#current-input-text").innerHTML = "Аналоговый вход:";
+      document.querySelector("#analog-input-text").innerHTML = "Токовый вход:";
+      document.querySelector("#frequency-text").innerHTML = "Частота";
+      document.querySelector("#insulation-resistance-text").innerHTML = "Сопротивление изоляции";
+      document.querySelector("#motor-start-stop-button").innerHTML = "Автоматический режим";
+      document.querySelector("#log-event-ubz-text").innerHTML = "Журнал аварий УБЗ";
+      document.querySelector("#header-ubz-fault-status").innerHTML = "Состояние аварий УБЗ";
+      document.querySelector("#fault-indicator").innerHTML = "Авария";
+      document.querySelector("#ext-in-indicator").innerHTML = "Вн. вх.";
+      document.querySelector("#ar-indicator").innerHTML = "АПВ";
+      document.querySelector("#rc-indicator").innerHTML = "ДУ";
+      document.querySelector("#reset-fault-text").innerHTML = "Сброс Аварий";
+      document.querySelector("#table-header-name").innerHTML = "Наименование";
+      document.querySelector("#table-header-value").innerHTML = "Значение";
+      document.querySelector("#table-header-time").innerHTML = "Время";
+      document.querySelector("#header-graphs").innerHTML = "Графики";
+      document.querySelector("#minutes-voltages-graph-scale-text").innerHTML = "Минутный масштаб графиков напряжений";
+      document.querySelector("#minutes-amperages-graph-scale-text").innerHTML = "Минутный масштаб графиков токов";
+      document.querySelector("#header-current-ampere").innerHTML = "Ток (Ампер)";
+      document.querySelector("#phase-currents-active-values-text").innerHTML = "Действующие значения фазных токов:";
+      document.querySelectorAll(".phase-1-text").forEach((element) => {
+        element.innerHTML = "Фаза 1:";
+      });
+      document.querySelectorAll(".phase-2-text").forEach((element) => {
+        element.innerHTML = "Фаза 2:";
+      });
+      document.querySelectorAll(".phase-3-text").forEach((element) => {
+        element.innerHTML = "Фаза 3:";
+      });
+      document.querySelector("#negative-sequence-current-text").innerHTML = "Ток обратной последовательности:";
+      document.querySelector("#zero-sequence-current-text").innerHTML = "Ток нулевой последовательности:";
+      document.querySelector("#current-average-value-text").innerHTML = "Среднее значение тока:";
+      document.querySelector("#for-time-text").innerHTML = "За время:";
+      document.querySelector("#max-text").innerHTML = "Макс:";
+      document.querySelectorAll(".ubz-sec-text").forEach((element) => {
+        element.innerHTML = "сек";
+      });
+      document.querySelector("#header-voltage-volt").innerHTML = "Напряжение (Вольт)";
+      document.querySelector("#phase-voltages-active-values-text").innerHTML = "Действующие значения фазных напряжений:";
+      document.querySelector("#line-voltages-active-values-text").innerHTML = "Действующие значения линейных напряжений";
+      document.querySelectorAll(".volts-text").forEach((element) => {
+        element.innerHTML = "В";
+      });
+      document.querySelector("#negative-sequence-voltage-text").innerHTML = "Напряжение обратной последовательности";
+      document.querySelector("#positive-sequence-voltage-text").innerHTML = "Напряжение прямой последовательности";
+      document.querySelector("#zero-sequence-voltage-text").innerHTML = "Напряжение нулевой последовательности";
+      document.querySelector("#header-time-sec").innerHTML = "Время (сек)";
+      document.querySelector("#time-before-ar-text").innerHTML = "Время до АПВ";
+      document.querySelectorAll(".ubz-off-text").forEach((element) => {
+        element.innerHTML = "Выкл";
+      });
+      document.querySelector("#startup-time-text").innerHTML = "Время пуска:";
+      document.querySelector("#time-before-overload-tripping-text").innerHTML = "Время до отключения по перегрузке";
+      document.querySelectorAll(".ubz-no-text").forEach((element) => {
+        element.innerHTML = "Нет";
+      });
+      document.querySelector("#wait-time-after-overload-deenergize-text").innerHTML = "Время ожидания после отключения по перегрузке";
+      document.querySelector("#header-power").innerHTML = "Мощности";
+      document.querySelectorAll(".no-selection-text").forEach((element) => {
+        element.innerHTML = "Выбор";
+      });
+      document.querySelectorAll(".phase-1-full-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 1 полная мощность";
+      });
+      document.querySelectorAll(".phase-2-full-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 2 полная мощность";
+      });
+      document.querySelectorAll(".phase-3-full-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 3 полная мощность";
+      });
+      document.querySelectorAll(".phase-1-active-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 1 активная мощность";
+      });
+      document.querySelectorAll(".phase-2-active-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 2 активная мощность";
+      });
+      document.querySelectorAll(".phase-3-active-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 3 активная мощность";
+      });
+      document.querySelectorAll(".phase-1-reactive-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 1 реактивная мощность";
+      });
+      document.querySelectorAll(".phase-2-reactive-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 2 реактивная мощность";
+      });
+      document.querySelectorAll(".phase-3-reactive-power-text").forEach((element) => {
+        element.innerHTML = "Фаза 3 реактивная мощность";
+      });
+      document.querySelectorAll(".phase-1-cos-phi-text").forEach((element) => {
+        element.innerHTML = "Фаза 1 косинус фи";
+      });
+      document.querySelectorAll(".phase-2-cos-phi-text").forEach((element) => {
+        element.innerHTML = "Фаза 2 косинус фи";
+      });
+      document.querySelectorAll(".phase-3-cos-phi-text").forEach((element) => {
+        element.innerHTML = "Фаза 3 косинус фи";
+      });
     }
     
   </script>
