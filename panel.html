@@ -270,7 +270,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <h2>UBZ-302 Control Panel</h2>
+    <h2 id="ubz-302-header">UBZ-302 Control Panel</h2>
     <div style="text-align: left;" id="session-time">Session time: </div>
 
     <div class="container dashboard-container">
@@ -1553,6 +1553,19 @@
     </div>
   </div>
 
+  <!-- Locale -->
+  <script>
+    if (VIS_LOCALE_SETTING === "ru_RU") {
+      // Translate
+      document.querySelector("#ubz-302-header").innerHTML = "Панель управления УБЗ";
+      document.querySelector("#session-time").innerHTML = "Время сессии: ";
+      document.querySelector("#mmsp-mode").innerHTML = "РМКУП";
+      document.querySelector("#functional-relay-mode").innerHTML = "Функциональное реле";
+      document.querySelector("#motor-relay-mode").innerHTML = "Реле двигателя";
+    }
+    
+  </script>
+  
   <!-- Alarms defined in device -->
   <script type="text/javascript">
     const alarms = [
