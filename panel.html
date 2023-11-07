@@ -337,14 +337,14 @@
                   class="ubz-value ubz-value-text ubz-off-text">Off</span>
               </div>
               <div><span id="current-input-text">Current input: </span><span id="current-input-value" class="ubz-value ubz-value-text">0.0</span> <span
-                  class="ubz-value-text">mA</span></div>
+                  class="ubz-value-text" id="ubz-ma-text">mA</span></div>
               <div><span id="analog-input-text">Analog input: </span><span id="analog-input-value" class="ubz-value ubz-value-text">0.0</span> <span
-                  class="ubz-value-text">V</span></div>
+                  class="ubz-value-text volts-text">V</span></div>
               <div><span id="frequency-text">Frequency: </span><span id="frequency-value" class="ubz-value ubz-value-text">50.0</span> <span
                   class="ubz-value-text">Hz</span></div>
               <div><span id="insulation-resistance-text">Insulation resistance: </span><span id="insulation-resistance-value"
                   class="ubz-value ubz-value-text">20.0</span>
-                <span class="ubz-value-text">MOhm</span>
+                <span class="ubz-value-text" id="ubz-mohm-text">MOhm</span>
               </div>
             </details>
           </div>
@@ -1625,6 +1625,8 @@
       document.querySelectorAll(".volts-text").forEach((element) => {
         element.innerHTML = "В";
       });
+      document.querySelector("#ubz-ma-text").innerHTML = "мА";
+      document.querySelector("#ubz-mohm-text").innerHTML = "МОм";
       document.querySelector("#negative-sequence-voltage-text").innerHTML = "Напряжение обратной последовательности";
       document.querySelector("#positive-sequence-voltage-text").innerHTML = "Напряжение прямой последовательности";
       document.querySelector("#zero-sequence-voltage-text").innerHTML = "Напряжение нулевой последовательности";
