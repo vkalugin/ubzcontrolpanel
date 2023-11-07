@@ -1558,6 +1558,9 @@
 
   <!-- Locale -->
   <script>
+    if (VIS_LOCALE_SETTING == null) {
+      console.log("asddf");
+    }
     if (VIS_LOCALE_SETTING === "ru_RU") {
       // Translate
       document.querySelector("#ubz-302-header").innerHTML = "Панель управления УБЗ";
@@ -2818,10 +2821,8 @@
 
     var tempGraph = new Graph(30, "#heating-graph", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
-      console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Температура, % от макс.", "66%", "100%"]);
     } else {
-      console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
     }
     
