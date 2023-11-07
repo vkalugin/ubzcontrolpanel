@@ -677,13 +677,13 @@
 
           <div class="dashboard-group">
             <header class="dashboard-header" id="header-power">Power</header>
-            <div>Full power: <span class="ubz-value"><span
+            <div><span id="full-power-text">Full power: </span> <span class="ubz-value"><span
                   class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                 <span id="full-power-value" class="ubz-value-text">-</span></span></div>
-            <div>Active power: <span class="ubz-value"><span
+            <div><span id="active-power-text">Active power: </span> <span class="ubz-value"><span
                   class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                 <span id="active-power-value" class="ubz-value-text">-</span></span></div>
-            <div>Reactive power: <span class="ubz-value"><span
+            <div><span id="reactive-power-text">Reactive power: </span> <span class="ubz-value"><span
                   class="spinner-border spinner-border-sm reading-process-spinner" role="status"></span>
                 <span id="reactive-power-value" class="ubz-value-text">-</span></span></div>
             <div>
@@ -1617,6 +1617,8 @@
       document.querySelectorAll(".ubz-sec-text").forEach((element) => {
         element.innerHTML = "сек";
       });
+      document.querySelector("#motor-start-current-text").innerHTML = "Пусковой ток двигателя";
+      document.querySelector("#overload-current-text").innerHTML = "Ток перегрузки";
       document.querySelector("#header-voltage-volt").innerHTML = "Напряжение (Вольт)";
       document.querySelector("#phase-voltages-active-values-text").innerHTML = "Действующие значения фазных напряжений:";
       document.querySelector("#line-voltages-active-values-text").innerHTML = "Действующие значения линейных напряжений";
@@ -1638,8 +1640,11 @@
       });
       document.querySelector("#wait-time-after-overload-deenergize-text").innerHTML = "Время ожидания после отключения по перегрузке";
       document.querySelector("#header-power").innerHTML = "Мощности";
+      document.querySelector("#full-power-text").innerHTML = "Полная мощность";
+      document.querySelector("#active-power-text").innerHTML = "Активная мощность";
+      document.querySelector("#reactive-power-text").innerHTML = "Реактивная мощность";
       document.querySelectorAll(".no-selection-text").forEach((element) => {
-        element.innerHTML = "Выбор";
+        element.innerHTML = "-Выбор-";
       });
       document.querySelectorAll(".phase-1-full-power-text").forEach((element) => {
         element.innerHTML = "Фаза 1 полная мощность";
