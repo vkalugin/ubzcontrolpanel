@@ -2818,8 +2818,10 @@
 
     var tempGraph = new Graph(30, "#heating-graph", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
+      console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Температура, % от макс.", "66%", "100%"]);
     } else if (VIS_LOCALE_SETTING === undefined) {
+      console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
     }
     
