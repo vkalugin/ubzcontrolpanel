@@ -1540,8 +1540,8 @@
 
       <div class="popup-footer-background">
         <div style="margin-top: 0; margin-bottom: 5px;">
-          <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> Write only modified
-          parameters
+          <input type="checkbox" id="checkbox-write-only-modified-ubz-params" checked> <span id="write-only-modified-ubz-params-text">Write only modified
+          parameters</span>
           <span class="spinner-border spinner-border-sm spinner-invisible" role="status" aria-hidden="true"
             id="readwrite-params-spinner"></span>
         </div>
@@ -1709,7 +1709,7 @@
       document.querySelector("#ubz-parameters-summary-control").innerHTML = "Контроль исправности внешнего МП";
       document.querySelector("#button-write-ubz-params").innerHTML = "Записать все параметры на устройство";
       document.querySelector("#button-read-ubz-params").innerHTML = "Прочитать все параметры с устройства";
-      document.querySelector("#checkbox-write-only-modified-ubz-params").innerHTML = "Записывать  только изменённые параметры";
+      document.querySelector("#write-only-modified-ubz-params-text").innerHTML = "Записывать  только изменённые параметры";
 
       document.querySelector("#ubz-setting-150-text").innerHTML = "[150] tPt: Используемый ТТ";
       document.querySelector("#ubz-setting-151-text").innerHTML = "[151] tnt: Номинальный ток ТТ, А";
