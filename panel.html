@@ -2820,7 +2820,7 @@
     if (VIS_LOCALE_SETTING === "ru_RU") {
       console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Температура, % от макс.", "66%", "100%"]);
-    } else if (VIS_LOCALE_SETTING == null) {
+    } else {
       console.log(VIS_LOCALE_SETTING);
       tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
     }
@@ -2836,7 +2836,7 @@
     var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
       voltGraph.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
-    } else if (VIS_LOCALE_SETTING === undefined) {
+    } else {
       voltGraph.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     }
     voltGraph.setMaxX(60);
@@ -2845,7 +2845,7 @@
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
       voltGraphM.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
-    } else if (VIS_LOCALE_SETTING === undefined) {
+    } else {
       voltGraphM.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     }
     
@@ -2861,7 +2861,7 @@
     var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
       ampGraph.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
-    } else if (VIS_LOCALE_SETTING === undefined) {
+    } else {
       ampGraph.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     }
     
@@ -2871,7 +2871,7 @@
     var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
     if (VIS_LOCALE_SETTING === "ru_RU") {
       ampGraphM.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
-    } else if (VIS_LOCALE_SETTING === undefined) {
+    } else {
       ampGraphM.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     }
     
