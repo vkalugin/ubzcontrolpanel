@@ -2875,7 +2875,7 @@
   <!-- Selection listeners -->
   <script type="text/javascript">
     async function stringPowerCharacteristicByKey(keystring) {
-      var outstring = "Unknown";
+      var outstring = VIS_LOCALE_SETTING === "ru_RU" ? "Неизвестное" : "Unknown";
       switch (keystring) {
         case "phase-1-full-power":
           {
