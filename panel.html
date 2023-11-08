@@ -1558,7 +1558,18 @@
 
   <!-- Locale -->
   <script>
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    const LOCALE = {
+      get language() {
+        let lang = "en";
+        const externalDivWrapper = document.querySelectorAll(".vis-view")[0];
+        if (externalDivWrapper != null) {
+          lang = externalDivWrapper.getAttribute("language");
+        }
+        return lang;
+      }
+    };
+
+    if (LOCALE.language === "ru") {
       // Translate
       document.querySelector("#ubz-302-header").innerHTML = "Панель управления УБЗ";
       document.querySelector("#session-time").innerHTML = "Время сессии: ";
@@ -2843,7 +2854,7 @@
     /***********/
 
     var tempGraph = new Graph(30, "#heating-graph", 3);
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    if (LOCALE.language === "ru") {
       tempGraph.setDataLabels(["Температура, % от макс.", "66%", "100%"]);
     } else {
       tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
@@ -2858,7 +2869,7 @@
     /************/
 
     var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    if (LOCALE.language === "ru") {
       voltGraph.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
     } else {
       voltGraph.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
@@ -2867,7 +2878,7 @@
     voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
 
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    if (LOCALE.language === "ru") {
       voltGraphM.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
     } else {
       voltGraphM.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
@@ -2883,7 +2894,7 @@
     /****************/
 
     var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    if (LOCALE.language === "ru") {
       ampGraph.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
     } else {
       ampGraph.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
@@ -2893,7 +2904,7 @@
     ampGraph.setColors(["orange", "gold", "goldenrod"]);
 
     var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
-    if (VIS_LOCALE_SETTING === "ru_RU") {
+    if (LOCALE.language === "ru") {
       ampGraphM.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
     } else {
       ampGraphM.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
@@ -3008,7 +3019,7 @@
   <!-- Selection listeners -->
   <script type="text/javascript">
     async function stringPowerCharacteristicByKey(keystring) {
-      var outstring = VIS_LOCALE_SETTING === "ru_RU" ? "Неизвестное" : "Unknown";
+      var outstring = LOCALE.language === "ru" ? "Неизвестное" : "Unknown";
       switch (keystring) {
         case "phase-1-full-power":
           {
