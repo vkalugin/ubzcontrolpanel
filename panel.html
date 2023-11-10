@@ -1571,9 +1571,7 @@
 
     if (LOCALE.language === "ru") {
       // Translate
-      document.querySelectorAll("#ubz-302-header").forEach((element) => {
-        element.innerHTML = "Панель управления УБЗ";
-      });
+      document.querySelector("#ubz-302-header").innerHTML = "Панель управления УБЗ";
       document.querySelector("#session-time").innerHTML = "Время сессии: ";
       document.querySelector("#mmsp-mode-text").innerHTML = "РМКУП";
       document.querySelector("#functional-relay-mode-text").innerHTML = "Функциональное реле";
