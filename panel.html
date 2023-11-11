@@ -2373,11 +2373,11 @@
 
     function translateElements() {
       if (LOCALE.language === "ru") {
-        for (element in UBZ_DICTIONARY) {
+        UBZ_DICTIONARY.forEach((element) => {
           document.querySelectorAll(element.name).forEach((selection) => {
             selection.innerHTML = element.ru;
           });
-        }
+        });
       }
     }
   </script>
