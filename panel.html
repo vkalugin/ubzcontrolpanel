@@ -2374,6 +2374,7 @@
     function translateElements() {
       if (LOCALE.language === "ru") {
         UBZ_DICTIONARY.forEach((element) => {
+          console.log(element);
           document.querySelectorAll(element.name).forEach((selection) => {
             selection.innerHTML = element.ru;
           });
