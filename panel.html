@@ -2371,15 +2371,14 @@
       }
     ];
 
-    (function () { // Translate elements
-      if (LOCALE.language === "ru") {
-        UBZ_DICTIONARY.forEach((element) => {
-          document.querySelectorAll(element.name).forEach((selection) => {
-            selection.innerHTML = element.ru;
-          });
+    // Translate elements
+    if (LOCALE.language === "ru") {
+      UBZ_DICTIONARY.forEach((element) => {
+        document.querySelectorAll(element.name).forEach((selection) => {
+          selection.innerHTML = element.ru;
         });
-      }
-    }) ();
+      });
+    }
   </script>
 
   <!-- Alarms defined in device -->
