@@ -2371,16 +2371,15 @@
       }
     ];
 
-    function translateElements() {
+    (function () { // Translate elements
       if (LOCALE.language === "ru") {
         UBZ_DICTIONARY.forEach((element) => {
-          console.log(element);
           document.querySelectorAll(element.name).forEach((selection) => {
             selection.innerHTML = element.ru;
           });
         });
       }
-    }
+    }) ();
   </script>
 
   <!-- Alarms defined in device -->
@@ -4298,7 +4297,6 @@
     }
 
     initElements();
-    translateElements();
     setInterval(updateValuesOnVis, UPDATE_VISUALIZATION_INTERVAL_MS);
   </script>
 </div>
