@@ -4164,6 +4164,14 @@
       let sessionTimeString = timeStringFromMillis((currentDateTime - dateTimeStart));
       document.querySelector("#session-time").innerHTML = "Session time: " + sessionTimeString;
 
+      const READERR_STR = (() => {
+        switch (UBZ_LANGUAGE) {
+          case "ru": return "Ошибка чтения";
+          case "pl": return "Błąd odczytu";
+          default: return "Reading error";
+        }
+      }) ();
+
       if (loopLock) {
         return;
       } else {
@@ -4475,19 +4483,19 @@
       if (mapRegisters.get(135) != undefined) {
         document.querySelector("#full-power-value").innerHTML = (mapRegisters.get(135) * 0.01).toString();
       } else {
-        document.querySelector("#full-power-value").innerHTML = "Reading error";
+        document.querySelector("#full-power-value").innerHTML = READERR_STR;
       }
 
       if (mapRegisters.get(137) != undefined) {
         document.querySelector("#active-power-value").innerHTML = (mapRegisters.get(137) * 0.01).toString();
       } else {
-        document.querySelector("#active-power-value").innerHTML = "Reading error";
+        document.querySelector("#active-power-value").innerHTML = READERR_STR;
       }
 
       if (mapRegisters.get(139) != undefined) {
         document.querySelector("#reactive-power-value").innerHTML = (mapRegisters.get(139) * 0.01).toString();
       } else {
-        document.querySelector("#reactive-power-value").innerHTML = "Reading error";
+        document.querySelector("#reactive-power-value").innerHTML = READERR_STR;
       }
 
       if (mapRegisters.get(129) > 600) {
@@ -4495,7 +4503,7 @@
       } else if (mapRegisters.get(129) != undefined) {
         document.querySelector("#time-before-overload-tripping-string").innerHTML = mapRegisters.get(129).toString();
       } else {
-        document.querySelector("#time-before-overload-tripping-string").innerHTML = "Reading error";
+        document.querySelector("#time-before-overload-tripping-string").innerHTML = READERR_STR;
       }
 
       if (mapRegisters.get(131) > 900) {
