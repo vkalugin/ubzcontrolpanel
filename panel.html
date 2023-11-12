@@ -1605,777 +1605,969 @@
 
   <!-- Locale -->
   <script>
-    const LOCALE = {
-      get language() {
-        let lang = "en";
+    const UBZ_LANGUAGE = (function () {
+      let lang = "en";
         const externalDivWrapper = document.querySelectorAll(".vis-view")[0];
         if (externalDivWrapper != null) {
           lang = externalDivWrapper.getAttribute("language");
         }
         return lang;
-      }
-    };
+    }) ();
 
     const UBZ_DICTIONARY = [
       {
         name: "#ubz-302-header",
         ru: "Панель управления УБЗ",
+        pl: "Panel sterowania UBZ",
       },
       {
         name: "#session-time",
         ru: "Время сессии:",
+        pl: "Czas sesji",
       },
       {
         name: "#mmsp-mode-text",
         ru: "РМКУП",
+        pl: "TMLPP",
       },
       {
         name: "#functional-relay-mode-text",
         ru: "Функциональное реле",
+        pl: "Przekaźnik funkcyjny",
       },
       {
         name: "#motor-relay-mode-text",
         ru: "Реле двигателя",
+        pl: "Przekaźnik obciążenia",
       },
       {
         name: "#functional-relay-work-mode-text",
         ru: "Режим работы функционального реле",
+        pl: "Tryb pracy przekaźnika funkcjonalnego",
       },
       {
         name: "#ubz-status-text",
         ru: "Состояние УБЗ",
+        pl: "Stan UBZ",
       },
       {
         name: "#radio-workmode-alarm-text",
         ru: "Реле сигнализации",
+        pl: "Przekaźnik sygnalizacji",
       },
       {
         name: "#radio-workmode-time-text",
         ru: "Реле времени",
+        pl: "Przekaźnik czasowy",
       },
       {
         name: "#radio-workmode-stardelta-text",
         ru: "Звезда / треугольник",
+        pl: "gwiazda-trójkąt",
       },
       {
         name: "#ct-in-use-text",
         ru: "Используемый ТТ",
+        pl: "Stosowany PP",
       },
       {
         name: "#integrated-ct-text",
         ru: "Встроенный ТТ",
+        pl: "Wbudowane PP",
       },
       {
         name: "#external-ct-text",
         ru: "Внешний ТТ",
+        pl: "Zewnętrzne PP",
       },
       {
         name: "#for-external-ct-text",
         ru: "Для внешнего ТТ",
+        pl: "Dla PP zewnętrznego",
       },
       {
         name: "#motor-rated-current-text",
         ru: "Номинальный ток двигателя",
+        pl: "Prąd znamionowy silnika",
       },
       {
         name: ".additional-drop-down-block",
         ru: "Дополнительно",
+        pl: "Dodatkowo",
       },
       {
         name: "#sensor-1-temperature-text",
         ru: "Датчик температуры 1: ",
+        pl: "Temperatura czujnika 1",
       },
       {
         name: "#sensor-2-temperature-text",
         ru: "Датчик температуры 2: ",
+        pl: "Temperatura czujnika 2",
       },
       {
         name: "#current-input-text",
         ru: "Токовый вход:",
+        pl: "Wartość prądu na wejściu",
       },
       {
         name: "#analog-input-text",
         ru: "Аналоговый вход:",
+        pl: "Wartość napięcia na wejściu analogowym",
       },
       {
         name: "#frequency-text",
         ru: "Частота",
+        pl: "Częstotliwość sieci",
       },
       {
         name: "#insulation-resistance-text",
         ru: "Сопротивление изоляции",
+        pl: "Rezystancja izolacji silnika",
       },
       {
         name: "#motor-start-stop-button",
         ru: "Автоматический режим",
+        pl: "Tryb automatyczny",
       },
       {
         name: "#log-event-ubz-text",
         ru: "Журнал аварий УБЗ",
+        pl: "Dziennik zdarzeń awaryjnych",
       },
       {
         name: "#header-ubz-fault-status",
         ru: "Состояние аварий УБЗ",
+        pl: "Stan awarij UBZ",
       },
       {
         name: "#fault-indicator",
         ru: "Авария",
+        pl: "Awaria",
       },
       {
         name: "#ext-in-indicator",
         ru: "Вн. вх.",
+        pl: "Wej. zewn.",
       },
       {
         name: "#ar-indicator",
         ru: "АПВ",
+        pl: "SPZ",
       },
       {
         name: "#rc-indicator",
         ru: "ДУ",
+        pl: "ZS",
       },
       {
         name: "#reset-fault-text",
         ru: "Сброс Аварий",
+        pl: "Anulowanie Awarii",
       },
       {
         name: "#table-header-name",
         ru: "Наименование",
+        pl: "Nazwa",
       },
       {
         name: "#table-header-value",
         ru: "Значение",
+        pl: "Oznaczający",
       },
       {
         name: "#table-header-time",
         ru: "Время",
+        pl: "Czas",
       },
       {
         name: "#header-graphs",
         ru: "Графики",
+        pl: "Wykresy",
       },
       {
         name: "#minutes-voltages-graph-scale-text",
         ru: "Минутный масштаб графиков напряжений",
+        pl: "Skala minutowa wykresów napięcia",
       },
       {
         name: "#minutes-amperages-graph-scale-text",
         ru: "Минутный масштаб графиков токов",
+        pl: "Skala minutowa wykresów prądów",
       },
       {
         name: "#header-current-ampere",
         ru: "Ток (Ампер)",
+        pl: "Prąd (Amper)",
       },
       {
         name: "#phase-currents-active-values-text",
         ru: "Действующие значения фазных токов:",
+        pl: "Efektywne wartości prądów fazowych:",
       },
       {
         name: ".phase-1-text",
         ru: "Фаза 1:",
+        pl: "Faza 1:",
       },
       {
         name: ".phase-2-text",
         ru: "Фаза 2:",
+        pl: "Faza 2:",
       },
       {
         name: ".phase-3-text",
         ru: "Фаза 3:",
+        pl: "Faza 3:",
       },
       {
         name: "#negative-sequence-current-text",
         ru: "Ток обратной последовательности:",
+        pl: "Prąd przeciwnej kolejności",
       },
       {
         name: "#zero-sequence-current-text",
         ru: "Ток нулевой последовательности:",
+        pl: "Skuteczna wartość składowej zerowej prądu",
       },
       {
         name: "#current-average-value-text",
         ru: "Среднее значение тока:",
+        pl: "Średni prąd",
       },
       {
         name: "#for-time-text",
         ru: "За время:",
+        pl: "Na czas",
       },
       {
         name: "#max-text",
         ru: "Макс:",
+        pl: "Maks.",
       },
       {
         name: ".ubz-sec-text",
         ru: "сек",
+        pl: "sec",
       },
       {
         name: "#motor-start-current-text",
         ru: "Пусковой ток двигателя",
+        pl: "Prąd rozruchowy",
       },
       {
         name: "#overload-current-text",
         ru: "Ток перегрузки",
+        pl: "Prąd przeciążeniowy",
       },
       {
         name: "#header-voltage-volt",
         ru: "Напряжение (Вольт)",
+        pl: "Napięcie (Wolty)",
       },
       {
         name: "#phase-voltages-active-values-text",
         ru: "Действующие значения фазных напряжений:",
+        pl: "Efektywne wartości napięć fazowych:",
       },
       {
         name: "#line-voltages-active-values-text",
-        ru: "Действующие значения линейных напряжений",
+        ru: "Действующие значения линейных напряжений:",
+        pl: "Efektywne wartości napięć liniowych:",
       },
       {
         name: ".volts-text",
         ru: "В",
+        pl: "V",
       },
       {
         name: "#ubz-ma-text",
         ru: "мА",
+        pl: "mA",
       },
       {
         name: "#ubz-mohm-text",
         ru: "МОм",
+        pl: "MΩ",
       },
       {
         name: "#negative-sequence-voltage-text",
-        ru: "Напряжение обратной последовательности",
+        ru: "Напряжение обратной последовательности:",
+        pl: "Napięcie składowej przeciwnej:",
       },
       {
         name: "#positive-sequence-voltage-text",
-        ru: "Напряжение прямой последовательности",
+        ru: "Напряжение прямой последовательности:",
+        pl: "Napięcie składowej zgodnej:",
       },
       {
         name: "#zero-sequence-voltage-text",
-        ru: "Напряжение нулевой последовательности",
+        ru: "Напряжение нулевой последовательности:",
+        pl: "Napięcie składowej zerowej:",
       },
       {
         name: "#header-time-sec",
         ru: "Время (сек)",
+        pl: "Czas (sec)",
       },
       {
         name: "#time-before-ar-text",
-        ru: "Время до АПВ",
+        ru: "Время до АПВ:",
+        pl: "Czas do SPZ:",
       },
       {
         name: ".ubz-off-text",
         ru: "Выкл",
+        pl: "Wyłączony",
       },
       {
         name: "#startup-time-text",
         ru: "Время пуска:",
+        pl: "Czas rozpoczęcia:",
       },
       {
         name: "#time-before-overload-tripping-text",
         ru: "Время до отключения по перегрузке",
+        pl: "Czas pracy do odłączenia na skutek przeciążenia",
       },
       {
         name: ".ubz-no-text",
         ru: "Нет",
+        pl: "Nie",
       },
       {
         name: "#wait-time-after-overload-deenergize-text",
         ru: "Время ожидания после отключения по перегрузке",
+        pl: "Czas oczekiwania po odłączeniu na skutek",
       },
       {
         name: "#header-power",
         ru: "Мощности",
+        pl: "Moc",
       },
       {
         name: "#full-power-text",
         ru: "Полная мощность",
+        pl: "Moc pozorna",
       },
       {
         name: "#active-power-text",
         ru: "Активная мощность",
+        pl: "Moc czynna",
       },
       {
         name: "#reactive-power-text",
         ru: "Реактивная мощность",
+        pl: "Moc bierna",
       },
       {
         name: ".no-selection-text",
         ru: "-Выбор-",
+        pl: "-Wybór-",
       },
       {
         name: ".phase-1-full-power-text",
         ru: "Фаза 1 полная мощность",
+        pl: "Faza 1 Moc pozorna",
       },
       {
         name: ".phase-2-full-power-text",
         ru: "Фаза 2 полная мощность",
+        pl: "Faza 2 Moc pozorna",
       },
       {
         name: ".phase-3-full-power-text",
         ru: "Фаза 3 полная мощность",
+        pl: "Faza 3 Moc pozorna",
       },
       {
         name: ".phase-1-active-power-text",
         ru: "Фаза 1 активная мощность",
+        pl: "Faza 1 Moc czynna",
       },
       {
         name: ".phase-2-active-power-text",
         ru: "Фаза 2 активная мощность",
+        pl: "Faza 2 Moc czynna",
       },
       {
         name: ".phase-3-active-power-text",
         ru: "Фаза 3 активная мощность",
+        pl: "Faza 3 Moc czynna",
       },
       {
         name: ".phase-1-reactive-power-text",
         ru: "Фаза 1 реактивная мощность",
+        pl: "Faza 1 Moc bierna",
       },
       {
         name: ".phase-2-reactive-power-text",
         ru: "Фаза 2 реактивная мощность",
+        pl: "Faza 2 Moc bierna",
       },
       {
         name: ".phase-3-reactive-power-text",
         ru: "Фаза 3 реактивная мощность",
+        pl: "Faza 3 Moc bierna",
       },
       {
         name: ".phase-1-cos-phi-text",
-        ru: "Фаза 1 косинус фи",
+        ru: "Фаза 1 косинус φ",
+        pl: "Faza 1 cosinus φ",
       },
       {
         name: ".phase-2-cos-phi-text",
-        ru: "Фаза 2 косинус фи",
+        ru: "Фаза 2 косинус φ",
+        pl: "Faza 2 cosinus φ",
       },
       {
         name: ".phase-3-cos-phi-text",
-        ru: "Фаза 3 косинус фи",
+        ru: "Фаза 3 косинус φ",
+        pl: "Faza 3 cosinus φ",
       },
       {
         name: "#ubz-parameters-button",
         ru: "Параметры УБЗ",
+        pl: "Opcje UBZ",
       },
       {
         name: "#ubz-parameters-header-text",
         ru: "Меню параметров УБЗ",
+        pl: "Menu parametrów UBZ",
       },
       {
         name: "#ubz-parameters-summary-transformers",
         ru: "Трансформаторы",
+        pl: "Transformatory",
       },
       {
         name: "#ubz-parameters-summary-miscellaneous",
         ru: "Разное",
+        pl: "Różnorodny",
       },
       {
         name: "#ubz-parameters-summary-overcurrent-protection",
         ru: "Максимальная токовая защита",
+        pl: "Zabezpieczenie nadprądowe",
       },
       {
         name: "#ubz-parameters-summary-protection-against-ground-faults",
         ru: "Защита от замыканий на землю (по току нулевой последовательности iF0)",
+        pl: "",
       },
       {
         name: "#ubz-parameters-summary-negative-sequence-current-protection",
         ru: "Защита по току обратной последовательности",
+        pl: "Zabezpieczenie ziemnozwarciowe (prąd składowej zerowej iF0)",
       },
       {
         name: "#ubz-parameters-summary-analysis-of-causes",
         ru: "Анализ причин срабатывания защиты по току обратной последовательности",
+        pl: "Analiza przyczyn działania zabezpieczenia prądowego składowej przeciwnej",
       },
       {
         name: "#ubz-parameters-summary-thermal-overload",
         ru: "Тепловая перегрузка (тепловая модель двигателя)",
+        pl: "Przeciążenie termiczne (model termiczny silnika)",
       },
       {
         name: "#ubz-parameters-summary-undercurrent-phase",
         ru: "Минимальный фазный ток",
+        pl: "Minimalny prąd fazowy",
       },
       {
         name: "#ubz-parameters-summary-delayed-start",
         ru: "Затянутый пуск, блокировка ротора",
+        pl: "Opóźniony start, zablokowany wirnik",
       },
       {
         name: "#ubz-parameters-summary-voltage-protection",
         ru: "Защиты по напряжению",
+        pl: "Ochrona napięcia",
       },
       {
         name: "#ubz-parameters-summary-motor-operation",
         ru: "Управление двигателем АПВ",
+        pl: "Kontrola silnika SPZ",
       },
       {
         name: "#ubz-parameters-summary-temperature-control",
         ru: "Контроль температуры",
+        pl: "Kontrola temperatury",
       },
       {
         name: "#ubz-parameters-summary-motor-insulation",
         ru: "Сопротивление изоляции двигателя",
+        pl: "Rezystancja izolacji silnika",
       },
       {
         name: "#ubz-parameters-summary-miscellaneous-2",
         ru: "Разное",
+        pl: "Różnorodny",
       },
       {
         name: "#ubz-parameters-summary-serial",
         ru: "Параметры последовательного интерфейса (RS-485 / RS-232)",
+        pl: "Parametry interfejsu szeregowego (RS-485 / RS-232)",
       },
       {
         name: "#ubz-parameters-summary-functional-relay",
         ru: "Параметры режимов функционального реле. Режим звезда-треугольник",
+        pl: "Parametry trybu przekaźnika funkcjonalnego. Tryb gwiazda-trójkąt",
       },
       {
         name: "#ubz-parameters-summary-motor-phase",
         ru: "Обрыв фазы (фаз) двигателя с контролем по току",
+        pl: "Brakujące fazy silnika przy sterowaniu prądem",
       },
       {
         name: "#ubz-parameters-summary-0-20ma",
         ru: "Управление по аналоговому входу 0-20 мА",
+        pl: "Sterowanie poprzez wejście analogowe 0-20 mA",
       },
       {
         name: "#ubz-parameters-summary-0-10v",
         ru: "Управление по аналоговому входу 0-10В",
+        pl: "Sterowanie poprzez wejście analogowe 0-10V",
       },
       {
         name: "#ubz-parameters-summary-control",
         ru: "Контроль исправности внешнего МП",
+        pl: "Monitorowanie stanu zewnętrznego ZS",
       },
       {
         name: "#button-write-ubz-params",
         ru: "Записать все параметры на устройство",
+        pl: "Zapisz wszystkie parametry do urządzenia",
       },
       {
         name: "#button-read-ubz-params",
         ru: "Прочитать все параметры с устройства",
+        pl: "Odczytaj wszystkie parametry z urządzenia",
       },
       {
         name: "#write-only-modified-ubz-params-text",
         ru: "Записывать  только изменённые параметры",
+        pl: "Rejestruj tylko zmienione parametry",
       },
       {
         name: "#ubz-setting-150-text",
         ru: "[150] tPt: Используемый ТТ",
+        pl: "[150] tPt: Stosowany PP",
       },
       {
         name: "#ubz-setting-151-text",
         ru: "[151] tnt: Номинальный ток ТТ, А",
+        pl: "[151] tnt: Prąd znamionowy PP [A]",
       },
       {
         name: "#ubz-setting-152-text",
         ru: "[152] ind: Номинальный ток двигателя, А",
+        pl: "[152] ind: Prąd znamionowy silnika [А]",
       },
       {
         name: "#ubz-setting-153-text",
         ru: "[153] tSi: Время, за которое измеряется среднее значение тока, с",
+        pl: "[153] tSi: Okres, za który mierzona jest średnia wartość prądu [s]",
       },
       {
         name: "#ubz-setting-154-text",
         ru: "[154] i^P: Тип максимальной токовой защиты",
+        pl: "[154] i^P: Typ zabezpieczenia nadprądowego",
       },
       {
         name: "#ubz-setting-155-text",
         ru: "[155] i^S: Уставка срабатывания по максимальной токовой защите, кратность",
+        pl: "[155] i^S: Nastawa zadziałania zabezpieczenia nadprądowego, krotność",
       },
       {
         name: "#ubz-setting-156-text",
         ru: "[156] i^t: Задержка срабатывания защиты по току, с",
+        pl: "[156] i^t: Opóźnienie zadziałania zabezpieczenia prądowego [s]",
       },
       {
         name: "#ubz-setting-157-text",
         ru: "[157] i^r: Разрешение работы защиты",
+        pl: "[157] i^r: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-158-text",
         ru: "[158] i^n: Порядок срабатывания защиты по отношению к тепловой",
+        pl: "[158] i^n: Kolejność zadziałania zabezpieczenia w odniesieniu do zabezpieczenia termicznego",
       },
       {
         name: "#ubz-setting-159-text",
         ru: "[159] i_S: Уставка срабатывания по току, А",
+        pl: "[159] i_S: Nastawa zadziałania w przypadku zmiany prądu [A]",
       },
       {
         name: "#ubz-setting-160-text",
         ru: "[160] i_t: Задержка срабатывания защиты, с",
+        pl: "[160] i_t: Opóźnienie zadziałania zabezpieczenia [s]",
       },
       {
         name: "#ubz-setting-161-text",
         ru: "[161] i_r: Разрешение работы защиты",
+        pl: "[161] i_r: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-162-text",
         ru: "[162] ioS: Уставка срабатывания, %",
+        pl: "[162] ioS: Nastawa zadziałania [%]",
       },
       {
         name: "#ubz-setting-163-text",
         ru: "[163] iot: Задержка срабатывания защиты, с",
+        pl: "[163] iot: Opóźnienie zadziałania zabezpieczenia [s]",
       },
       {
         name: "#ubz-setting-164-text",
         ru: "[164] ior: Разрешение работы защиты",
+        pl: "[164] ior: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-165-text",
         ru: "[165] iOS: Кратность превышенияотношения коэффициента обратной последовательности по току к коэффициенту обратной последовательности по напряжению",
+        pl: "[165] iOS: Krotność przekroczenia zależności pomiędzy współczynnikiem niezrównoważenia składowej przeciwnej prądu i współczynnikiem niezrównoważenia składowej przeciwnej napięcia.",
       },
       {
         name: "#ubz-setting-166-text",
         ru: "[166] iOr: Разрешение анализа",
+        pl: "[166] iOr: Zezwolenie na przeprowadzenie analizy",
       },
       {
         name: "#ubz-setting-167-text",
         ru: "[167] dtr: Разрешение работы защиты",
+        pl: "[167] dtr: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-168-text",
         ru: "[168] dtt: Время срабатывания защиты при двукратной перегрузке по току, с",
+        pl: "[168] dtt: Czas zadziałania zabezpieczenia w przypadku dwukrotnego przeciążenia prądowego [s]",
       },
       {
         name: "#ubz-setting-169-text",
         ru: "[169] dtP: Кратность увеличения времени при остановленном двигателе",
+        pl: "[169] dtP: Krotność zwiększenia czasu przy wyłączonym silniku",
       },
       {
         name: "#ubz-setting-170-text",
         ru: "[170] i=S: Уставка срабатывания, %",
+        pl: "[170] i=S: Nastawa zadziałania [%]",
       },
       {
         name: "#ubz-setting-171-text",
         ru: "[171] i=t: Задержка срабатывания защиты, с",
+        pl: "[171] i=t: Opóźnienie zadziałania zabezpieczenia [s]",
       },
       {
         name: "#ubz-setting-172-text",
         ru: "[172] i=r: Разрешение работы защиты",
+        pl: "[172] i=r: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-173-text",
         ru: "[173] PPS: Уставка срабатывания, кратность",
+        pl: "[173] PPS: Nastawa zadziałania [krotność]",
       },
       {
         name: "#ubz-setting-174-text",
         ru: "[174] PPt: Задержка срабатывания защиты по затянутому пуску, с",
+        pl: "[174] PPt: Opóźnienie zadziałania zabezpieczenia w wyniku wydłużonego rozruchu [s]",
       },
       {
         name: "#ubz-setting-175-text",
         ru: "[175] Pbt: Задержка срабатывания защиты по блокировке ротора, с",
+        pl: "[175] Pbt: Opóźnienie zadziałania zabezpieczenia w wyniku zablokowania (utyku) wirnika [s]", 
       },
       {
         name: "#ubz-setting-176-text",
         ru: "[176] PPr: Разрешение работы защиты",
+        pl: "[176] PPr: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-177-text",
         ru: "[177] U=S: Минимальное линейное напряжение, В",
+        pl: "[177] U=S: Minimalne napięcie liniowe [V]",
       },
       {
         name: "#ubz-setting-178-text",
         ru: "[178] U=t: Время задержкиoтключения по минимальному напряжению, с",
+        pl: "[178] U=t: Czas opóźnienia odłączenia w przypadku minimalnego napięcia [s]",
       },
       {
         name: "#ubz-setting-179-text",
         ru: "[179] U=r: Разрешение работы защиты по минимальному напряжению",
+        pl: "[179] U=r: Zezwolenie na pracę zabezpieczenia przed przekroczeniem minimalnego napięcia",
       },
       {
         name: "#ubz-setting-180-text",
         ru: "[180] U^S: Максимальное линейное напряжение, В",
+        pl: "[180] U^S: Maksymalne napięcie liniowe [V]",
       },
       {
         name: "#ubz-setting-181-text",
         ru: "[181] U^t: Время задержки отключения по максимальному линейному напряжению, с",
+        pl: "[181] U^t: Czas opóźnienia odłączenia w przypadku maksymalnego napięcia liniowego [s]",
       },
       {
         name: "#ubz-setting-182-text",
         ru: "[182] U^r: Разрешение работызащиты по максимальному линейному напряжению",
+        pl: "[182] U^r: Zezwolenie na pracę zabezpieczenia przed przekroczeniem maksymalnego napięcia liniowego",
       },
       {
         name: "#ubz-setting-183-text",
         ru: "[183] U*S: Перекос линейного напряжения, В",
+        pl: "[183] U*S: Asymetria napięcia liniowego [V]",
       },
       {
         name: "#ubz-setting-184-text",
         ru: "[184] U*t: Время задержки отключения по перекосу линейного напряжения, c",
+        pl: "[184] U*t: Czas opóźnienia odłączenia w przypadku asymetrii napięcia liniowego [s]",
       },
       {
         name: "#ubz-setting-185-text",
         ru: "[185] U*r: Разрешение работы защиты по перекосу линейного напряжения",
+        pl: "[185] U*r: Zezwolenie na pracę zabezpieczenia przed asymetrią napięcia liniowego",
       },
       {
         name: "#ubz-setting-186-text",
         ru: "[186] UЧr: Разрешение работы защиты по порядку чередования фаз",
+        pl: "[186] UЧr: Zezwolenie na pracę zabezpieczenia przed nieprawidłową kolejnością faz",
       },
       {
         name: "#ubz-setting-187-text",
         ru: "[187] Atn: Время АПВ после срабатывания защиты по минимальному току, с",
+        pl: "[187] Atn: Czas SPZ po zadziałaniu zabezpieczenia przed przekroczeniem minimalnego prądu [s]",
       },
       {
         name: "#ubz-setting-188-text",
         ru: "[188] Att: Время АПВ, с",
+        pl: "[188] Att: Czas SPZ [s]",
       },
       {
         name: "#ubz-setting-189-text",
         ru: "[189] Arr: Запрет АПВ для всех аварий (кроме аварий по напряжению)",
+        pl: "[189] Arr: Zakaz SPZ dla wszystkich awarii (oprócz awarii napięciowych)",
       },
       {
         name: "#ubz-setting-190-text",
         ru: "[190] APd: Разрешение работы двигателя после подачи питания на УБЗ",
+        pl: "[190] APd: Zezwolenie na pracę silnika po podaniu na UBZ napięcia zasilającego",
       },
       {
         name: "#ubz-setting-191-text",
         ru: "[191] ACd: Управление двигателем с лицевой панели УБЗ",
+        pl: "[191] ACd: Sterowanie silnikiem z panelu przedniego UBZ",
       },
       {
         name: "#ubz-setting-192-text",
         ru: "[192] C1r: Разрешение контроля температуры и тип датчика температуры 1",
+        pl: "[192] C1r: Zezwolenie na kontrolę temperatury i typ czujnika temperatury 1",
       },
       {
         name: "#ubz-setting-193-text",
         ru: "[193] C1S: Температура отключения двигателя",
+        pl: "[193] C1S: Temperatura odłączenia silnika",
       },
       {
         name: "#ubz-setting-194-text",
         ru: "[194] C1c: Коррекция температуры первого датчика",
+        pl: "[194] C1c: Korekcja temperatury pierwszego czujnika",
       },
       {
         name: "#ubz-setting-195-text",
         ru: "[195] C2r: Разрешение контроля температуры и тип датчика температуры 2",
+        pl: "[195] C2r: Zezwolenie na kontrolę temperatury i typ czujnika temperatury 2",
       },
       {
         name: "#ubz-setting-196-text",
         ru: "[196] C2S: Температура отключения двигателя",
+        pl: "[196] C2S: Temperatura odłączenia silnika",
       },
       {
         name: "#ubz-setting-197-text",
         ru: "[197] C2A: Температура предупреждения",
+        pl: "[197] C2A: Temperatura ostrzeżenia",
       },
       {
         name: "#ubz-setting-198-text",
         ru: "[198] C2c: Коррекция температуры второго датчика",
+        pl: "[198] C2c: Korekcja temperatury drugiego czujnika",
       },
       {
         name: "#ubz-setting-199-text",
         ru: "[199] CPA: АПВ после срабатывания защиты",
+        pl: "[199] CPA: SPZ po zadziałaniu zabezpieczenia",
       },
       {
         name: "#ubz-setting-200-text",
         ru: "[200] CCr: Реакция на неисправность датчиков температуры",
+        pl: "[200] CCr: Reakcja na uszkodzenie czujników temperatury",
       },
       {
         name: "#ubz-setting-201-text",
         ru: "[201] rid: Защита по минимальному сопротивлению изоляции двигателя",
+        pl: "[201] rid: Zabezpieczenie przed przekroczeniem minimalnej rezystancji uzwojeń silnika",
       },
       {
         name: "#ubz-setting-202-text",
         ru: "[202] Sin: Включение режима минимального количества установочных параметров",
+        pl: "[202] Sin: Włączenie trybu minimalnej liczby parametrów programowalnych",
       },
       {
         name: "#ubz-setting-203-text",
         ru: "[203] SiP: Показания на индикаторе УБЗ до включения двигателя",
+        pl: "[203] SiP: Wartości wyświetlane na wyświetlaczu UBZ do włączenia silnika",
       },
       {
         name: "#ubz-setting-204-text",
         ru: "[204] SiC: Режим индикации параметра",
+        pl: "[204] SiC: Tryb wyświetlania parametru",
       },
       {
         name: "#ubz-setting-205-text",
         ru: "[205] rrS: Режим работы функционального реле",
+        pl: "[205] rrS: Tryb pracy przekaźnika funkcyjnego",
       },
       {
         name: "#ubz-setting-206-text",
         ru: "[206] rrt: Время таймера, c",
+        pl: "[206] rrt: Czas zegara [s]",
       },
       {
         name: "#ubz-setting-207-text",
         ru: "[207] tbU: Полное время работы устройства, сутки",
+        pl: "[207] tbU: Całkowity czas pracy urządzenia [doba]",
       },
       {
         name: "#ubz-setting-208-text",
         ru: "[208] tCO: Время наработки двигателя, сутки",
+        pl: "[208] tCO: Czas pracy silnika [doba]",
       },
       {
         name: "#ubz-setting-209-text",
         ru: "[209] LOC: Код доступа пользователя",
+        pl: "[209] LOC: Kod dostępu użytkownika",
       },
       {
         name: "#ubz-setting-210-text",
         ru: "[210] PAS: Код доступа наладчика",
+        pl: "[210] PAS: Serwisowy kod dostępu",
       },
       {
         name: "#ubz-setting-211-text",
         ru: "[211] PPP: Восстановление заводских параметров",
+        pl: "[211] PPP: Przywrócenie parametrów fabrycznych",
       },
       {
         name: "#ubz-setting-212-text",
         ru: "[212] rSA: Коммуникационный адрес УБЗ",
+        pl: "[212] rSA: Adres UBZ",
       },
       {
         name: "#ubz-setting-213-text",
         ru: "[213] rSS: Скорость передачи",
+        pl: "[213] rSS: Prędkość transmisji",
       },
       {
         name: "#ubz-setting-214-text",
         ru: "[214] rSP: Реакция преобразователя на потерю связи",
+        pl: "[214] rSP: Reakcja przetwornika na brak komunikacji",
       },
       {
         name: "#ubz-setting-215-text",
         ru: "[215] rSO: Обнаружение превышения времени ответа, с",
+        pl: "[215] rSO: Wykrycie przekroczenia czasu oczekiwania na odpowiedź [s]",
       },
       {
         name: "#ubz-setting-216-text",
         ru: "[216] rPP: Разрешение связи УБЗ по последовательному каналу",
+        pl: "[216] rPP: Zezwolenie na komunikację UBZ poprzez kanał szeregowy",
       },
       {
         name: "#ubz-setting-217-text",
         ru: "[217] rEL: Версия устройства",
+        pl: "[217] rEL: Wersja urządzenia",
       },
       {
         name: "#ubz-setting-218-text",
         ru: "[218] Ftt: Переключение, с",
+        pl: "[218] Ftt: Przełączenie [s]",
       },
       {
         name: "#ubz-setting-219-text",
         ru: "[219] ibt: Задержка срабатывания защиты по обрыву фазы (фаз), с",
+        pl: "[219] ibt: Opóźnienie zadziałania zabezpieczenia w wyniku zaniku fazy (faz) [s]",
       },
       {
         name: "#ubz-setting-220-text",
         ru: "[220] ibr: Разрешение работы защиты",
+        pl: "[220] ibr: Zezwolenie na pracę zabezpieczenia",
       },
       {
         name: "#ubz-setting-221-text",
         ru: "[221] dUd: Дистанционный пуск и останов двигателя по интерфейсу RS-232/RS485",
+        pl: "[221] dUd: Zdalny włączenie i wyłączenie silnika przez interfejs RS-232/RS-485",
       },
       {
         name: "#ubz-setting-222-text",
         ru: "[222] Ait: Верхний порог, мА",
+        pl: "[222] Ait: Próg górny [mА]",
       },
       {
         name: "#ubz-setting-223-text",
         ru: "[223] Aib: Нижний порог, мА",
+        pl: "[223] Aib: Próg dolny [mА]",
       },
       {
         name: "#ubz-setting-224-text",
         ru: "[224] AiA: Алгоритм управления",
+        pl: "[224] AiA: Algorytm sterowania",
       },
       {
         name: "#ubz-setting-225-text",
         ru: "[225] AiE: Занесение в журнал аварий",
+        pl: "[225] AiE: Zapisywanie do dziennika awarii",
       },
       {
         name: "#ubz-setting-226-text",
         ru: "[226] AUt: Верхний порог, В",
+        pl: "[226] AUt: Próg górny [V]",
       },
       {
         name: "#ubz-setting-227-text",
         ru: "[227] AUb: Нижний порог, В",
+        pl: "[227] AUb: Próg dolny [V]",
       },
       {
         name: "#ubz-setting-228-text",
         ru: "[228] AUA: Алгоритм управления",
+        pl: "[228] AUA: Algorytm sterowania",
       },
       {
         name: "#ubz-setting-229-text",
         ru: "[229] AUE: Занесение в журнал аварий",
+        pl: "[229] AUE: Zapisywanie do dziennika awarii",
       },
       {
         name: "#ubz-setting-230-text",
         ru: "[230] CCi: Контроль исправности внешнего МП",
+        pl: "[230] CCi: Kontrola sprawności zewnętrznego stycznika",
       }
     ];
 
     // Translate elements
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       UBZ_DICTIONARY.forEach((element) => {
         document.querySelectorAll(element.name).forEach((selection) => {
           selection.innerHTML = element.ru;
+        });
+      });
+    } else if (UBZ_LANGUAGE === "pl") {
+      UBZ_DICTIONARY.forEach((element) => {
+        document.querySelectorAll(element.name).forEach((selection) => {
+          selection.innerHTML = element.pl;
         });
       });
     }
@@ -3429,8 +3621,10 @@
     /***********/
 
     var tempGraph = new Graph(30, "#heating-graph", 3);
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       tempGraph.setDataLabels(["Температура, % от макс.", "66%", "100%"]);
+    } else if (UBZ_LANGUAGE === "pl") {
+      tempGraph.setDataLabels(["Temperatura, % maks.", "66%", "100%"]);
     } else {
       tempGraph.setDataLabels(["Temperature, % of max", "66%", "100%"]);
     }
@@ -3444,8 +3638,10 @@
     /************/
 
     var voltGraph = new Graph(20, "#voltage-phases-graph", 3);
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       voltGraph.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
+    } else if (UBZ_LANGUAGE === "pl") {
+      voltGraph.setDataLabels(["Faza napięcia 1", "Faza napięcia 2", "Faza napięcia 3"]);
     } else {
       voltGraph.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     }
@@ -3453,8 +3649,10 @@
     voltGraph.setColors(["yellowgreen", "limegreen", "forestgreen"]);
 
     var voltGraphM = new Graph(1000, "#voltage-phases-graph-m", 3);
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       voltGraphM.setDataLabels(["Напряжение фаза 1", "Напряжение фаза 2", "Напряжение фаза 3"]);
+    } else if (UBZ_LANGUAGE === "pl") {
+      voltGraphM.setDataLabels(["Faza napięcia 1", "Faza napięcia 2", "Faza napięcia 3"]);
     } else {
       voltGraphM.setDataLabels(["Voltage phase 1", "Voltage phase 2", "Voltage phase 3"]);
     }
@@ -3469,8 +3667,10 @@
     /****************/
 
     var ampGraph = new Graph(20, "#amperage-phases-graph", 3);
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       ampGraph.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
+    } else if (UBZ_LANGUAGE === "pl") {
+      ampGraph.setDataLabels(["Prąd ef. faza 1", "Prąd ef. faza 2", "Prąd ef. faza 3"]);
     } else {
       ampGraph.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     }
@@ -3479,8 +3679,10 @@
     ampGraph.setColors(["orange", "gold", "goldenrod"]);
 
     var ampGraphM = new Graph(1000, "#amperage-phases-graph-m", 3);
-    if (LOCALE.language === "ru") {
+    if (UBZ_LANGUAGE === "ru") {
       ampGraphM.setDataLabels(["Ток действ. фаза 1", "Ток действ. фаза 2", "Ток действ. фаза 3"]);
+    } else if (UBZ_LANGUAGE === "pl") {
+      ampGraphM.setDataLabels(["Prąd ef. faza 1", "Prąd ef. faza 2", "Prąd ef. faza 3"]);
     } else {
       ampGraphM.setDataLabels(["Current RMS phase 1", "Current RMS phase 2", "Current RMS phase 3"]);
     }
@@ -3494,7 +3696,7 @@
   <!-- Indicators -->
   <script type="text/javascript">
     async function processUbzStatuses() {
-      const mmspMode = mapRegisters.get(102);
+      const mmspMode = mapRegisters.get(202);
 
       const LOAD_RELAY_BIT = 1;
       const FUNCTIONAL_RELAY_BIT = 2;
@@ -3594,7 +3796,19 @@
   <!-- Selection listeners -->
   <script type="text/javascript">
     async function stringPowerCharacteristicByKey(keystring) {
-      var outstring = LOCALE.language === "ru" ? "Неизвестное" : "Unknown";
+      var outstring = "Unknown";
+      switch (UBZ_LANGUAGE) {
+        case "ru":
+          {
+            outstring = "Неизвестное";
+          }
+          break;
+        case "pl":
+          {
+            outstring = "Nieznany";
+          }
+          break;
+      }
       switch (keystring) {
         case "phase-1-full-power":
           {
